@@ -11,10 +11,12 @@ public class App {
 	public static void showLoginView() {
 		try {
 			LoginView window = new LoginView();
-			window.getFrmEmployeeInformationSystem().setVisible(true);
+			window.setVisible(true);
 			if(window.isLoggedIn) {
-				window.loginUser();
+				window.dispose();
+				System.out.println("Done");
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
