@@ -19,9 +19,7 @@ import javax.swing.Box;
 
 public class LoginView extends JFrame implements ActionListener {
 
-/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private JTextField employeeIdTextField;
 	private JPasswordField passwordField;
