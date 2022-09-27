@@ -22,13 +22,19 @@ public class Manager extends Employee {
 		this.password = password;
 	}
 
-	public int getDepartment() {
+	public int getDepartmentId() {
 		return department_id;
+	}
+	
+	public String getDepartmentName() {
+		return department_name;
 	}
 
 	public void setDepartment(int id, String dept_name) {
 		this.department_id = id;
 		this.department_name = dept_name;
 	}
+	
+	
 
 }
