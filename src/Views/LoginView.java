@@ -7,11 +7,15 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
+
+import Models.Manager;
+
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.JPasswordField;
 import java.awt.Component;
@@ -24,12 +28,15 @@ public class LoginView extends JFrame implements ActionListener {
 	private JTextField employeeIdTextField;
 	private JPasswordField passwordField;
 	private JLabel flashMessage;
+	private Vector<Manager> managersList;
 	public boolean isLoggedIn = false;
 	
 	/**
 	 * Create the application.
+	 * @param managersList 
 	 */
-	public LoginView() {
+	public LoginView(Vector<Manager> list) {
+		managersList = list;
 		initialize();
 	}
 
@@ -127,15 +134,20 @@ public class LoginView extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(getEmployeeId().equals("210034") && getPassword().equals("1234")) {
-			flashMessage.setText("Logging In");
-			flashMessage.setForeground(new Color(55, 146, 255));
-			flashMessage.setVisible(true);
-			isLoggedIn = true;
-		}else{
-			flashMessage.setText("Incorrect Password");
-			flashMessage.setForeground(new Color(215, 120, 0));
-			flashMessage.setVisible(true);
+		for(int i = 0; i < managersList.size(); i++) {
+			if(getEmployeeId().equals(Integer.toString(managersList.get(i).getEmployeeId())) && 
+					getPassword().equals(managersList.get(i).getPassword())) {
+				flashMessage.setText("Logging In");
+				flashMessage.setForeground(new Color(55, 146, 255));
+				flashMessage.setVisible(true);
+				managersList.get(i).isLoggedIn = true;
+				this.dispose();
+				break;
+			}else{
+				flashMessage.setText("Incorrect Password");
+				flashMessage.setForeground(new Color(215, 120, 0));
+				flashMessage.setVisible(true);
+			}
 		}
 		
 	}
