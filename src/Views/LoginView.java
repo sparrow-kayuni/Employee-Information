@@ -92,7 +92,7 @@ public class LoginView extends JFrame implements ActionListener {
 		panel.add(center_panel, BorderLayout.CENTER);
 		center_panel.setLayout(new MigLayout("", "[][grow]", "[][30.00][][30.00][30.00][][30.00][35.00][30.00][]"));
 		
-		JLabel loginHeading = new JLabel("EMPLOYEE INFORMATION SYSTEM");
+		JLabel loginHeading = new JLabel("EMPLOYEE INFORMATION SYSTEM LOGIN");
 		loginHeading.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
 		loginHeading.setForeground(new Color(234, 234, 234));
 		center_panel.add(loginHeading, "cell 0 0 2 1,alignx center,aligny center");

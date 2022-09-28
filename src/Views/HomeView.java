@@ -22,6 +22,13 @@ import java.awt.Font;
 import javax.swing.JScrollBar;
 import java.awt.List;
 import javax.swing.JLabel;
+import java.awt.GridBagLayout;
+import javax.swing.JTextField;
+import java.awt.GridBagConstraints;
+import javax.swing.SpringLayout;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class HomeView extends JFrame {
 
@@ -29,11 +36,14 @@ public class HomeView extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private JTextField txtSearch;
 
 	/**
 	 * Create the application.
 	 */
 	public HomeView() {
+		setResizable(false);
+		setTitle("Employee Information System");
 		initialize();
 	}
 
@@ -49,10 +59,24 @@ public class HomeView extends JFrame {
 		panel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel north_panel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) north_panel.getLayout();
-		flowLayout.setVgap(30);
 		north_panel.setBackground(new Color(68, 68, 68));
 		panel.add(north_panel, BorderLayout.NORTH);
+		FlowLayout fl_north_panel = new FlowLayout(FlowLayout.RIGHT, 5, 25);
+		fl_north_panel.setAlignOnBaseline(true);
+		north_panel.setLayout(fl_north_panel);
+		
+		txtSearch = new JTextField();
+		txtSearch.setText("Enter Text");
+		north_panel.add(txtSearch);
+		txtSearch.setColumns(20);
+		
+		JButton btnNewButton = new JButton("Search");
+		btnNewButton.setBackground(new Color(0, 120, 255));
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		north_panel.add(btnNewButton);
 		
 		JPanel south_panel = new JPanel();
 		south_panel.setBackground(new Color(51, 51, 51));
@@ -74,7 +98,7 @@ public class HomeView extends JFrame {
 		center_panel.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 545, 461);
+		scrollPane.setBounds(0, 0, 555, 461);
 		center_panel.add(scrollPane);
 		
 		JList list = new JList();
