@@ -25,8 +25,9 @@ public class App{
 			HomeView window = new HomeView();
 			window.setVisible(true);
 			for(int i = 0; i < managersList.size(); i++) {
-				System.out.println("Global: " + managersList.get(i).isLoggedIn);
-				
+				if(managersList.get(i).isLoggedIn) {
+					System.out.println("Global: " + managersList.get(i).isLoggedIn);
+				}				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

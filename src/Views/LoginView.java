@@ -146,7 +146,7 @@ public class LoginView extends JFrame implements ActionListener {
 				managersList.get(i).isLoggedIn = true;
 				
 				App.setManagersList(managersList);
-				showHomeView();
+				proceedToHomeView();
 				break;
 			}else{
 				flashMessage.setText("Incorrect Password");
@@ -156,10 +156,10 @@ public class LoginView extends JFrame implements ActionListener {
 		}	
 	}
 	
-	private void showHomeView() {
+	private void proceedToHomeView() {
 		for(int i = 0; i < managersList.size(); i++) {
-			System.out.println(managersList.get(i).isLoggedIn);
 			if(managersList.get(i).isLoggedIn) {
+				System.out.println("Is Logged in? " + managersList.get(i).isLoggedIn);
 				this.dispose();
 				App.showHomeView();
 				break;
