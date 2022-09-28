@@ -47,7 +47,7 @@ public class PostgresDatabase {
 					employeesList.addElement(
 						createEmployee(
 							resultSet.getString("first_name"), resultSet.getString("surname"),
-							resultSet.getInt("employee_id"), resultSet.getString("email"), 
+							resultSet.getInt("employee_id"), resultSet.getString("email"),
 							resultSet.getString("phone")
 						)	
 					);	
@@ -56,7 +56,6 @@ public class PostgresDatabase {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
 		return employeesList;
 	}
 	
@@ -85,7 +84,6 @@ public class PostgresDatabase {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		
 		return managerList;
 	}
 

@@ -1,15 +1,17 @@
 package EmployeeSystem;
 
+import Views.HomeView;
 import Views.LoginView;
 import Models.Employee;
 import Models.Manager;
 
+import java.awt.EventQueue;
 import java.util.Vector;
 
-public class App {
+public class App{
 	private static PostgresDatabase db;
-	private static Vector<Employee> employeesList = null;
-	private static Vector<Manager> managersList = null;
+	public static Vector<Employee> employeesList = null;
+	public static Vector<Manager> managersList = null;
 	
 	public static void run() {
 		connectDatabase();
@@ -18,6 +20,20 @@ public class App {
 		showLoginView();
 	}
 	
+	public static void showHomeView() {
+		try {
+			HomeView window = new HomeView();
+			window.setVisible(true);
+			for(int i = 0; i < managersList.size(); i++) {
+				System.out.println("Global: " + managersList.get(i).isLoggedIn);
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+
 	public static void showLoginView() {
 		try {
 			LoginView window = new LoginView(managersList);
@@ -57,6 +73,13 @@ public class App {
 	private static Vector<Manager> getAllManagers(){
 		return db.readDepartmentTable(employeesList);
 	}
-
+	
+	public static void setEmployeesList(Vector<Employee> list) {
+		employeesList = list;
+	}
+	
+	public static void setManagersList(Vector<Manager> list) {
+		managersList = list;
+	}
 }
 

@@ -8,6 +8,8 @@ import java.awt.FlowLayout;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
 
+import EmployeeSystem.App;
+import EmployeeSystem.GlobalVariables;
 import Models.Manager;
 
 import javax.swing.JLabel;
@@ -137,19 +139,32 @@ public class LoginView extends JFrame implements ActionListener {
 		for(int i = 0; i < managersList.size(); i++) {
 			if(getEmployeeId().equals(Integer.toString(managersList.get(i).getEmployeeId())) && 
 					getPassword().equals(managersList.get(i).getPassword())) {
+				
 				flashMessage.setText("Logging In");
 				flashMessage.setForeground(new Color(55, 146, 255));
 				flashMessage.setVisible(true);
 				managersList.get(i).isLoggedIn = true;
-				this.dispose();
+				
+				App.setManagersList(managersList);
+				showHomeView();
 				break;
 			}else{
 				flashMessage.setText("Incorrect Password");
 				flashMessage.setForeground(new Color(215, 120, 0));
 				flashMessage.setVisible(true);
 			}
+		}	
+	}
+	
+	private void showHomeView() {
+		for(int i = 0; i < managersList.size(); i++) {
+			System.out.println(managersList.get(i).isLoggedIn);
+			if(managersList.get(i).isLoggedIn) {
+				this.dispose();
+				App.showHomeView();
+				break;
+			}
 		}
-		
 	}
 
 }
