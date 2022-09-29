@@ -9,7 +9,6 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
 
 import EmployeeSystem.App;
-import EmployeeSystem.GlobalVariables;
 import Models.Manager;
 
 import javax.swing.JLabel;
@@ -105,6 +104,7 @@ public class LoginView extends JFrame implements ActionListener {
 		employeeIdTextField = new JTextField();
 		employeeIdTextField.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		employeeIdTextField.setBackground(new Color(234, 234, 234));
+		employeeIdTextField.setText("220002");
 		center_panel.add(employeeIdTextField, "cell 1 3,grow");
 		employeeIdTextField.setColumns(10);
 		
@@ -116,6 +116,7 @@ public class LoginView extends JFrame implements ActionListener {
 		
 		passwordField = new JPasswordField();
 		passwordField.setBackground(new Color(234, 234, 234));
+		passwordField.setText("4321");
 		center_panel.add(passwordField, "cell 1 6,grow");
 		passwordField.setColumns(10);
 		

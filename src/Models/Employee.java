@@ -58,4 +58,18 @@ public class Employee {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+	
+	public String getEmployeeInfoFormatted() {
+		String id = Integer.toString(employeeId);
+		String fullName = firstName + " " + surname;
+		
+		while(id.length() < 20) {
+			id = id + " ";
+		}
+		while(fullName.length() < 50) {
+			fullName = fullName + " ";
+		}
+		
+		return id + fullName;
+	}
 }
