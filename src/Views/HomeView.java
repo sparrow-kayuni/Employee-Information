@@ -36,6 +36,9 @@ import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.GridLayout;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.Box;
 
 public class HomeView extends JFrame implements ActionListener {
 
@@ -76,7 +79,7 @@ public class HomeView extends JFrame implements ActionListener {
 		north_panel.setLayout(fl_north_panel);
 		
 		searchTextField = new JTextField();
-		searchTextField.setText("Enter Text");
+		searchTextField.setText("Enter Text Here");
 		north_panel.add(searchTextField);
 		searchTextField.setColumns(20);
 		
@@ -91,10 +94,30 @@ public class HomeView extends JFrame implements ActionListener {
 		panel.add(south_panel, BorderLayout.SOUTH);
 		
 		JPanel west_panel = new JPanel();
-		FlowLayout flowLayout_1 = (FlowLayout) west_panel.getLayout();
-		flowLayout_1.setHgap(80);
 		west_panel.setBackground(new Color(60, 60, 60));
 		panel.add(west_panel, BorderLayout.WEST);
+		west_panel.setLayout(new MigLayout("", "[150.00]", "[32px][][][][][][]"));
+		
+		JLabel lblNewLabel = new JLabel("DEPARTMENTS");
+		lblNewLabel.setForeground(new Color(214, 214, 214));
+		lblNewLabel.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
+		west_panel.add(lblNewLabel, "cell 0 0");
+		
+		JList list = new JList();
+		list.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+		list.setForeground(new Color(214, 214, 214));
+		list.setBackground(new Color(60, 60, 60));
+		list.setModel(new AbstractListModel() {
+			String[] values = new String[] {"ALL DEPARTMENTS", "ACCOUNTS", "EXECUTIVE", "HUMAN RESOURCES", "SALES", "PURCHASING"};
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
+		list.setSelectedIndex(0);
+		west_panel.add(list, "cell 0 1 1 6,grow");
 		
 		JPanel east_panel = new JPanel();
 		east_panel.setBackground(new Color(51, 51, 51));
@@ -153,7 +176,7 @@ public class HomeView extends JFrame implements ActionListener {
 		viewEmployeeButton.setBackground(new Color(140, 140, 140));
 		viewEmployeeButton.setEnabled(false);
 		viewEmployeeButton.setFocusable(false);
-		viewEmployeeButton.setBounds(373, 434, 172, 23);
+		viewEmployeeButton.setBounds(369, 434, 172, 23);
 		
 		center_panel.add(viewEmployeeButton);
 	}
