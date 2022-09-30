@@ -3,7 +3,7 @@ package Models;
 public class Employee {
 	private String firstName;
 	private String surname;
-	private int employeeId;
+	private int employeeId = 0;
 	private String email;
 	private String phoneNumber;
 	private JobPosition jobPosition;

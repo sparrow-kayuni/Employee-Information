@@ -17,7 +17,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.Vector;
 
 import javax.swing.JPasswordField;
 import java.awt.Component;
@@ -138,23 +137,39 @@ public class LoginView extends JFrame implements ActionListener {
 
 
 	public void actionPerformed(ActionEvent e) {
-//		System.out.println(employeesList.get(Integer.valueOf(getEmployeeIdText())).getEmployeeId());
-		int emp_id = Integer.valueOf(getEmployeeIdText());
-		if(getEmployeeIdText().equals(Integer.toString(employeesList.get(emp_id).getEmployeeId())) && 
-				getPasswordText().equals(employeesList.get(emp_id).getJobPosition().getPassword())) {
+		int emp_id;
+		if(getEmployeeIdText().matches("[0-9]+")) emp_id = Integer.valueOf(getEmployeeIdText());
+		else emp_id = 0;
+		try {
+			if(emp_id == 0) throw new Exception();
 			
-			flashMessage.setText("Logging In");
-			flashMessage.setForeground(new Color(55, 146, 255));
-			flashMessage.setVisible(true);
-			employeesList.get(emp_id).getJobPosition().isLoggedIn = true;
-			
-			App.updateEmployeesList(employeesList);
-			proceedToHomeView(employeesList.get(emp_id));
-		}else{
-			flashMessage.setText("Incorrect Password");
+			if(!employeesList.containsKey(emp_id)) {
+				flashMessage.setText("Incorrect Employee ID");
+				flashMessage.setForeground(new Color(215, 120, 0));
+				flashMessage.setVisible(true);
+			}else {
+				if(getEmployeeIdText().equals(Integer.toString(employeesList.get(emp_id).getEmployeeId())) && 
+						getPasswordText().equals(employeesList.get(emp_id).getJobPosition().getPassword())) {
+					
+					flashMessage.setText("Logging In");
+					flashMessage.setForeground(new Color(55, 146, 255));
+					flashMessage.setVisible(true);
+					employeesList.get(emp_id).getJobPosition().isLoggedIn = true;
+					
+					App.updateEmployeesList(employeesList);
+					proceedToHomeView(employeesList.get(emp_id));
+				}else{
+					flashMessage.setText("Incorrect Password");
+					flashMessage.setForeground(new Color(215, 120, 0));
+					flashMessage.setVisible(true);
+				}
+			}
+		}catch(Exception err) {
+			flashMessage.setText("Enter Employee ID");
 			flashMessage.setForeground(new Color(215, 120, 0));
 			flashMessage.setVisible(true);
 		}
+			
 	}
 	
 	private void proceedToHomeView(Employee emp) {
