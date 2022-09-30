@@ -6,17 +6,19 @@ public class Employee {
 	private int employeeId;
 	private String email;
 	private String phoneNumber;
+	private JobPosition jobPosition;
 	
 	public Employee() {
 		//
 	}
 	
-	public Employee(String fName, String lName, int empId, String email2, String phone) {
+	public Employee(String fName, String lName, int empId, String email2, String phone, int jobId) {
 		setFirstName(fName);
 		setSurname(lName);
 		setEmployeeId(empId);
 		setEmail(email2);
 		setPhoneNumber(phone);
+		setJobId(jobId);
 	}
 
 	public String getFirstName() {
@@ -71,5 +73,18 @@ public class Employee {
 		}
 		
 		return id + fullName;
+	}
+
+	public JobPosition getJobPosition() {
+		return jobPosition;
+	}
+
+	public void setJobPosition(JobPosition position) {
+		this.jobPosition = position;
+	}
+	
+	public void setJobId(int jobId) {
+		this.jobPosition = new JobPosition(jobId);
+		
 	}
 }

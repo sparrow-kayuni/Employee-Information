@@ -9,13 +9,14 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
 
 import EmployeeSystem.App;
-import Models.Manager;
+import Models.Employee;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JPasswordField;
@@ -29,15 +30,15 @@ public class LoginView extends JFrame implements ActionListener {
 	private JTextField employeeIdTextField;
 	private JPasswordField passwordField;
 	private JLabel flashMessage;
-	private Vector<Manager> managersList;
+	private HashMap<Integer, Employee> employeesList;
 	public boolean isLoggedIn = false;
 	
 	/**
 	 * Create the application.
 	 * @param managersList 
 	 */
-	public LoginView(Vector<Manager> list) {
-		managersList = list;
+	public LoginView(HashMap<Integer, Employee> list) {
+		employeesList = list;
 		initialize();
 	}
 
@@ -116,7 +117,7 @@ public class LoginView extends JFrame implements ActionListener {
 		
 		passwordField = new JPasswordField();
 		passwordField.setBackground(new Color(234, 234, 234));
-		passwordField.setText("4321");
+		passwordField.setText("1234");
 		center_panel.add(passwordField, "cell 1 6,grow");
 		passwordField.setColumns(10);
 		
@@ -127,44 +128,40 @@ public class LoginView extends JFrame implements ActionListener {
 		center_panel.add(loginButton, "cell 1 8,alignx center,growy");
 	}
 	
-	public String getEmployeeId() {
+	public String getEmployeeIdText() {
 		return new String(employeeIdTextField.getText());
 	}
 	
-	public String getPassword() {
+	public String getPasswordText() {
 		return new String(passwordField.getPassword());
 	}
 
-	@Override
+
 	public void actionPerformed(ActionEvent e) {
-		for(int i = 0; i < managersList.size(); i++) {
-			if(getEmployeeId().equals(Integer.toString(managersList.get(i).getEmployeeId())) && 
-					getPassword().equals(managersList.get(i).getPassword())) {
-				
-				flashMessage.setText("Logging In");
-				flashMessage.setForeground(new Color(55, 146, 255));
-				flashMessage.setVisible(true);
-				managersList.get(i).isLoggedIn = true;
-				
-				App.setManagersList(managersList);
-				proceedToHomeView();
-				break;
-			}else{
-				flashMessage.setText("Incorrect Password");
-				flashMessage.setForeground(new Color(215, 120, 0));
-				flashMessage.setVisible(true);
-			}
-		}	
+//		System.out.println(employeesList.get(Integer.valueOf(getEmployeeIdText())).getEmployeeId());
+		int emp_id = Integer.valueOf(getEmployeeIdText());
+		if(getEmployeeIdText().equals(Integer.toString(employeesList.get(emp_id).getEmployeeId())) && 
+				getPasswordText().equals(employeesList.get(emp_id).getJobPosition().getPassword())) {
+			
+			flashMessage.setText("Logging In");
+			flashMessage.setForeground(new Color(55, 146, 255));
+			flashMessage.setVisible(true);
+			employeesList.get(emp_id).getJobPosition().isLoggedIn = true;
+			
+			App.updateEmployeesList(employeesList);
+			proceedToHomeView(employeesList.get(emp_id));
+		}else{
+			flashMessage.setText("Incorrect Password");
+			flashMessage.setForeground(new Color(215, 120, 0));
+			flashMessage.setVisible(true);
+		}
 	}
 	
-	private void proceedToHomeView() {
-		for(int i = 0; i < managersList.size(); i++) {
-			if(managersList.get(i).isLoggedIn) {
-				System.out.println("Is Logged in? " + managersList.get(i).isLoggedIn);
-				this.dispose();
-				App.showHomeView();
-				break;
-			}
+	private void proceedToHomeView(Employee emp) {
+		if(emp.getJobPosition().isLoggedIn) {
+			System.out.println("Is Logged in? " + emp.getJobPosition().isLoggedIn);
+			this.dispose();
+			App.showHomeView();
 		}
 	}
 

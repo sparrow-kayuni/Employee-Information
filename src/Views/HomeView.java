@@ -7,38 +7,20 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
-import javax.swing.BoxLayout;
-import java.awt.Component;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.LineBorder;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 import EmployeeSystem.App;
-import Models.Employee;
 
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JMenuBar;
 import java.awt.Font;
-import javax.swing.JScrollBar;
-import java.awt.List;
 import javax.swing.JLabel;
-import java.awt.GridBagLayout;
 import javax.swing.JTextField;
-import java.awt.GridBagConstraints;
-import javax.swing.SpringLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.GridLayout;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.Box;
 
 public class HomeView extends JFrame implements ActionListener {
 
@@ -103,16 +85,18 @@ public class HomeView extends JFrame implements ActionListener {
 		lblNewLabel.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		west_panel.add(lblNewLabel, "cell 0 0");
 		
-		JList list = new JList();
+		JList<String> list = new JList<String>();
 		list.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
 		list.setForeground(new Color(214, 214, 214));
 		list.setBackground(new Color(60, 60, 60));
-		list.setModel(new AbstractListModel() {
+		list.setModel(new AbstractListModel<String>() {
+			private static final long serialVersionUID = 1L;
+			
 			String[] values = new String[] {"ALL DEPARTMENTS", "ACCOUNTS", "EXECUTIVE", "HUMAN RESOURCES", "SALES", "PURCHASING"};
 			public int getSize() {
 				return values.length;
 			}
-			public Object getElementAt(int index) {
+			public String getElementAt(int index) {
 				return values[index];
 			}
 		});
@@ -148,7 +132,7 @@ public class HomeView extends JFrame implements ActionListener {
 		String[] vals = new String[App.employeesList.size()];
 		
 		for(int i = 0; i < vals.length; i++) {
-			vals[i] = App.employeesList.get(i).getEmployeeInfoFormatted();
+			vals[i] = App.employeesList.get(220000 + i).getEmployeeInfoFormatted();
 		}
 		employeesListDisplay.setModel(new AbstractListModel<String>() {
 			

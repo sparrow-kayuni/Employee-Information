@@ -5,10 +5,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Vector;
+import java.util.HashMap;
 
 import Models.Employee;
-import Models.Manager;
 
 
 /* PostgresDatabase class contains all methods involving the database.
@@ -35,8 +34,8 @@ public class PostgresDatabase {
 	}
 	
 	
-	public Vector<Employee> readEmployeesTable() {
-		Vector<Employee> employeesList = new Vector<Employee>();
+	public HashMap<Integer, Employee>  generateEmployeesList() {
+		HashMap<Integer, Employee> employeesList = new HashMap<Integer, Employee>();
 		
 		try {
 			if (conn != null) {
@@ -44,11 +43,12 @@ public class PostgresDatabase {
 				ResultSet resultSet = statement.executeQuery(query);
 				
 				while(resultSet.next()) {
-					employeesList.addElement(
+					employeesList.put(
+						resultSet.getInt("employee_id"),
 						createEmployee(
 							resultSet.getString("first_name"), resultSet.getString("surname"),
 							resultSet.getInt("employee_id"), resultSet.getString("email"),
-							resultSet.getString("phone")
+							resultSet.getString("phone"), resultSet.getInt("job_id")
 						)	
 					);	
 				}
@@ -56,48 +56,35 @@ public class PostgresDatabase {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		employeesList.putAll(addEmployeeJobPositionDetails(employeesList));
+
 		return employeesList;
 	}
 	
 	
-	public Vector<Manager> readDepartmentTable(Vector<Employee> employeeList){
-		Vector<Manager> managerList = new Vector<Manager>();
-		
+	private Employee createEmployee(String fName, String surname, int empId, String email, String phone, int jobId) {
+		return new Employee(fName, surname, empId, email, phone, jobId);
+	}
+	
+	
+	public HashMap<Integer, Employee> addEmployeeJobPositionDetails(HashMap<Integer, Employee> employeesList) {
+		String query = "SELECT * FROM public.job_positions ORDER BY job_id ASC";
 		try {
-			if(conn != null) {
-				String query = "SELECT * FROM public.departments";
-				ResultSet resultSet = statement.executeQuery(query);
-				
-				while(resultSet.next()) {
-					for(int i = 0; i < employeeList.size(); i++) {
-						if(resultSet.getInt("department_manager_id") == employeeList.get(i).getEmployeeId()) {
-							managerList.addElement(
-									createManager(
-										employeeList.get(i), resultSet.getInt("department_id"),
-										resultSet.getString("department_name"), resultSet.getString("password")
-									)
-							);
-						}
+			ResultSet results = statement.executeQuery(query);
+			while(results.next()) {
+				for(int i = 220000; i < 220000 + employeesList.size(); i++) {
+					if(employeesList.get(i).getJobPosition().getJobId() == results.getInt("job_id")){
+						employeesList.get(i).getJobPosition().setJobPositionDetails(
+							results.getString("job_title"), results.getInt("department_id"),
+							results.getFloat("hourly_pay"), results.getString("password")
+						);
 					}
 				}
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return managerList;
-	}
-
-	
-	private Employee createEmployee(String fName, String surname, int empId, String email, String phone) {
-		return new Employee(fName, surname, empId, email, phone);
-	}
-	
-	
-	private Manager createManager(Employee employee, int department_id, String department_name, String password) {
-		Manager manager = new Manager(employee);
 		
-		manager.setPassword(password);
-		manager.setDepartment(department_id, department_name);
-		return manager;
+		return employeesList;
 	}
 }

@@ -3,20 +3,16 @@ package EmployeeSystem;
 import Views.HomeView;
 import Views.LoginView;
 import Models.Employee;
-import Models.Manager;
 
-import java.awt.EventQueue;
-import java.util.Vector;
+import java.util.HashMap;
 
 public class App{
 	private static PostgresDatabase db;
-	public static Vector<Employee> employeesList = null;
-	public static Vector<Manager> managersList = null;
+	public static HashMap<Integer, Employee> employeesList;
 	
 	public static void run() {
 		connectDatabase();
 		setEmployeesList();
-		setManagersList();
 		showLoginView();
 	}
 	
@@ -24,11 +20,7 @@ public class App{
 		try {
 			HomeView window = new HomeView();
 			window.setVisible(true);
-			for(int i = 0; i < managersList.size(); i++) {
-				if(managersList.get(i).isLoggedIn) {
-					System.out.println("Global: " + managersList.get(i).isLoggedIn);
-				}				
-			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -37,7 +29,7 @@ public class App{
 
 	public static void showLoginView() {
 		try {
-			LoginView window = new LoginView(managersList);
+			LoginView window = new LoginView(employeesList);
 			window.setVisible(true);
 			
 		} catch (Exception e) {
@@ -50,37 +42,28 @@ public class App{
 	}
 	
 	public static void setEmployeesList() {
-		employeesList = getAllEmployees();
+		employeesList = new HashMap<Integer, Employee>();
+		employeesList.putAll(createEmployeesList());
+		
 		System.out.println("EMPLOYEES\n------------");
-		for(int i = 0; i < employeesList.size(); i++) {
-			System.out.println(employeesList.get(i).getFirstName() + " " + employeesList.get(i).getSurname());
+		for(int i = 220000; i < 220000 + employeesList.size(); i++) {
+			System.out.println(employeesList.get(i).getEmployeeId() + " - " + employeesList.get(i).getFirstName() 
+					+ " " + employeesList.get(i).getSurname()
+					+ " - " + employeesList.get(i).getJobPosition().getJobTitle() 
+					+ " - " + employeesList.get(i).getJobPosition().getPassword());
 		}
 		
 	}
 	
-	public static void setManagersList() {
-		managersList = getAllManagers();
-		System.out.println("MANAGERS\n-------------");
-		for(int i = 0; i < managersList.size(); i++) {
-			System.out.println(managersList.get(i).getFirstName() + "\t" + managersList.get(i).getEmployeeId() +
-					"\t" + managersList.get(i).getPassword());
-		}
-	}
 	
-	private static Vector<Employee> getAllEmployees() {
-		return db.readEmployeesTable();
+	private static HashMap<Integer, Employee>  createEmployeesList() {
+		return db.generateEmployeesList();
 	}
+
 	
-	private static Vector<Manager> getAllManagers(){
-		return db.readDepartmentTable(employeesList);
-	}
-	
-	public static void setEmployeesList(Vector<Employee> list) {
+	public static void updateEmployeesList(HashMap<Integer, Employee> list) {
 		employeesList = list;
 	}
-	
-	public static void setManagersList(Vector<Manager> list) {
-		managersList = list;
-	}
+
 }
 
