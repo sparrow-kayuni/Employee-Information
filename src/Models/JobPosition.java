@@ -7,6 +7,7 @@ public class JobPosition {
 	private float hourlyPay;
 	private String password;
 	public boolean isLoggedIn = false;
+	private Department department;
 	
 	public JobPosition(int id) {
 		setJobId(id);
@@ -57,6 +58,15 @@ public class JobPosition {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		
+		this.department = department;
 	}
 
 }
