@@ -6,30 +6,34 @@ import Models.Department;
 import Models.Employee;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 
 public class App{
 	private static PostgresDatabase db;
-	public static HashMap<Integer, Employee> employeesList;
-	public static HashMap<Integer, Department> departmentsList;
+	public static HashMap<Integer, Employee> allEmployeesList;
+	public static HashMap<String, Department> departmentsList;
 	
 	public static void run() {
 		connectDatabase();
 		setEmployeesList();
 		setDepartmentsList();
-		printInfo();
+//		printInfo();
 		showLoginView();
 	}
 
 
 	private static void printInfo() {
 		System.out.println("EMPLOYEES\n------------");
-		for(int id = 220000; id < 220000 + employeesList.size(); id++) {
-			System.out.println(employeesList.get(id).getEmployeeId() + " - " + employeesList.get(id).getFirstName() 
-					+ " " + employeesList.get(id).getSurname()
-					+ " - " + employeesList.get(id).getJobPosition().getJobTitle() 
-//					+ " - " + employeesList.get(id).getJobPosition().getPassword()
-					+ " - " + departmentsList.get(employeesList.get(id).getJobPosition().getDepartmentId()).getDepartmentName());
+		Iterator<Department> deptItr = departmentsList.values().iterator();
+		
+		while(deptItr.hasNext()) {
+			Department dept = deptItr.next();
+			System.out.println(dept.getDepartmentName().toUpperCase() + "\n---------------");
+			Iterator<Employee> empItr = dept.getEmployeesList().values().iterator();
+			
+			while(empItr.hasNext()) {
+				System.out.println(empItr.next().getEmployeeInfoFormatted());
+			}
 		}
 		
 	}
@@ -48,7 +52,7 @@ public class App{
 
 	public static void showLoginView() {
 		try {
-			LoginView window = new LoginView(employeesList);
+			LoginView window = new LoginView(allEmployeesList);
 			window.setVisible(true);
 			
 		} catch (Exception e) {
@@ -62,8 +66,8 @@ public class App{
 	
 	
 	public static void setEmployeesList() {
-		employeesList = new HashMap<Integer, Employee>();
-		employeesList.putAll(createEmployeesList());
+		allEmployeesList = new HashMap<Integer, Employee>();
+		allEmployeesList.putAll(createEmployeesList());
 		
 	}
 	
@@ -73,20 +77,20 @@ public class App{
 	}
 	
 	private static void setDepartmentsList() {
-		departmentsList = new HashMap<Integer, Department>();
-		departmentsList.putAll(generateDepartmentsList(departmentsList, employeesList));
+		departmentsList = new HashMap<String, Department>();
+		departmentsList.putAll(generateDepartmentsList(departmentsList, allEmployeesList));
 		
 	}
 	
 	
-	private static HashMap<Integer, Department> generateDepartmentsList(
-			HashMap<Integer, Department> deptList, HashMap<Integer, Employee> empList) {
+	private static HashMap<String, Department> generateDepartmentsList(
+			HashMap<String, Department> deptList, HashMap<Integer, Employee> empList) {
 		return db.organizeEmployeesByDepartment(deptList, empList);
 	}
 
 
 	public static void updateEmployeesList(HashMap<Integer, Employee> list) {
-		employeesList = list;
+		allEmployeesList = list;
 	}
 
 }

@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import Models.Department;
 import Models.Employee;
@@ -22,7 +23,6 @@ public class PostgresDatabase {
 	private String password = "123";
 	private static Connection conn = null;
 	private static Statement statement;
-	private static int  minimumId = 220000;
 	
 	public PostgresDatabase() {
 		try {
@@ -50,7 +50,7 @@ public class PostgresDatabase {
 	private HashMap<Integer, Employee> addEmployees(HashMap<Integer, Employee> empList) {
 		try {
 			if (conn != null) {
-				String query = "SELECT * FROM public.employees";
+				String query = "SELECT * FROM public.employees ORDER BY employee_id ASC";
 				ResultSet resultSet = statement.executeQuery(query);
 				
 				while(resultSet.next()) {
@@ -81,9 +81,12 @@ public class PostgresDatabase {
 		try {
 			ResultSet results = statement.executeQuery(query);
 			while(results.next()) {
-				for(int id = minimumId; id < minimumId + employeesList.size(); id++) {
-					if(employeesList.get(id).getJobPosition().getJobId() == results.getInt("job_id")){
-						employeesList.get(id).getJobPosition().setJobPositionDetails(
+				Iterator<Employee> empItr = employeesList.values().iterator();
+				
+				while(empItr.hasNext()) {
+					Employee emp = empItr.next();
+					if(emp.getJobPosition().getJobId() == results.getInt("job_id")){
+						emp.getJobPosition().setJobPositionDetails(
 							results.getString("job_title"), results.getInt("department_id"),
 							results.getFloat("hourly_pay"), results.getString("password")
 						);
@@ -98,26 +101,34 @@ public class PostgresDatabase {
 	}
 	
 	
-	public HashMap<Integer, Department> organizeEmployeesByDepartment(HashMap<Integer, Department> deptList, 
+	public HashMap<String, Department> organizeEmployeesByDepartment(HashMap<String, Department> deptList, 
 			HashMap<Integer, Employee> empList) {
 		try {
 			if(conn != null) {
-				String query = "SELECT * FROM departments ";
+				String query = "SELECT * FROM departments ORDER BY department_id ASC";
 				ResultSet results = statement.executeQuery(query);
+				
+				Department universalDept = new Department(0, "All Departments", 0);
+				universalDept.setEmployeesList(empList);
+
 				while(results.next()) {
 					Department dept = new Department(
 							results.getInt("department_id"), results.getString("department_name"), 
 							results.getInt("department_manager_id"));
 					
-					for(int id = minimumId; id < minimumId + empList.size(); id++) {
-						if(empList.get(id).getJobPosition().getDepartmentId() == results.getInt("department_id")) {
-							dept.addEmployeeToDepartment(empList.get(id));
+					Iterator<Employee> empItr = empList.values().iterator();
+					
+					while(empItr.hasNext()) {
+						Employee emp = empItr.next();
+						if(emp.getJobPosition().getDepartmentId()
+								== results.getInt("department_id")){
+							dept.addEmployeeToDepartment(emp);
 						}
 					}
 					
-					deptList.put(results.getInt("department_id"), dept);
+					deptList.put(results.getString("department_name").toUpperCase(), dept);
 				}
-				
+				deptList.put(universalDept.getDepartmentName().toUpperCase(), universalDept);	
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

@@ -64,15 +64,20 @@ public class Employee {
 	public String getEmployeeInfoFormatted() {
 		String id = Integer.toString(employeeId);
 		String fullName = firstName + " " + surname;
+		String jobTitle = jobPosition.getJobTitle();
+		String deptName = jobPosition.getDepartment().getDepartmentName();
 		
 		while(id.length() < 20) {
 			id = id + " ";
 		}
-		while(fullName.length() < 50) {
+		while(fullName.length() < 25) {
 			fullName = fullName + " ";
 		}
+		while(jobTitle.length() < 25) {
+			jobTitle = jobTitle + " ";
+		}
 		
-		return id + fullName;
+		return id + fullName + jobTitle + deptName;
 	}
 
 	public JobPosition getJobPosition() {

@@ -174,7 +174,6 @@ public class LoginView extends JFrame implements ActionListener {
 	
 	private void proceedToHomeView(Employee emp) {
 		if(emp.getJobPosition().isLoggedIn) {
-			System.out.println("Is Logged in? " + emp.getJobPosition().isLoggedIn);
 			this.dispose();
 			App.showHomeView();
 		}

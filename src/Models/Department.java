@@ -11,7 +11,7 @@ public class Department {
 	public Department(int id, String deptName, int manager_id) {
 		setDepartmentId(id);
 		setDepartmentName(deptName);
-		setEmployeesList();
+		initEmployeesList();
 		setManagerId(manager_id);
 	}
 	
@@ -34,11 +34,16 @@ public class Department {
 		return employeesList;
 	}
 	
-	public void setEmployeesList() {
+	public void initEmployeesList() {
 		this.employeesList = new HashMap<Integer, Employee>();
 	}
 	
+	public void setEmployeesList(HashMap<Integer, Employee> empList) {
+		this.employeesList = empList;
+	}
+	
 	public void addEmployeeToDepartment(Employee emp) {
+		emp.getJobPosition().setDepartment(this);
 		this.employeesList.put(emp.getEmployeeId(), emp);
 	}
 

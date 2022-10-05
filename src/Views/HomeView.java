@@ -9,6 +9,8 @@ import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 
 import EmployeeSystem.App;
+import Models.Department;
+import Models.Employee;
 
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
@@ -17,12 +19,14 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import net.miginfocom.swing.MigLayout;
 
-public class HomeView extends JFrame implements ActionListener {
+public class HomeView extends JFrame implements ActionListener, ListSelectionListener {
 
 	/**
 	 * 
@@ -32,6 +36,7 @@ public class HomeView extends JFrame implements ActionListener {
 	private JButton searchButton;
 	private JButton viewEmployeeButton;
 	private JList<String> employeesListDisplay;
+	private JList<String> deptsListDisplay;
 
 	/**
 	 * Create the application.
@@ -85,23 +90,36 @@ public class HomeView extends JFrame implements ActionListener {
 		lblNewLabel.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		west_panel.add(lblNewLabel, "cell 0 0");
 		
-		JList<String> list = new JList<String>();
-		list.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
-		list.setForeground(new Color(214, 214, 214));
-		list.setBackground(new Color(60, 60, 60));
-		list.setModel(new AbstractListModel<String>() {
+		deptsListDisplay = new JList<String>();
+		
+		employeesListDisplay = new JList<String>();
+		deptsListDisplay.addListSelectionListener(this);
+		
+		deptsListDisplay.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+		deptsListDisplay.setForeground(new Color(214, 214, 214));
+		deptsListDisplay.setBackground(new Color(60, 60, 60));
+		
+		ArrayList<String> deptListVals = new ArrayList<String>();
+		
+		Iterator<Department> itr = App.departmentsList.values().iterator();
+		
+		while(itr.hasNext()) {
+			deptListVals.add(itr.next().getDepartmentName().toUpperCase());
+		}
+		
+		deptsListDisplay.setModel(new AbstractListModel<String>() {
 			private static final long serialVersionUID = 1L;
 			
-			String[] values = new String[] {"ALL DEPARTMENTS", "ACCOUNTS", "EXECUTIVE", "HUMAN RESOURCES", "SALES", "PURCHASING"};
+			ArrayList<String> values = deptListVals;
 			public int getSize() {
-				return values.length;
+				return values.size();
 			}
 			public String getElementAt(int index) {
-				return values[index];
+				return values.get(index);
 			}
 		});
-		list.setSelectedIndex(0);
-		west_panel.add(list, "cell 0 1 1 6,grow");
+		deptsListDisplay.setSelectedIndex(0);
+		west_panel.add(deptsListDisplay, "cell 0 1 1 6,grow");
 		
 		JPanel east_panel = new JPanel();
 		east_panel.setBackground(new Color(51, 51, 51));
@@ -116,36 +134,11 @@ public class HomeView extends JFrame implements ActionListener {
 		scrollPane.setBounds(0, 0, 555, 423);
 		center_panel.add(scrollPane);
 		
-		employeesListDisplay = new JList<String>();
-		employeesListDisplay.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				if(employeesListDisplay.getSelectedIndex() != -1) {
-					viewEmployeeButton.setBackground(new Color(0, 120, 255));
-					viewEmployeeButton.setEnabled(true);
-				}
-			}
-		});
+		employeesListDisplay.addListSelectionListener(this);
 		employeesListDisplay.setBorder(null);
 		employeesListDisplay.setBackground(new Color(72, 72, 72));
 		employeesListDisplay.setForeground(new Color(225, 225, 225));
 		employeesListDisplay.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
-		String[] vals = new String[App.employeesList.size()];
-		
-		for(int i = 0; i < vals.length; i++) {
-			vals[i] = App.employeesList.get(220000 + i).getEmployeeInfoFormatted();
-		}
-		employeesListDisplay.setModel(new AbstractListModel<String>() {
-			
-			private static final long serialVersionUID = 1L;
-			
-			String[] values = vals;
-			public int getSize() {
-				return values.length;
-			}
-			public String getElementAt(int index) {
-				return values[index];
-			}
-		});
 		
 		scrollPane.setViewportView(employeesListDisplay);
 		
@@ -170,4 +163,48 @@ public class HomeView extends JFrame implements ActionListener {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		if(e.getSource().equals(deptsListDisplay)) {
+			ArrayList<Employee> empVals = new ArrayList<Employee>();
+			
+			try {
+				Iterator<Employee> empItr = App.departmentsList.get(deptsListDisplay.getSelectedValue())
+						.getEmployeesList().values().iterator();
+				while(empItr.hasNext()) {
+					empVals.add(empItr.next());
+				}
+				
+			}catch(NullPointerException err) {
+				err.printStackTrace();
+			}
+			
+			
+			employeesListDisplay.setModel(new AbstractListModel<String>() {
+				
+				private static final long serialVersionUID = 1L;
+				
+				ArrayList<Employee> values = empVals;
+				public int getSize() {
+					return values.size();
+				}
+				
+				public String getElementAt(int index) {
+					return values.get(index).getEmployeeInfoFormatted();
+				}
+			});
+		}
+		if(e.getSource().equals(employeesListDisplay)) {
+			if(employeesListDisplay.getSelectedIndex() != -1) {
+				viewEmployeeButton.setBackground(new Color(0, 120, 255));
+				viewEmployeeButton.setEnabled(true);
+			}else {
+				viewEmployeeButton.setBackground(new Color(140, 140, 140));
+				viewEmployeeButton.setEnabled(false);
+			}
+		}
+	}
+		
 }
+
