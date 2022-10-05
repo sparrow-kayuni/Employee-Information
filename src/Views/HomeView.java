@@ -37,6 +37,8 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 	private JButton viewEmployeeButton;
 	private JList<String> employeesListDisplay;
 	private JList<String> deptsListDisplay;
+	private static Employee selectedEmployee;
+	private static ArrayList<Employee> empVals;
 
 	/**
 	 * Create the application.
@@ -57,6 +59,7 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 		JPanel panel = new JPanel();
 		this.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
+		
 		
 		JPanel north_panel = new JPanel();
 		north_panel.setBackground(new Color(68, 68, 68));
@@ -139,6 +142,7 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 		employeesListDisplay.setBackground(new Color(72, 72, 72));
 		employeesListDisplay.setForeground(new Color(225, 225, 225));
 		employeesListDisplay.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
+//		employeesListDisplay.setSelectionBackground(new Color(225, 125, 0));
 		
 		scrollPane.setViewportView(employeesListDisplay);
 		
@@ -160,14 +164,20 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		if(e.getSource().equals(viewEmployeeButton)) {
+			try {
+				EmployeeDetailsView employeeDetailsView = new EmployeeDetailsView(selectedEmployee);
+				employeeDetailsView.setVisible(true);
+			}catch(Exception err) {
+				err.printStackTrace();
+			}
+		}
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource().equals(deptsListDisplay)) {
-			ArrayList<Employee> empVals = new ArrayList<Employee>();
+			empVals = new ArrayList<Employee>();
 			
 			try {
 				Iterator<Employee> empItr = App.departmentsList.get(deptsListDisplay.getSelectedValue())
@@ -179,7 +189,6 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 			}catch(NullPointerException err) {
 				err.printStackTrace();
 			}
-			
 			
 			employeesListDisplay.setModel(new AbstractListModel<String>() {
 				
@@ -195,8 +204,11 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 				}
 			});
 		}
+		
 		if(e.getSource().equals(employeesListDisplay)) {
 			if(employeesListDisplay.getSelectedIndex() != -1) {
+				selectedEmployee = empVals.get(employeesListDisplay.getSelectedIndex());
+				
 				viewEmployeeButton.setBackground(new Color(0, 120, 255));
 				viewEmployeeButton.setEnabled(true);
 			}else {
@@ -205,6 +217,5 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 			}
 		}
 	}
-		
 }
 
