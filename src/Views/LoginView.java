@@ -9,7 +9,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
 
 import EmployeeSystem.App;
-import Models.Employee;
+import main.models.Employee;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;

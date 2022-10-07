@@ -8,8 +8,8 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import Models.Department;
-import Models.Employee;
+import main.models.Department;
+import main.models.Employee;
 
 
 /* PostgresDatabase class contains all methods involving the database.

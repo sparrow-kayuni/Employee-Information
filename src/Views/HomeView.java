@@ -9,8 +9,8 @@ import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 
 import EmployeeSystem.App;
-import Models.Department;
-import Models.Employee;
+import main.models.Department;
+import main.models.Employee;
 
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
@@ -37,8 +37,10 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 	private JButton viewEmployeeButton;
 	private JList<String> employeesListDisplay;
 	private JList<String> deptsListDisplay;
+	private static EmployeeDetailsView employeeDetailsView = null;
 	private static Employee selectedEmployee;
 	private static ArrayList<Employee> empVals;
+	private int selectedEmployeeIndex = 0;
 
 	/**
 	 * Create the application.
@@ -96,6 +98,7 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 		deptsListDisplay = new JList<String>();
 		
 		employeesListDisplay = new JList<String>();
+		employeesListDisplay.setSelectionBackground(new Color(0, 120, 215));
 		deptsListDisplay.addListSelectionListener(this);
 		
 		deptsListDisplay.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
@@ -121,6 +124,7 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 				return values.get(index);
 			}
 		});
+		
 		deptsListDisplay.setSelectedIndex(0);
 		west_panel.add(deptsListDisplay, "cell 0 1 1 6,grow");
 		
@@ -142,7 +146,6 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 		employeesListDisplay.setBackground(new Color(72, 72, 72));
 		employeesListDisplay.setForeground(new Color(225, 225, 225));
 		employeesListDisplay.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
-//		employeesListDisplay.setSelectionBackground(new Color(225, 125, 0));
 		
 		scrollPane.setViewportView(employeesListDisplay);
 		
@@ -160,14 +163,39 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 		viewEmployeeButton.setBounds(369, 434, 172, 23);
 		
 		center_panel.add(viewEmployeeButton);
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
+		lblNewLabel_1.setForeground(new Color(6, 162, 255));
+		lblNewLabel_1.setBounds(10, 438, 84, 14);
+		center_panel.add(lblNewLabel_1);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
+		//View Selected Employee
 		if(e.getSource().equals(viewEmployeeButton)) {
 			try {
-				EmployeeDetailsView employeeDetailsView = new EmployeeDetailsView(selectedEmployee);
-				employeeDetailsView.setVisible(true);
+				if(employeeDetailsView != null) {
+					System.out.println(employeeDetailsView.getEmployee().getEmployeeInfoFormatted());
+					employeeDetailsView.setVisible(true);
+					
+				}else {
+					selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
+					selectedEmployee = empVals.get(selectedEmployeeIndex);
+					employeeDetailsView = null;
+					
+					employeeDetailsView = new EmployeeDetailsView(selectedEmployee);
+					
+					employeesListDisplay.setSelectedIndex(selectedEmployeeIndex);
+					employeesListDisplay.setSelectionBackground(new Color(163, 163, 163));
+					
+					viewEmployeeButton.setBackground(new Color(140, 140, 140));
+					viewEmployeeButton.setEnabled(false);
+					
+					employeeDetailsView.setVisible(true);
+				}
 			}catch(Exception err) {
 				err.printStackTrace();
 			}
@@ -176,6 +204,8 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
+		
+		//Department Selection Handling
 		if(e.getSource().equals(deptsListDisplay)) {
 			empVals = new ArrayList<Employee>();
 			
@@ -203,17 +233,83 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 					return values.get(index).getEmployeeInfoFormatted();
 				}
 			});
-		}
-		
-		if(e.getSource().equals(employeesListDisplay)) {
-			if(employeesListDisplay.getSelectedIndex() != -1) {
-				selectedEmployee = empVals.get(employeesListDisplay.getSelectedIndex());
-				
-				viewEmployeeButton.setBackground(new Color(0, 120, 255));
-				viewEmployeeButton.setEnabled(true);
-			}else {
+			
+			try {
 				viewEmployeeButton.setBackground(new Color(140, 140, 140));
 				viewEmployeeButton.setEnabled(false);
+			}catch(Exception err) {
+				System.out.println("View Employee Button is null");
+			}
+			
+			
+		}
+		
+		//Employee Selection Handling
+		if(e.getSource().equals(employeesListDisplay)) {
+			try {
+				if(employeeDetailsView == null) {
+					System.out.println("Employee Details View is null");
+					
+					employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
+					
+					selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
+					selectedEmployee = empVals.get(selectedEmployeeIndex);
+					
+					viewEmployeeButton.setBackground(new Color(0, 120, 255));
+					viewEmployeeButton.setEnabled(true);
+				}else {
+					if(employeeDetailsView.isShowing()) {
+						System.out.println("Employee Details View is Showing");
+						
+						viewEmployeeButton.setBackground(new Color(0, 120, 255));
+						viewEmployeeButton.setEnabled(true);	
+					}else {
+						System.out.println("Employee Details View isn't Showing");
+						employeeDetailsView = null;
+						
+						employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
+						
+						selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
+						selectedEmployee = empVals.get(selectedEmployeeIndex);
+						
+						viewEmployeeButton.setBackground(new Color(0, 120, 255));
+						viewEmployeeButton.setEnabled(true);
+					}
+				}if(employeeDetailsView == null) {
+					System.out.println("Employee Details View is null");
+					
+					employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
+					
+					selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
+					selectedEmployee = empVals.get(selectedEmployeeIndex);
+					
+					viewEmployeeButton.setBackground(new Color(0, 120, 255));
+					viewEmployeeButton.setEnabled(true);
+				}else {
+					if(employeeDetailsView.isShowing()) {
+						System.out.println("Employee Details View is Showing");
+						
+						viewEmployeeButton.setBackground(new Color(0, 120, 255));
+						viewEmployeeButton.setEnabled(true);	
+					}else {
+						System.out.println("Employee Details View isn't Showing");
+						employeeDetailsView = null;
+						
+						employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
+						
+						selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
+						selectedEmployee = empVals.get(selectedEmployeeIndex);
+						
+						viewEmployeeButton.setBackground(new Color(0, 120, 255));
+						viewEmployeeButton.setEnabled(true);
+					}
+				}
+			}catch(IndexOutOfBoundsException err) {
+				System.out.println("Out of bounds index");
+				selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
+				viewEmployeeButton.setBackground(new Color(140, 140, 140));
+				viewEmployeeButton.setEnabled(false);
+//				err.printStackTrace();
 			}
 		}
 	}

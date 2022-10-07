@@ -1,5 +1,6 @@
 package Views;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -10,7 +11,10 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextPane;
 
-import Models.Employee;
+import main.models.Employee;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class EmployeeDetailsView extends JFrame {
 
@@ -22,6 +26,12 @@ public class EmployeeDetailsView extends JFrame {
 	 * Create the application.
 	 */
 	public EmployeeDetailsView(Employee emp) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+			}
+			
+		});
 		setResizable(false);
 		employee = emp;
 		setTitle("Employee Details");
@@ -49,13 +59,13 @@ public class EmployeeDetailsView extends JFrame {
 		JPanel north_panel = new JPanel();
 		north_panel.setBackground(new Color(69, 69, 69));
 		panel.add(north_panel, BorderLayout.NORTH);
-		north_panel.setLayout(new MigLayout("", "[]", "[35.00]"));
+		north_panel.setLayout(new MigLayout("", "[40.00][32.00][][][]", "[35.00]"));
 		
 		JLabel employeeNameHeader = new JLabel(employee.getFirstName().toUpperCase() + " "
 				+ employee.getSurname().toUpperCase());
 		employeeNameHeader.setForeground(new Color(215, 215, 215));
 		employeeNameHeader.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 15));
-		north_panel.add(employeeNameHeader, "cell 0 0");
+		north_panel.add(employeeNameHeader, "cell 1 0 2 1");
 		
 		JPanel south_panel = new JPanel();
 		FlowLayout flowLayout_1 = (FlowLayout) south_panel.getLayout();
@@ -142,6 +152,10 @@ public class EmployeeDetailsView extends JFrame {
 		hourlyPayTextPane.setEditable(false);
 		hourlyPayTextPane.setBackground(new Color(167, 167, 167));
 		center_panel.add(hourlyPayTextPane, "cell 2 10 2 1,grow");
+	}
+	
+	public Employee getEmployee() {
+		return employee;
 	}
 
 }

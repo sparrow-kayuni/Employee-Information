@@ -1,3 +1,4 @@
+package main;
 import EmployeeSystem.App;
 
 public class Main {

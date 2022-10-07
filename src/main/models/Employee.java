@@ -1,6 +1,6 @@
-package Models;
+package main.models;
 
-public class Employee {
+public class Employee implements Comparable<Employee>{
 	private String firstName;
 	private String surname;
 	private int employeeId = 0;
@@ -91,5 +91,11 @@ public class Employee {
 	public void setJobId(int jobId) {
 		this.jobPosition = new JobPosition(jobId);
 		
+	}
+
+	@Override
+	public int compareTo(Employee o) {
+		// TODO Auto-generated method stub
+		return o.getEmployeeId();
 	}
 }

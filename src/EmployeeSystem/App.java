@@ -2,8 +2,8 @@ package EmployeeSystem;
 
 import Views.HomeView;
 import Views.LoginView;
-import Models.Department;
-import Models.Employee;
+import main.models.Department;
+import main.models.Employee;
 
 import java.util.HashMap;
 import java.util.Iterator;
