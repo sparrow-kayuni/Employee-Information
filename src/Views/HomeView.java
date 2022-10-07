@@ -178,6 +178,9 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 		if(e.getSource().equals(viewEmployeeButton)) {
 			try {
 				if(employeeDetailsView != null) {
+					if(employeeDetailsView.isVisible()) {
+						System.out.println("Employee Details View Is Visible");
+					}
 					System.out.println(employeeDetailsView.getEmployee().getEmployeeInfoFormatted());
 					employeeDetailsView.setVisible(true);
 					

@@ -15,12 +15,16 @@ import main.models.Employee;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class EmployeeDetailsView extends JFrame {
+public class EmployeeDetailsView extends JDialog implements ActionListener {
 
 
 	private static final long serialVersionUID = 1L;
 	private static Employee employee;
+	private JButton backButton;
 
 	/**
 	 * Create the application.
@@ -42,7 +46,7 @@ public class EmployeeDetailsView extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		this.setBounds(100, 100, 560, 420);
+		this.setBounds(100, 100, 560, 440);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
@@ -68,10 +72,14 @@ public class EmployeeDetailsView extends JFrame {
 		north_panel.add(employeeNameHeader, "cell 1 0 2 1");
 		
 		JPanel south_panel = new JPanel();
-		FlowLayout flowLayout_1 = (FlowLayout) south_panel.getLayout();
-		flowLayout_1.setVgap(20);
 		south_panel.setBackground(new Color(69, 69, 69));
 		panel.add(south_panel, BorderLayout.SOUTH);
+		south_panel.setLayout(new MigLayout("", "[100.00][100.00][100.00][100.00][100.00][100.00][100.00][100.00][100.00][100.00]", "[32.00]"));
+		
+		backButton = new JButton("Close");
+		backButton.addActionListener(this);
+		backButton.setBackground(new Color(131, 131, 131));
+		south_panel.add(backButton, "cell 7 0 2 1,growx,aligny center");
 		
 		JPanel east_panel = new JPanel();
 		east_panel.setBackground(new Color(69, 69, 69));
@@ -156,6 +164,14 @@ public class EmployeeDetailsView extends JFrame {
 	
 	public Employee getEmployee() {
 		return employee;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(backButton)) {
+			this.dispose();
+		}
+		
 	}
 
 }
