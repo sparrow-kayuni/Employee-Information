@@ -1,5 +1,12 @@
 package main;
-import EmployeeSystem.App;
+import main.employeesystem.App;
+
+/**
+ * 
+ * @author Mwiinga Kayuni
+ * 
+ *
+ */
 
 public class Main {
 

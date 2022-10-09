@@ -1,4 +1,4 @@
-package EmployeeSystem;
+package main.employeesystem;
 
 
 import java.sql.Connection;

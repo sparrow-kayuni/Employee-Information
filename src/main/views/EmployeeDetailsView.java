@@ -1,4 +1,4 @@
-package Views;
+package main.views;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;

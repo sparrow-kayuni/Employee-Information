@@ -1,4 +1,4 @@
-package Views;
+package main.views;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -8,7 +8,8 @@ import java.awt.FlowLayout;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
 
-import EmployeeSystem.App;
+import main.employeesystem.App;
+import main.models.Department;
 import main.models.Employee;
 
 import javax.swing.JLabel;
@@ -17,6 +18,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.swing.JPasswordField;
 import java.awt.Component;
@@ -29,15 +31,16 @@ public class LoginView extends JFrame implements ActionListener {
 	private JTextField employeeIdTextField;
 	private JPasswordField passwordField;
 	private JLabel flashMessage;
-	private HashMap<Integer, Employee> employeesList;
+	private static HashMap<String, Department> departmentsList;
 	public boolean isLoggedIn = false;
 	
 	/**
 	 * Create the application.
 	 * @param managersList 
 	 */
-	public LoginView(HashMap<Integer, Employee> list) {
-		employeesList = list;
+	public LoginView(HashMap<String, Department> list) {
+		departmentsList = list;
+		
 		initialize();
 	}
 
@@ -140,41 +143,78 @@ public class LoginView extends JFrame implements ActionListener {
 		int emp_id;
 		if(getEmployeeIdText().matches("[0-9]+")) emp_id = Integer.valueOf(getEmployeeIdText());
 		else emp_id = 0;
+		
 		try {
 			if(emp_id == 0) throw new Exception();
 			
-			if(!employeesList.containsKey(emp_id)) {
-				flashMessage.setText("Incorrect Employee ID");
-				flashMessage.setForeground(new Color(215, 120, 0));
-				flashMessage.setVisible(true);
-			}else {
-				if(getEmployeeIdText().equals(Integer.toString(employeesList.get(emp_id).getEmployeeId())) && 
-						getPasswordText().equals(employeesList.get(emp_id).getJobPosition().getPassword())) {
-					
-					flashMessage.setText("Logging In");
-					flashMessage.setForeground(new Color(55, 146, 255));
-					flashMessage.setVisible(true);
-					employeesList.get(emp_id).getJobPosition().isLoggedIn = true;
-					
-					App.updateEmployeesList(employeesList);
-					proceedToHomeView(employeesList.get(emp_id));
-				}else{
-					flashMessage.setText("Incorrect Password");
-					flashMessage.setForeground(new Color(215, 120, 0));
-					flashMessage.setVisible(true);
+			Iterator<Department> deptItr = departmentsList.values().iterator();
+			
+			Department dept = null;
+			
+			while(deptItr.hasNext()) {
+				dept = deptItr.next();
+				
+				if(dept.getDepartmentName().equals("All Departments")) dept = deptItr.next();
+				
+				System.out.println(dept.getDepartmentName().toUpperCase() + " - " 
+						+ departmentsList.get(dept.getDepartmentName().toUpperCase())
+						.isLoggedIn);
+				
+				if(dept.getEmployeesList().containsKey(emp_id)) {
+					if(getEmployeeIdText().equals(
+							Integer.toString(dept.getEmployeesList().get(emp_id).getEmployeeId())) && 
+							getPasswordText().equals(dept.getEmployeesList()
+									.get(emp_id).getJobPosition().getPassword())) {
+						
+						flashMessage.setText("Logging In");
+						flashMessage.setForeground(new Color(55, 146, 255));
+						flashMessage.setVisible(true);
+						
+						Department newDept = dept;
+						newDept.isLoggedIn = true;
+						
+						System.out.println(newDept.isLoggedIn + " " + dept.isLoggedIn);
+						
+						System.out.println(newDept.getDepartmentName().toUpperCase() + " - " 
+								+ departmentsList.get(newDept.getDepartmentName().toUpperCase())
+								.isLoggedIn);
+						
+						if(departmentsList.replace(newDept.getDepartmentName().toUpperCase(), dept, newDept)) {
+							proceedToHomeView(newDept, newDept.getEmployeesList().get(emp_id));
+						};
+						
+						break;
+					}else{
+						flashMessage.setText("Incorrect Password");
+						flashMessage.setForeground(new Color(215, 120, 0));
+						flashMessage.setVisible(true);
+					}
 				}
-			}
+			}			
 		}catch(Exception err) {
+			err.printStackTrace();
 			flashMessage.setText("Enter Employee ID");
 			flashMessage.setForeground(new Color(215, 120, 0));
 			flashMessage.setVisible(true);
-		}
-			
+		}	
 	}
 	
-	private void proceedToHomeView(Employee emp) {
-		if(emp.getJobPosition().isLoggedIn) {
+	
+	private void proceedToHomeView(Department dept, Employee emp) {
+
+		System.out.println(departmentsList.toString() + "\n" + departmentsList.get("HUMAN RESOURCES").isLoggedIn);
+		
+		if(departmentsList.get("HUMAN RESOURCES").isLoggedIn) {
 			this.dispose();
+			System.out.println("HR has logged in");
+			App.showHomeView();
+		}else if(departmentsList.get("ACCOUNTS").isLoggedIn) {
+			this.dispose();
+			System.out.println("Accounts has logged in");
+			App.showHomeView();
+		}else if(departmentsList.get("EXECUTIVE").isLoggedIn) {
+			this.dispose();
+			System.out.println("Executive has logged in");
 			App.showHomeView();
 		}
 	}

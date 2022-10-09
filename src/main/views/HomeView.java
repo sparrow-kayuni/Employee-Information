@@ -1,4 +1,4 @@
-package Views;
+package main.views;
 
 
 import javax.swing.JFrame;
@@ -8,7 +8,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 
-import EmployeeSystem.App;
+import main.employeesystem.App;
 import main.models.Department;
 import main.models.Employee;
 

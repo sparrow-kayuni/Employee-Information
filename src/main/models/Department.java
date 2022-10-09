@@ -8,6 +8,8 @@ public class Department {
 	private int managerId;
 	private HashMap<Integer, Employee> employeesList;
 	
+	public boolean isLoggedIn = false;
+	
 	public Department(int id, String deptName, int manager_id) {
 		setDepartmentId(id);
 		setDepartmentName(deptName);
