@@ -2,8 +2,7 @@ package main.views;
 
 import java.awt.Color;
 
-import javax.swing.JButton;
-import javax.swing.event.ListSelectionEvent;
+import main.views.components.EmployeeActionButton;
 
 public class HumanResourceHomeView extends AbstractHomeView {
 
@@ -11,33 +10,20 @@ public class HumanResourceHomeView extends AbstractHomeView {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private JButton editEmployeeButton = null;
 
 	public HumanResourceHomeView() {
 		setResizable(false);
 		setTitle("Employee Information System (HR)");
 		initialize();
-		addEditButton();
+		initializeEditButton();
 	}
 
-	private void addEditButton() {
-		System.out.println("Added Edit Button");
+	private void initializeEditButton() {
 		
-		editEmployeeButton = new JButton("Edit Employee Details");
+		editEmployeeButton = new EmployeeActionButton("Edit Employee", new Color(130, 240, 215), 187, 434);
 		editEmployeeButton.addActionListener(this);
-		editEmployeeButton.setBackground(new Color(140, 140, 140));
-		editEmployeeButton.setEnabled(false);
-		editEmployeeButton.setFocusable(false);
-		editEmployeeButton.setBounds(187, 434, 172, 23);
+		editEmployeeButton.disableButton();
 		
 		center_panel.add(editEmployeeButton);
 	}
-	
-//	public void valueChanged(ListSelectionEvent e) {
-//		if(e.getSource().equals(employeesListDisplay)) {
-//			editEmployeeButton.setBackground(new Color(120, 0, 215));
-//			editEmployeeButton.setEnabled(true);
-//		}
-//	}
 }

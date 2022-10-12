@@ -21,6 +21,7 @@ import javax.swing.event.ListSelectionEvent;
 import main.employeesystem.App;
 import main.models.Department;
 import main.models.Employee;
+import main.views.components.EmployeeActionButton;
 import net.miginfocom.swing.MigLayout;
 
 
@@ -32,14 +33,16 @@ import net.miginfocom.swing.MigLayout;
  * GeneralHomeView and HumanResourcesHomeView
  *
  */
-public abstract class AbstractHomeView extends JFrame implements HomeViewInterface {
+public abstract class AbstractHomeView extends JFrame implements HomeViewListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	protected JTextField searchTextField = null;
 	protected JButton searchButton = null;
-	protected JButton viewEmployeeButton = null;
+	protected EmployeeActionButton viewEmployeeButton = null;
+	protected EmployeeActionButton editEmployeeButton = null;
+	
 	protected JPanel panel = null;
 	protected JPanel north_panel = null;
 	protected JPanel south_panel = null;
@@ -157,12 +160,11 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewInterfa
 		panel_1.setBackground(new Color(51, 51, 51));
 		scrollPane.setColumnHeaderView(panel_1);
 		
-		viewEmployeeButton = new JButton("View Employee Details");
+		viewEmployeeButton = new EmployeeActionButton(
+				"View Employee", new Color(0, 120, 255), 369, 434);
+		viewEmployeeButton.disableButton();
 		viewEmployeeButton.addActionListener(this);
-		viewEmployeeButton.setBackground(new Color(140, 140, 140));
-		viewEmployeeButton.setEnabled(false);
-		viewEmployeeButton.setFocusable(false);
-		viewEmployeeButton.setBounds(369, 434, 172, 23);
+
 		
 		center_panel.add(viewEmployeeButton);
 		
@@ -195,8 +197,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewInterfa
 					employeesListDisplay.setSelectedIndex(selectedEmployeeIndex);
 					employeesListDisplay.setSelectionBackground(new Color(163, 163, 163));
 					
-					viewEmployeeButton.setBackground(new Color(140, 140, 140));
-					viewEmployeeButton.setEnabled(false);
+					viewEmployeeButton.enableButton();
 					
 					employeeDetailsView.setVisible(true);
 				}
@@ -239,8 +240,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewInterfa
 			});
 			
 			try {
-				viewEmployeeButton.setBackground(new Color(140, 140, 140));
-				viewEmployeeButton.setEnabled(false);
+				viewEmployeeButton.disableButton();
 			}catch(Exception err) {
 				System.out.println("View Employee Button is null");
 			}
@@ -250,22 +250,15 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewInterfa
 		if(e.getSource().equals(employeesListDisplay)) {
 			try {
 				if(employeeDetailsView == null) {
-//					System.out.println("Employee Details View is null");
 					
 					employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
 					
 					selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
 					selectedEmployee = empVals.get(selectedEmployeeIndex);
 					
-					viewEmployeeButton.setBackground(new Color(0, 120, 255));
-					viewEmployeeButton.setEnabled(true);
+					viewEmployeeButton.enableButton();
 				}else {
-					if(employeeDetailsView.isShowing()) {
-//						System.out.println("Employee Details View is Showing");
-						
-						viewEmployeeButton.setBackground(new Color(0, 120, 255));
-						viewEmployeeButton.setEnabled(true);	
-					}else {
+					if(!employeeDetailsView.isShowing()) {
 						System.out.println("Employee Details View isn't Showing");
 						employeeDetailsView = null;
 						
@@ -273,44 +266,17 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewInterfa
 						
 						selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
 						selectedEmployee = empVals.get(selectedEmployeeIndex);
-						
-						viewEmployeeButton.setBackground(new Color(0, 120, 255));
-						viewEmployeeButton.setEnabled(true);
-					}
-				}if(employeeDetailsView == null) {
-//					System.out.println("Employee Details View is null");
-					
-					employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
-					
-					selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
-					selectedEmployee = empVals.get(selectedEmployeeIndex);
-					
-					viewEmployeeButton.setBackground(new Color(0, 120, 255));
-					viewEmployeeButton.setEnabled(true);
-				}else {
-					if(employeeDetailsView.isShowing()) {
-//						System.out.println("Employee Details View is Showing");
-						
-						viewEmployeeButton.setBackground(new Color(0, 120, 255));
-						viewEmployeeButton.setEnabled(true);	
-					}else {
-//						System.out.println("Employee Details View isn't Showing");
-						employeeDetailsView = null;
-						
-						employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
-						
-						selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
-						selectedEmployee = empVals.get(selectedEmployeeIndex);
-						
-						viewEmployeeButton.setBackground(new Color(0, 120, 255));
-						viewEmployeeButton.setEnabled(true);
+						viewEmployeeButton.enableButton();
 					}
 				}
 			}catch(IndexOutOfBoundsException err) {
 				System.out.println("Out of bounds index");
 				selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
-				viewEmployeeButton.setBackground(new Color(140, 140, 140));
-				viewEmployeeButton.setEnabled(false);
+				viewEmployeeButton.disableButton();
+			}
+			
+			if(editEmployeeButton != null) {
+				editEmployeeButton.setEnabled(true);
 			}
 		}
 	}
