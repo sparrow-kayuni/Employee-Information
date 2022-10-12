@@ -8,9 +8,9 @@ import java.awt.FlowLayout;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
 
-import main.employeesystem.App;
 import main.models.Department;
 import main.models.Employee;
+import main.views.factories.HomeViewFactory;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -141,6 +141,8 @@ public class LoginView extends JFrame implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		int emp_id;
+		
+		//Check if employee id text is a number
 		if(getEmployeeIdText().matches("[0-9]+")) emp_id = Integer.valueOf(getEmployeeIdText());
 		else emp_id = 0;
 		
@@ -151,14 +153,12 @@ public class LoginView extends JFrame implements ActionListener {
 			
 			Department dept = null;
 			
+			//Iterate through the departments list to check
 			while(deptItr.hasNext()) {
 				dept = deptItr.next();
 				
+				//Skip the "All Departments" Department
 				if(dept.getDepartmentName().equals("All Departments")) dept = deptItr.next();
-				
-				System.out.println(dept.getDepartmentName().toUpperCase() + " - " 
-						+ departmentsList.get(dept.getDepartmentName().toUpperCase())
-						.isLoggedIn);
 				
 				if(dept.getEmployeesList().containsKey(emp_id)) {
 					if(getEmployeeIdText().equals(
@@ -172,12 +172,6 @@ public class LoginView extends JFrame implements ActionListener {
 						
 						Department newDept = dept;
 						newDept.isLoggedIn = true;
-						
-						System.out.println(newDept.isLoggedIn + " " + dept.isLoggedIn);
-						
-						System.out.println(newDept.getDepartmentName().toUpperCase() + " - " 
-								+ departmentsList.get(newDept.getDepartmentName().toUpperCase())
-								.isLoggedIn);
 						
 						if(departmentsList.replace(newDept.getDepartmentName().toUpperCase(), dept, newDept)) {
 							proceedToHomeView(newDept, newDept.getEmployeesList().get(emp_id));
@@ -204,19 +198,12 @@ public class LoginView extends JFrame implements ActionListener {
 
 		System.out.println(departmentsList.toString() + "\n" + departmentsList.get("HUMAN RESOURCES").isLoggedIn);
 		
-		if(departmentsList.get("HUMAN RESOURCES").isLoggedIn) {
+		AbstractHomeView homeView = HomeViewFactory.createHomeView(departmentsList);
+		
+		if(homeView != null) {
 			this.dispose();
-			System.out.println("HR has logged in");
-			App.showHomeView();
-		}else if(departmentsList.get("ACCOUNTS").isLoggedIn) {
-			this.dispose();
-			System.out.println("Accounts has logged in");
-			App.showHomeView();
-		}else if(departmentsList.get("EXECUTIVE").isLoggedIn) {
-			this.dispose();
-			System.out.println("Executive has logged in");
-			App.showHomeView();
-		}
+			homeView.setVisible(true);
+		}		
 	}
 
 }

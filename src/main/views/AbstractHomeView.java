@@ -1,69 +1,71 @@
 package main.views;
 
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.swing.AbstractListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
 
 import main.employeesystem.App;
 import main.models.Department;
 import main.models.Employee;
-
-import javax.swing.JList;
-import javax.swing.AbstractListModel;
-import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.awt.event.ActionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
 import net.miginfocom.swing.MigLayout;
 
-public class HomeView extends JFrame implements ActionListener, ListSelectionListener {
 
+/**
+ * 
+ * @author Mwiinga Kayuni
+ * @version 1.1
+ * @implSpec AbstractHomeView HomeView layout and functionality and is extended by 
+ * GeneralHomeView and HumanResourcesHomeView
+ *
+ */
+public abstract class AbstractHomeView extends JFrame implements HomeViewInterface {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField searchTextField;
-	private JButton searchButton;
-	private JButton viewEmployeeButton;
-	private JList<String> employeesListDisplay;
-	private JList<String> deptsListDisplay;
-	private static EmployeeDetailsView employeeDetailsView = null;
-	private static Employee selectedEmployee;
-	private static ArrayList<Employee> empVals;
-	private int selectedEmployeeIndex = 0;
-
-	/**
-	 * Create the application.
-	 */
-	public HomeView() {
-		setResizable(false);
-		setTitle("Employee Information System");
-		initialize();
-	}
+	protected JTextField searchTextField = null;
+	protected JButton searchButton = null;
+	protected JButton viewEmployeeButton = null;
+	protected JPanel panel = null;
+	protected JPanel north_panel = null;
+	protected JPanel south_panel = null;
+	protected JPanel east_panel = null;
+	protected JPanel west_panel = null;
+	protected JPanel center_panel = null;
+	
+	protected JList<String> employeesListDisplay = null;
+	protected JList<String> deptsListDisplay = null;
+	protected static EmployeeDetailsView employeeDetailsView = null;
+	protected static Employee selectedEmployee = null;
+	protected static ArrayList<Employee> empVals = null;
+	protected int selectedEmployeeIndex = 0;
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	protected void initialize() {
 		this.setBounds(100, 100, 741, 570);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		this.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
 		
-		
-		JPanel north_panel = new JPanel();
+		north_panel = new JPanel();
 		north_panel.setBackground(new Color(68, 68, 68));
 		panel.add(north_panel, BorderLayout.NORTH);
 		FlowLayout fl_north_panel = new FlowLayout(FlowLayout.RIGHT, 5, 15);
@@ -81,11 +83,11 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 		
 		north_panel.add(searchButton);
 		
-		JPanel south_panel = new JPanel();
+		south_panel = new JPanel();
 		south_panel.setBackground(new Color(51, 51, 51));
 		panel.add(south_panel, BorderLayout.SOUTH);
 		
-		JPanel west_panel = new JPanel();
+		west_panel = new JPanel();
 		west_panel.setBackground(new Color(60, 60, 60));
 		panel.add(west_panel, BorderLayout.WEST);
 		west_panel.setLayout(new MigLayout("", "[150.00]", "[32px][][][][][][]"));
@@ -128,11 +130,11 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 		deptsListDisplay.setSelectedIndex(0);
 		west_panel.add(deptsListDisplay, "cell 0 1 1 6,grow");
 		
-		JPanel east_panel = new JPanel();
+		east_panel = new JPanel();
 		east_panel.setBackground(new Color(51, 51, 51));
 		panel.add(east_panel, BorderLayout.EAST);
 		
-		JPanel center_panel = new JPanel();
+		center_panel = new JPanel();
 		center_panel.setBackground(new Color(51, 51, 51));
 		panel.add(center_panel, BorderLayout.CENTER);
 		center_panel.setLayout(null);
@@ -181,7 +183,6 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 					if(employeeDetailsView.isVisible()) {
 						System.out.println("Employee Details View Is Visible");
 					}
-					System.out.println(employeeDetailsView.getEmployee().getEmployeeInfoFormatted());
 					employeeDetailsView.setVisible(true);
 					
 				}else {
@@ -243,15 +244,13 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 			}catch(Exception err) {
 				System.out.println("View Employee Button is null");
 			}
-			
-			
 		}
 		
 		//Employee Selection Handling
 		if(e.getSource().equals(employeesListDisplay)) {
 			try {
 				if(employeeDetailsView == null) {
-					System.out.println("Employee Details View is null");
+//					System.out.println("Employee Details View is null");
 					
 					employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
 					
@@ -262,7 +261,7 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 					viewEmployeeButton.setEnabled(true);
 				}else {
 					if(employeeDetailsView.isShowing()) {
-						System.out.println("Employee Details View is Showing");
+//						System.out.println("Employee Details View is Showing");
 						
 						viewEmployeeButton.setBackground(new Color(0, 120, 255));
 						viewEmployeeButton.setEnabled(true);	
@@ -279,7 +278,7 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 						viewEmployeeButton.setEnabled(true);
 					}
 				}if(employeeDetailsView == null) {
-					System.out.println("Employee Details View is null");
+//					System.out.println("Employee Details View is null");
 					
 					employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
 					
@@ -290,12 +289,12 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 					viewEmployeeButton.setEnabled(true);
 				}else {
 					if(employeeDetailsView.isShowing()) {
-						System.out.println("Employee Details View is Showing");
+//						System.out.println("Employee Details View is Showing");
 						
 						viewEmployeeButton.setBackground(new Color(0, 120, 255));
 						viewEmployeeButton.setEnabled(true);	
 					}else {
-						System.out.println("Employee Details View isn't Showing");
+//						System.out.println("Employee Details View isn't Showing");
 						employeeDetailsView = null;
 						
 						employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
@@ -312,9 +311,7 @@ public class HomeView extends JFrame implements ActionListener, ListSelectionLis
 				selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
 				viewEmployeeButton.setBackground(new Color(140, 140, 140));
 				viewEmployeeButton.setEnabled(false);
-//				err.printStackTrace();
 			}
 		}
 	}
 }
-

@@ -2,7 +2,6 @@ package main.employeesystem;
 
 import main.models.Department;
 import main.models.Employee;
-import main.views.HomeView;
 import main.views.LoginView;
 
 import java.util.HashMap;
@@ -114,18 +113,7 @@ public class App{
 			e.printStackTrace();
 		}
 	}
-	
 
-	public static void showHomeView() {
-		try {
-			HomeView window = new HomeView();
-			window.setVisible(true);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	
 	public static void updateEmployeesList(HashMap<Integer, Employee> list) {
 		allEmployeesList = list;
