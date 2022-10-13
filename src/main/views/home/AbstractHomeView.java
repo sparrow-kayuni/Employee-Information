@@ -1,4 +1,4 @@
-package main.views;
+package main.views.home;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,11 +16,14 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 
 import main.employeesystem.App;
 import main.models.Department;
 import main.models.Employee;
+import main.views.EmployeeDetailsView;
+import main.views.HomeViewListener;
 import main.views.components.EmployeeActionButton;
 import net.miginfocom.swing.MigLayout;
 
@@ -42,6 +45,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 	protected JButton searchButton = null;
 	protected EmployeeActionButton viewEmployeeButton = null;
 	protected EmployeeActionButton editEmployeeButton = null;
+	protected EmployeeActionButton addEmployeeButton = null;
 	
 	protected JPanel panel = null;
 	protected JPanel north_panel = null;
@@ -64,7 +68,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 		this.setBounds(100, 100, 741, 570);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		panel = new JPanel();
+		var panel = new JPanel();
 		this.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
 		
@@ -140,11 +144,17 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 		center_panel = new JPanel();
 		center_panel.setBackground(new Color(51, 51, 51));
 		panel.add(center_panel, BorderLayout.CENTER);
-		center_panel.setLayout(null);
+		center_panel.setLayout(new MigLayout("", "[100.00][100.00][100.00][10.00][120.00][10.00][120.00]", "[25.00][10.00][25.00][45.00][45.00][45.00][45.00][45.00][45.00][45.00][45.00][40.00][9.00][25.00]"));
+		
+		JLabel deptNameHeaderLabel = new JLabel("New label");
+		deptNameHeaderLabel.setForeground(new Color(210, 210, 210));
+		deptNameHeaderLabel.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		center_panel.add(deptNameHeaderLabel, "cell 0 0");
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 555, 423);
-		center_panel.add(scrollPane);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		center_panel.add(scrollPane, "cell 0 2 7 10,grow");
 		
 		employeesListDisplay.addListSelectionListener(this);
 		employeesListDisplay.setBorder(null);
@@ -154,27 +164,20 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 		
 		scrollPane.setViewportView(employeesListDisplay);
 		
-		JPanel panel_1 = new JPanel();
-		FlowLayout flowLayout_2 = (FlowLayout) panel_1.getLayout();
-		flowLayout_2.setVgap(10);
-		panel_1.setBackground(new Color(51, 51, 51));
-		scrollPane.setColumnHeaderView(panel_1);
-		
-		viewEmployeeButton = new EmployeeActionButton(
-				"View Employee", new Color(0, 120, 255), 369, 434);
-		viewEmployeeButton.disableButton();
-		viewEmployeeButton.addActionListener(this);
-
-		
-		center_panel.add(viewEmployeeButton);
-		
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		lblNewLabel_1.setForeground(new Color(6, 162, 255));
 		lblNewLabel_1.setBounds(10, 438, 84, 14);
-		center_panel.add(lblNewLabel_1);
+		center_panel.add(lblNewLabel_1, "cell 2 3");
+		
+		viewEmployeeButton = new EmployeeActionButton("View Employee", new Color(0, 120, 255));
+		viewEmployeeButton.disableButton();
+		viewEmployeeButton.addActionListener(this);
+		
+		center_panel.add(viewEmployeeButton, "cell 6 13,grow");
 	}
 
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -257,6 +260,10 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 					selectedEmployee = empVals.get(selectedEmployeeIndex);
 					
 					viewEmployeeButton.enableButton();
+					
+					if(editEmployeeButton != null) {
+						editEmployeeButton.enableButton();
+					}
 				}else {
 					if(!employeeDetailsView.isShowing()) {
 						System.out.println("Employee Details View isn't Showing");
@@ -267,16 +274,15 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 						selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
 						selectedEmployee = empVals.get(selectedEmployeeIndex);
 						viewEmployeeButton.enableButton();
+						if(editEmployeeButton != null) {
+							editEmployeeButton.enableButton();
+						}
 					}
 				}
 			}catch(IndexOutOfBoundsException err) {
 				System.out.println("Out of bounds index");
 				selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
 				viewEmployeeButton.disableButton();
-			}
-			
-			if(editEmployeeButton != null) {
-				editEmployeeButton.setEnabled(true);
 			}
 		}
 	}

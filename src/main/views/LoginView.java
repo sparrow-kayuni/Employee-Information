@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import main.models.Department;
 import main.models.Employee;
 import main.views.factories.HomeViewFactory;
+import main.views.home.AbstractHomeView;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -92,42 +93,42 @@ public class LoginView extends JFrame implements ActionListener {
 		JPanel center_panel = new JPanel();
 		center_panel.setBackground(new Color(51, 51, 51));
 		panel.add(center_panel, BorderLayout.CENTER);
-		center_panel.setLayout(new MigLayout("", "[][grow]", "[][30.00][][30.00][30.00][][30.00][35.00][30.00][]"));
+		center_panel.setLayout(new MigLayout("", "[][30.00][70.00][70.00][70.00][70.00][30.00,grow]", "[][30.00][][35.00][30.00][][35.00][30.00][35.00]"));
 		
 		JLabel loginHeading = new JLabel("EMPLOYEE INFORMATION SYSTEM LOGIN");
 		loginHeading.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
 		loginHeading.setForeground(new Color(234, 234, 234));
-		center_panel.add(loginHeading, "cell 0 0 2 1,alignx center,aligny center");
+		center_panel.add(loginHeading, "cell 0 0 7 1,alignx center,aligny center");
 		
 		JLabel employeeIdLabel = new JLabel("Employee ID");
 		employeeIdLabel.setFont(new Font("Segoe UI Light", Font.PLAIN, 12));
 		employeeIdLabel.setForeground(new Color(234, 234, 234));
-		center_panel.add(employeeIdLabel, "cell 1 2");
+		center_panel.add(employeeIdLabel, "cell 2 2");
 		
 		employeeIdTextField = new JTextField();
 		employeeIdTextField.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		employeeIdTextField.setBackground(new Color(234, 234, 234));
 		employeeIdTextField.setText("220002");
-		center_panel.add(employeeIdTextField, "cell 1 3,grow");
+		center_panel.add(employeeIdTextField, "cell 2 3 4 1,grow");
 		employeeIdTextField.setColumns(10);
 		
 		JLabel passwordLabel = new JLabel("Password");
 		passwordLabel.setForeground(new Color(234, 234, 234));
 		passwordLabel.setFont(new Font("Segoe UI Light", Font.PLAIN, 12));
-		center_panel.add(passwordLabel, "cell 1 5");
+		center_panel.add(passwordLabel, "cell 2 5");
 		passwordLabel.setLabelFor(passwordField);
 		
 		passwordField = new JPasswordField();
 		passwordField.setBackground(new Color(234, 234, 234));
 		passwordField.setText("1234");
-		center_panel.add(passwordField, "cell 1 6,grow");
+		center_panel.add(passwordField, "cell 2 6 4 1,grow");
 		passwordField.setColumns(10);
 		
 		JButton loginButton = new JButton("Login");
 		loginButton.setFocusable(false);
 		loginButton.addActionListener(this);
 		loginButton.setBackground(new Color(0, 120, 215));
-		center_panel.add(loginButton, "cell 1 8,alignx center,growy");
+		center_panel.add(loginButton, "cell 3 8 2 1,grow");
 	}
 	
 	public String getEmployeeIdText() {

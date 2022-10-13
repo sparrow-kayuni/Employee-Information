@@ -66,7 +66,6 @@ public class Employee implements Comparable<Employee>{
 		String fullName = firstName + " " + surname;
 		String jobTitle = jobPosition.getJobTitle();
 		String deptName = jobPosition.getDepartment().getDepartmentName();
-		String password = jobPosition.getPassword();
 		
 		while(id.length() < 20) {
 			id = id + " ";
@@ -77,11 +76,9 @@ public class Employee implements Comparable<Employee>{
 		while(jobTitle.length() < 25) {
 			jobTitle = jobTitle + " ";
 		}
-		while(deptName.length() < 25) {
-			deptName = deptName + " ";
-		}
 		
-		return id + fullName + jobTitle + deptName + password;
+		
+		return id + fullName + jobTitle + deptName;
 	}
 
 	public JobPosition getJobPosition() {

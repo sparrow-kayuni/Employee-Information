@@ -13,10 +13,9 @@ public class EmployeeActionButton extends JButton {
 	private Color backgroundColor = null;
 	private Color disabledColor = new Color(140, 140, 140);
 	
-	public EmployeeActionButton(String text, Color bgColor, int x, int y) {
+	public EmployeeActionButton(String text, Color bgColor) {
 		this.setText(text);
 		this.backgroundColor = bgColor;
-		this.setBounds(x, y, 150, 23);
 		this.setFocusable(false);
 	}
 	

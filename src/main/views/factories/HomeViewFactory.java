@@ -3,9 +3,9 @@ package main.views.factories;
 import java.util.HashMap;
 
 import main.models.Department;
-import main.views.AbstractHomeView;
-import main.views.GeneralHomeView;
-import main.views.HumanResourceHomeView;
+import main.views.home.AbstractHomeView;
+import main.views.home.GeneralHomeView;
+import main.views.home.HumanResourceHomeView;
 
 /**
  * 

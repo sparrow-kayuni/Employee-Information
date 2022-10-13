@@ -1,5 +1,4 @@
-package main.views;
-
+package main.views.home;
 
 public class GeneralHomeView extends AbstractHomeView {
 	
