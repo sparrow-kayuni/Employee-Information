@@ -1,4 +1,4 @@
-package main.views;
+package main.views.employee;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -12,66 +12,70 @@ import java.awt.Font;
 import javax.swing.JTextPane;
 
 import main.models.Employee;
+import main.views.components.EmployeeActionButton;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class EmployeeDetailsView extends JDialog implements ActionListener {
-
-
-	private static final long serialVersionUID = 1L;
-	private static Employee employee;
-	private JButton backButton;
-
-	/**
-	 * Create the application.
-	 */
-	public EmployeeDetailsView(Employee emp) {
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-			}
-			
-		});
-		setResizable(false);
-		employee = emp;
-		setTitle("Employee Details");
-		initialize();
+/**
+ * 
+ * @author Mwiinga Kayuni
+ * @implSpec AbstractEmployeeView extends JDialog and defines the default Employee functionality. It extended by
+ * @implSpec GeneralEmployeeView and HumanResourcesEmployeeView
+ *
+ */
+public class AbstractEmployeeView extends JDialog implements ActionListener {
+	public AbstractEmployeeView() {
 	}
+
+
+	protected static final long serialVersionUID = 1L;
+	protected static Employee employee = null;
+	protected JButton backButton = null;
+	protected EmployeeActionButton editEmployeeButton = null;
+	protected JPanel panel;
+	protected JPanel west_panel;
+	protected JPanel north_panel;
+	protected JPanel south_panel;
+	protected JPanel east_panel;
+	protected JPanel center_panel;
+	
+	protected JLabel employeeNameHeader;
+
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	protected void initialize() {
+		setResizable(false);
+		
 		this.setBounds(100, 100, 560, 500);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		panel.setBackground(new Color(69, 69, 69));
 		this.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
 		
-		JPanel west_panel = new JPanel();
+		west_panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) west_panel.getLayout();
 		flowLayout.setHgap(20);
 		west_panel.setBackground(new Color(69, 69, 69));
 		panel.add(west_panel, BorderLayout.WEST);
 		
-		JPanel north_panel = new JPanel();
+		north_panel = new JPanel();
 		north_panel.setBackground(new Color(69, 69, 69));
 		panel.add(north_panel, BorderLayout.NORTH);
 		north_panel.setLayout(new MigLayout("", "[40.00][32.00][][][]", "[35.00]"));
 		
-		JLabel employeeNameHeader = new JLabel(employee.getFirstName().toUpperCase() + " "
+		employeeNameHeader = new JLabel(employee.getFirstName().toUpperCase() + " "
 				+ employee.getSurname().toUpperCase());
 		employeeNameHeader.setForeground(new Color(215, 215, 215));
 		employeeNameHeader.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 15));
 		north_panel.add(employeeNameHeader, "cell 1 0 2 1");
 		
-		JPanel south_panel = new JPanel();
+		south_panel = new JPanel();
 		south_panel.setBackground(new Color(69, 69, 69));
 		panel.add(south_panel, BorderLayout.SOUTH);
 		south_panel.setLayout(new MigLayout("", "[100.00][100.00][100.00][100.00][100.00][100.00][100.00][100.00][100.00][100.00]", "[45.00]"));
@@ -81,11 +85,11 @@ public class EmployeeDetailsView extends JDialog implements ActionListener {
 		backButton.setBackground(new Color(131, 131, 131));
 		south_panel.add(backButton, "cell 7 0 2 1,growx,aligny center");
 		
-		JPanel east_panel = new JPanel();
+		east_panel = new JPanel();
 		east_panel.setBackground(new Color(69, 69, 69));
 		panel.add(east_panel, BorderLayout.EAST);
 		
-		JPanel center_panel = new JPanel();
+		center_panel = new JPanel();
 		center_panel.setBackground(new Color(69, 69, 69));
 		panel.add(center_panel, BorderLayout.CENTER);
 		center_panel.setLayout(new MigLayout("", "[][40.00][50.00,grow][][114.00,grow][50.00]", "[17.00,grow][20.00][grow][25.00,grow][grow][20.00][25.00,grow][20.00][25.00,grow][20.00][25.00,grow][20.00][25.00][20.00,grow][25.00]"));
@@ -188,6 +192,10 @@ public class EmployeeDetailsView extends JDialog implements ActionListener {
 	
 	public Employee getEmployee() {
 		return employee;
+	}
+	
+	protected void setEmployee(Employee emp) {
+		employee = emp;
 	}
 
 	@Override

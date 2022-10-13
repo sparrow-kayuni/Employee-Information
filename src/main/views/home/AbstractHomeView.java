@@ -22,9 +22,10 @@ import javax.swing.event.ListSelectionEvent;
 import main.employeesystem.App;
 import main.models.Department;
 import main.models.Employee;
-import main.views.EmployeeDetailsView;
 import main.views.HomeViewListener;
 import main.views.components.EmployeeActionButton;
+import main.views.employee.AbstractEmployeeView;
+import main.views.factories.EmployeeViewFactory;
 import net.miginfocom.swing.MigLayout;
 
 
@@ -32,7 +33,7 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author Mwiinga Kayuni
  * @version 1.1
- * @implSpec AbstractHomeView HomeView layout and functionality and is extended by 
+ * @implSpec AbstractHomeView lays out Home functionality and is extended by 
  * GeneralHomeView and HumanResourcesHomeView
  *
  */
@@ -46,6 +47,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 	protected EmployeeActionButton viewEmployeeButton = null;
 	protected EmployeeActionButton editEmployeeButton = null;
 	protected EmployeeActionButton addEmployeeButton = null;
+	protected JLabel deptNameHeaderLabel;
 	
 	protected JPanel panel = null;
 	protected JPanel north_panel = null;
@@ -56,7 +58,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 	
 	protected JList<String> employeesListDisplay = null;
 	protected JList<String> deptsListDisplay = null;
-	protected static EmployeeDetailsView employeeDetailsView = null;
+	protected static AbstractEmployeeView employeeDetailsView = null;
 	protected static Employee selectedEmployee = null;
 	protected static ArrayList<Employee> empVals = null;
 	protected int selectedEmployeeIndex = 0;
@@ -146,7 +148,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 		panel.add(center_panel, BorderLayout.CENTER);
 		center_panel.setLayout(new MigLayout("", "[100.00][100.00][100.00][10.00][120.00][10.00][120.00]", "[25.00][10.00][25.00][45.00][45.00][45.00][45.00][45.00][45.00][45.00][45.00][40.00][9.00][25.00]"));
 		
-		JLabel deptNameHeaderLabel = new JLabel("New label");
+		deptNameHeaderLabel = new JLabel(deptsListDisplay.getSelectedValue());
 		deptNameHeaderLabel.setForeground(new Color(210, 210, 210));
 		deptNameHeaderLabel.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		center_panel.add(deptNameHeaderLabel, "cell 0 0");
@@ -195,7 +197,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 					selectedEmployee = empVals.get(selectedEmployeeIndex);
 					employeeDetailsView = null;
 					
-					employeeDetailsView = new EmployeeDetailsView(selectedEmployee);
+					employeeDetailsView = EmployeeViewFactory.createEmployeeView(this, selectedEmployee);
 					
 					employeesListDisplay.setSelectedIndex(selectedEmployeeIndex);
 					employeesListDisplay.setSelectionBackground(new Color(163, 163, 163));
@@ -214,6 +216,8 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 	public void valueChanged(ListSelectionEvent e) {
 		
 		//Department Selection Handling
+		//When a department value changes, iterate through departmentslist employees
+		//and add them to empVals. Then set the values of employeeListDisplay to empVals
 		if(e.getSource().equals(deptsListDisplay)) {
 			empVals = new ArrayList<Employee>();
 			
@@ -226,6 +230,15 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 				
 			}catch(NullPointerException err) {
 				err.printStackTrace();
+			}
+			if(deptNameHeaderLabel != null) {
+				
+				if(deptsListDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
+					deptNameHeaderLabel.setText(deptsListDisplay.getSelectedValue());
+				}else {
+					deptNameHeaderLabel.setText(deptsListDisplay.getSelectedValue() + " DEPARTMENT");
+				}
+				
 			}
 			
 			employeesListDisplay.setModel(new AbstractListModel<String>() {
@@ -250,6 +263,8 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 		}
 		
 		//Employee Selection Handling
+		//When an employee has been selected, set the selectedEmployee 
+		//variable to the selected value and style it appropriately
 		if(e.getSource().equals(employeesListDisplay)) {
 			try {
 				if(employeeDetailsView == null) {
@@ -261,8 +276,9 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 					
 					viewEmployeeButton.enableButton();
 					
-					if(editEmployeeButton != null) {
+					if(editEmployeeButton != null && addEmployeeButton != null) {
 						editEmployeeButton.enableButton();
+						addEmployeeButton.enableButton();
 					}
 				}else {
 					if(!employeeDetailsView.isShowing()) {
@@ -273,10 +289,14 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 						
 						selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
 						selectedEmployee = empVals.get(selectedEmployeeIndex);
+						
 						viewEmployeeButton.enableButton();
+						
 						if(editEmployeeButton != null) {
 							editEmployeeButton.enableButton();
 						}
+					}else {
+						addEmployeeButton.disableButton();
 					}
 				}
 			}catch(IndexOutOfBoundsException err) {

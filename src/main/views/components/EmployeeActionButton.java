@@ -22,11 +22,13 @@ public class EmployeeActionButton extends JButton {
 	public void enableButton() {
 		this.setEnabled(true);
 		this.setBackground(backgroundColor);
+		this.setForeground(new Color(51, 51, 51));
 	}
 	
 	public void disableButton() {
 		this.setEnabled(false);
 		this.setBackground(disabledColor);
+		this.setForeground(new Color(120, 120, 120));
 	}
 
 }

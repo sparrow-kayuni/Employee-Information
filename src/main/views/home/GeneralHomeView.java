@@ -1,5 +1,7 @@
 package main.views.home;
 
+import main.views.employee.GeneralEmployeeView;
+
 public class GeneralHomeView extends AbstractHomeView {
 	
 	/**
@@ -12,6 +14,8 @@ public class GeneralHomeView extends AbstractHomeView {
 	 */
 	public GeneralHomeView() {
 		setResizable(false);
+
+		employeeDetailsView = (GeneralEmployeeView) employeeDetailsView;
 		setTitle("Employee Information System");
 		initialize();
 	}

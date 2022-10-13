@@ -12,10 +12,12 @@ import main.models.Department;
 import main.models.Employee;
 
 
-/* PostgresDatabase class contains all methods involving the database.
+/**
  * 
- * 
- * */
+ * @author Mwiinga Kayuni
+ * @implSpec Contains 
+ *
+ */
 public class PostgresDatabase {
 	
 	private String pgURL = "jdbc:postgresql://localhost:5432/human_resources";
@@ -24,6 +26,7 @@ public class PostgresDatabase {
 	private static Connection conn = null;
 	private static Statement statement;
 	
+	//Initialize and connect to the database
 	public PostgresDatabase() {
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -35,7 +38,10 @@ public class PostgresDatabase {
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * @return hashmap of the list of employees
+	 */
 	public HashMap<Integer, Employee>  generateEmployeesList() {
 		HashMap<Integer, Employee> employeesList = new HashMap<Integer, Employee>();
 		
@@ -46,7 +52,13 @@ public class PostgresDatabase {
 		return employeesList;
 	}
 	
-	
+	/**
+	 * 
+	 * @param empList
+	 * @return employeelist hashmap
+	 * @implNote queries the database for all the employees and creates employee objects
+	 * which it adds to the employeelist hashmap
+	 */
 	private HashMap<Integer, Employee> addEmployees(HashMap<Integer, Employee> empList) {
 		try {
 			if (conn != null) {
@@ -75,7 +87,13 @@ public class PostgresDatabase {
 		return new Employee(fName, surname, empId, email, phone, jobId);
 	}
 	
-	
+	/**
+	 * 
+	 * @param employeesList
+	 * @return complete employee hashmap
+	 * @implNote Queries the database for job positions, then iterates through the empoyee list
+	 * to set the employee job position details
+	 */
 	public HashMap<Integer, Employee> addEmployeeJobPositionDetails(HashMap<Integer, Employee> employeesList) {
 		String query = "SELECT * FROM public.job_positions ORDER BY job_id ASC";
 		try {
@@ -100,7 +118,15 @@ public class PostgresDatabase {
 		return employeesList;
 	}
 	
-	
+	/**
+	 * 
+	 * @param deptList
+	 * @param empList
+	 * @return hashmap of departments
+	 * @implNote Queries the database or the departments, then creates the department objects.
+	 * Then it iterates throuh the employee hashmap and adds employee to corresponding department objects
+	 * 
+	 */
 	public HashMap<String, Department> organizeEmployeesByDepartment(HashMap<String, Department> deptList, 
 			HashMap<Integer, Employee> empList) {
 		try {
