@@ -8,7 +8,7 @@ import main.views.components.EmployeeActionButton;
 /**
  * 
  * @author Mwiinga Kayuni
- * @implSpec HumanResourcesHomeView extends AbstractHomeView and includes an add employee button 
+ * @implSpec HumanResourcesHomeView is an AbstractHomeView and includes an add employee button 
  * @version 1.1
  *
  */

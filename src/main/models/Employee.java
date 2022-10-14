@@ -1,5 +1,10 @@
 package main.models;
-
+/**
+ * 
+ * @author Mwiinga Kayuni
+ * @version 1.1 
+ *
+ */
 public class Employee implements Comparable<Employee>{
 	private String firstName;
 	private String surname;

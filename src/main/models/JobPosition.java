@@ -1,5 +1,10 @@
 package main.models;
-
+/**
+ * 
+ * @author Mwiinga Kayuni
+ * @version 1.1 
+ *
+ */
 public class JobPosition {
 	private int jobId;
 	private String jobTitle;

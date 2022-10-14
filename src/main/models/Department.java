@@ -1,12 +1,17 @@
 package main.models;
 
 import java.util.HashMap;
-
+/**
+ * 
+ * @author Mwiinga Kayuni
+ * @version 1.1 
+ *
+ */
 public class Department {
 	private int departmentId;
 	private String departmentName;
 	private int managerId;
-	private HashMap<Integer, Employee> employeesList;
+	private HashMap<Integer, Employee> employeesMap;
 	
 	public boolean isLoggedIn = false;
 	
@@ -33,20 +38,20 @@ public class Department {
 	}
 	
 	public HashMap<Integer, Employee> getEmployeesList() {
-		return employeesList;
+		return employeesMap;
 	}
 	
 	public void initEmployeesList() {
-		this.employeesList = new HashMap<Integer, Employee>();
+		this.employeesMap = new HashMap<Integer, Employee>();
 	}
 	
 	public void setEmployeesList(HashMap<Integer, Employee> empList) {
-		this.employeesList = empList;
+		this.employeesMap = empList;
 	}
 	
 	public void addEmployeeToDepartment(Employee emp) {
 		emp.getJobPosition().setDepartment(this);
-		this.employeesList.put(emp.getEmployeeId(), emp);
+		this.employeesMap.put(emp.getEmployeeId(), emp);
 	}
 
 	public int getManagerId() {
