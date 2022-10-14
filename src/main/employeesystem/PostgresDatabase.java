@@ -43,30 +43,30 @@ public class PostgresDatabase {
 	 * @return hashmap of the list of employees
 	 */
 	public HashMap<Integer, Employee>  generateEmployeesList() {
-		HashMap<Integer, Employee> employeesList = new HashMap<Integer, Employee>();
+		HashMap<Integer, Employee> employeesMap = new HashMap<Integer, Employee>();
 		
-		employeesList.putAll(addEmployees(employeesList));
+		employeesMap.putAll(addEmployees(employeesMap));
 		
-		employeesList.putAll(addEmployeeJobPositionDetails(employeesList));
+		employeesMap.putAll(addEmployeeJobPositionDetails(employeesMap));
 
-		return employeesList;
+		return employeesMap;
 	}
 	
 	/**
 	 * 
-	 * @param empList
+	 * @param empsMap
 	 * @return employeelist hashmap
 	 * @implNote queries the database for all the employees and creates employee objects
-	 * which it adds to the employeelist hashmap
+	 * which it adds to the employeemap hashmap
 	 */
-	private HashMap<Integer, Employee> addEmployees(HashMap<Integer, Employee> empList) {
+	private HashMap<Integer, Employee> addEmployees(HashMap<Integer, Employee> empsMap) {
 		try {
 			if (conn != null) {
 				String query = "SELECT * FROM public.employees ORDER BY employee_id ASC";
 				ResultSet resultSet = statement.executeQuery(query);
 				
 				while(resultSet.next()) {
-					empList.put(
+					empsMap.put(
 						resultSet.getInt("employee_id"),
 						createEmployee(
 							resultSet.getString("first_name"), resultSet.getString("surname"),
@@ -79,7 +79,7 @@ public class PostgresDatabase {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return empList;
+		return empsMap;
 	}
 
 
@@ -89,17 +89,17 @@ public class PostgresDatabase {
 	
 	/**
 	 * 
-	 * @param employeesList
+	 * @param employeesMap
 	 * @return complete employee hashmap
 	 * @implNote Queries the database for job positions, then iterates through the empoyee list
 	 * to set the employee job position details
 	 */
-	public HashMap<Integer, Employee> addEmployeeJobPositionDetails(HashMap<Integer, Employee> employeesList) {
+	public HashMap<Integer, Employee> addEmployeeJobPositionDetails(HashMap<Integer, Employee> employeesMap) {
 		String query = "SELECT * FROM public.job_positions ORDER BY job_id ASC";
 		try {
 			ResultSet results = statement.executeQuery(query);
 			while(results.next()) {
-				Iterator<Employee> empItr = employeesList.values().iterator();
+				Iterator<Employee> empItr = employeesMap.values().iterator();
 				
 				while(empItr.hasNext()) {
 					Employee emp = empItr.next();
@@ -115,34 +115,34 @@ public class PostgresDatabase {
 			e.printStackTrace();
 		}
 		
-		return employeesList;
+		return employeesMap;
 	}
 	
 	/**
 	 * 
-	 * @param deptList
-	 * @param empList
+	 * @param departmentsMap
+	 * @param employeesMap
 	 * @return hashmap of departments
 	 * @implNote Queries the database or the departments, then creates the department objects.
 	 * Then it iterates through the employee hashmap and adds employee to corresponding department objects
 	 * 
 	 */
-	public HashMap<String, Department> organizeEmployeesByDepartment(HashMap<String, Department> deptList, 
-			HashMap<Integer, Employee> empList) {
+	public HashMap<String, Department> organizeEmployeesByDepartment(HashMap<String, Department> deptsMap, 
+			HashMap<Integer, Employee> empsMap) {
 		try {
 			if(conn != null) {
 				String query = "SELECT * FROM departments ORDER BY department_id ASC";
 				ResultSet results = statement.executeQuery(query);
 				
 				Department universalDept = new Department(0, "All Departments", 0);
-				universalDept.setEmployeesList(empList);
+				universalDept.setEmployeesList(empsMap);
 
 				while(results.next()) {
 					Department dept = new Department(
 							results.getInt("department_id"), results.getString("department_name"), 
 							results.getInt("department_manager_id"));
 					
-					Iterator<Employee> empItr = empList.values().iterator();
+					Iterator<Employee> empItr = empsMap.values().iterator();
 					
 					while(empItr.hasNext()) {
 						Employee emp = empItr.next();
@@ -152,14 +152,14 @@ public class PostgresDatabase {
 						}
 					}
 					
-					deptList.put(results.getString("department_name").toUpperCase(), dept);
+					deptsMap.put(results.getString("department_name").toUpperCase(), dept);
 				}
-				deptList.put(universalDept.getDepartmentName().toUpperCase(), universalDept);	
+				deptsMap.put(universalDept.getDepartmentName().toUpperCase(), universalDept);	
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		
-		return deptList;
+		return deptsMap;
 	}
 }

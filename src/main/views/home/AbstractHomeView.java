@@ -118,7 +118,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 		
 		ArrayList<String> deptListVals = new ArrayList<String>();
 		
-		Iterator<Department> itr = App.departmentsList.values().iterator();
+		Iterator<Department> itr = App.departmentsMap.values().iterator();
 		
 		while(itr.hasNext()) {
 			deptListVals.add(itr.next().getDepartmentName().toUpperCase());
@@ -222,7 +222,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 			empVals = new ArrayList<Employee>();
 			
 			try {
-				Iterator<Employee> empItr = App.departmentsList.get(deptsListDisplay.getSelectedValue())
+				Iterator<Employee> empItr = App.departmentsMap.get(deptsListDisplay.getSelectedValue())
 						.getEmployeesList().values().iterator();
 				while(empItr.hasNext()) {
 					empVals.add(empItr.next());

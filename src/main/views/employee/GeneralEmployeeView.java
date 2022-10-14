@@ -5,7 +5,7 @@ import main.models.Employee;
 /**
  * 
  * @author Mwiinga Kayuni
- * @implSpec extends AbstractEmployeeView
+ * @implSpec GeneralEmployeeView is an AbstractEmployeeView with basic functionality
  *
  */
 public class GeneralEmployeeView extends AbstractEmployeeView {

@@ -32,15 +32,15 @@ public class LoginView extends JFrame implements ActionListener {
 	private JTextField employeeIdTextField;
 	private JPasswordField passwordField;
 	private JLabel flashMessage;
-	private static HashMap<String, Department> departmentsList;
+	private static HashMap<String, Department> departmentsMap;
 	public boolean isLoggedIn = false;
 	
 	/**
 	 * Create the application.
 	 * @param managersList 
 	 */
-	public LoginView(HashMap<String, Department> list) {
-		departmentsList = list;
+	public LoginView(HashMap<String, Department> deptsMap) {
+		departmentsMap = deptsMap;
 		
 		initialize();
 	}
@@ -150,7 +150,7 @@ public class LoginView extends JFrame implements ActionListener {
 		try {
 			if(emp_id == 0) throw new Exception();
 			
-			Iterator<Department> deptItr = departmentsList.values().iterator();
+			Iterator<Department> deptItr = departmentsMap.values().iterator();
 			
 			Department dept = null;
 			
@@ -174,7 +174,7 @@ public class LoginView extends JFrame implements ActionListener {
 						Department newDept = dept;
 						newDept.isLoggedIn = true;
 						
-						if(departmentsList.replace(newDept.getDepartmentName().toUpperCase(), dept, newDept)) {
+						if(departmentsMap.replace(newDept.getDepartmentName().toUpperCase(), dept, newDept)) {
 							proceedToHomeView(newDept, newDept.getEmployeesList().get(emp_id));
 						};
 						
@@ -197,9 +197,9 @@ public class LoginView extends JFrame implements ActionListener {
 	
 	private void proceedToHomeView(Department dept, Employee emp) {
 
-		System.out.println(departmentsList.toString() + "\n" + departmentsList.get("HUMAN RESOURCES").isLoggedIn);
+		System.out.println(departmentsMap.toString() + "\n" + departmentsMap.get("HUMAN RESOURCES").isLoggedIn);
 		
-		AbstractHomeView homeView = HomeViewFactory.createHomeView(departmentsList);
+		AbstractHomeView homeView = HomeViewFactory.createHomeView(departmentsMap);
 		
 		if(homeView != null) {
 			this.dispose();

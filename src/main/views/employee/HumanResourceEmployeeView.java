@@ -2,15 +2,13 @@ package main.views.employee;
 
 import java.awt.Color;
 
-import javax.swing.JButton;
-
 import main.models.Employee;
 import main.views.components.EmployeeActionButton;
 
 /**
  * 
  * @author Mwiinga Kayuni
- * @implSpec HumanResourcesEmployeeView extends AbstractEmployeeView and includes an edit and delete button 
+ * @implSpec HumanResourcesEmployeeView is an AbstractEmployeeView that includes an edit and delete button 
  * @version 1.1
  *
  */

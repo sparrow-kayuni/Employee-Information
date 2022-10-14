@@ -23,13 +23,13 @@ public class App{
 	 * 
 	 * stores all employee objects
 	 */
-	public static HashMap<Integer, Employee> allEmployeesList;
+	public static HashMap<Integer, Employee> allEmployeesMap;
 	
 	/**
 	 * 
 	 * stores all department objects
 	 */
-	public static HashMap<String, Department> departmentsList;
+	public static HashMap<String, Department> departmentsMap;
 	
 	/**
 	 * 
@@ -46,7 +46,7 @@ public class App{
 	}
 	
 	private static void printInfo() {
-		Iterator<Department> deptItr = departmentsList.values().iterator();
+		Iterator<Department> deptItr = departmentsMap.values().iterator();
 		
 		while(deptItr.hasNext()) {
 			Department dept = deptItr.next();
@@ -79,8 +79,8 @@ public class App{
 	
 	
 	public static void setEmployeesList() {
-		allEmployeesList = new HashMap<Integer, Employee>();
-		allEmployeesList.putAll(createEmployeesList());
+		allEmployeesMap = new HashMap<Integer, Employee>();
+		allEmployeesMap.putAll(createEmployeesList());
 		
 	}
 	
@@ -95,8 +95,8 @@ public class App{
 	
 	
 	private static void setDepartmentsList() {
-		departmentsList = new HashMap<String, Department>();
-		departmentsList.putAll(generateDepartmentsList(departmentsList, allEmployeesList));
+		departmentsMap = new HashMap<String, Department>();
+		departmentsMap.putAll(generateDepartmentsList(departmentsMap, allEmployeesMap));
 		
 	}
 	
@@ -106,7 +106,7 @@ public class App{
 	
 	public static void showLoginView() {
 		try {
-			LoginView window = new LoginView(departmentsList);
+			LoginView window = new LoginView(departmentsMap);
 			window.setVisible(true);
 			
 		} catch (Exception e) {
@@ -116,7 +116,7 @@ public class App{
 
 	
 	public static void updateEmployeesList(HashMap<Integer, Employee> list) {
-		allEmployeesList = list;
+		allEmployeesMap = list;
 	}
 
 }
