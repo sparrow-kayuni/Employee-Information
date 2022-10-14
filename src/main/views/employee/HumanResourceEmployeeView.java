@@ -24,6 +24,12 @@ public class HumanResourceEmployeeView extends AbstractEmployeeView {
 	}
 
 	private void initializeEditButton() {
+		deleteEmployeeButton = new EmployeeActionButton("Delete Employee", new Color(215, 120, 120));
+		deleteEmployeeButton.addActionListener(this);
+		deleteEmployeeButton.enableButton();
+		
+		north_panel.add(deleteEmployeeButton, "cell 6 0 2 1,growx, aligny center");
+		
 		editEmployeeButton = new EmployeeActionButton("Edit Employee", new Color(0, 120, 215));
 		editEmployeeButton.addActionListener(this);
 		editEmployeeButton.enableButton();

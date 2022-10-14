@@ -34,6 +34,8 @@ public class AbstractEmployeeView extends JDialog implements ActionListener {
 	protected static Employee employee = null;
 	protected JButton backButton = null;
 	protected EmployeeActionButton editEmployeeButton = null;
+	protected EmployeeActionButton deleteEmployeeButton = null;
+	
 	protected JPanel panel;
 	protected JPanel west_panel;
 	protected JPanel north_panel;
@@ -67,7 +69,7 @@ public class AbstractEmployeeView extends JDialog implements ActionListener {
 		north_panel = new JPanel();
 		north_panel.setBackground(new Color(69, 69, 69));
 		panel.add(north_panel, BorderLayout.NORTH);
-		north_panel.setLayout(new MigLayout("", "[40.00][32.00][][][]", "[35.00]"));
+		north_panel.setLayout(new MigLayout("", "[100.00][100.00][100.00][100.00][100.00][100.00][100.00][100.00][100.00][100.00]", "[35.00]"));
 		
 		employeeNameHeader = new JLabel(employee.getFirstName().toUpperCase() + " "
 				+ employee.getSurname().toUpperCase());
