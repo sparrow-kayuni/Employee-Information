@@ -27,9 +27,6 @@ import java.awt.event.ActionEvent;
  *
  */
 public class AbstractEmployeeView extends JDialog implements ActionListener {
-	public AbstractEmployeeView() {
-	}
-
 
 	protected static final long serialVersionUID = 1L;
 	protected static Employee employee = null;
@@ -189,9 +186,10 @@ public class AbstractEmployeeView extends JDialog implements ActionListener {
 		hourlyPayTextPane.setBackground(new Color(167, 167, 167));
 		center_panel.add(hourlyPayTextPane, "cell 2 16 5 1,grow");
 		
-		JButton closeButton = new JButton("Close");
+		closeButton = new JButton("Close");
 		closeButton.setFocusable(false);
 		closeButton.setBackground(new Color(131, 131, 131));
+		closeButton.addActionListener(this);
 		center_panel.add(closeButton, "cell 6 18,growx");
 	}
 	
@@ -206,7 +204,6 @@ public class AbstractEmployeeView extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(closeButton)) {
-			System.out.println("Clicked");
 			this.dispose();
 		}
 		
