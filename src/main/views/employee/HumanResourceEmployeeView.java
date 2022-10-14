@@ -2,6 +2,8 @@ package main.views.employee;
 
 import java.awt.Color;
 
+import javax.swing.JButton;
+
 import main.models.Employee;
 import main.views.components.EmployeeActionButton;
 
@@ -28,13 +30,13 @@ public class HumanResourceEmployeeView extends AbstractEmployeeView {
 		deleteEmployeeButton.addActionListener(this);
 		deleteEmployeeButton.enableButton();
 		
-		north_panel.add(deleteEmployeeButton, "cell 6 0 2 1,growx, aligny center");
+		center_panel.add(deleteEmployeeButton, "cell 6 0,growx");
 		
 		editEmployeeButton = new EmployeeActionButton("Edit Employee", new Color(0, 120, 215));
 		editEmployeeButton.addActionListener(this);
 		editEmployeeButton.enableButton();
 		
-		south_panel.add(editEmployeeButton, "cell 5 0 2 1,growx,aligny center");
+		center_panel.add(editEmployeeButton, "cell 4 18,growx");
 		
 	}
 }

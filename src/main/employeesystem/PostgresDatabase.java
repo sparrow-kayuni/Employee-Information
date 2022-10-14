@@ -124,7 +124,7 @@ public class PostgresDatabase {
 	 * @param empList
 	 * @return hashmap of departments
 	 * @implNote Queries the database or the departments, then creates the department objects.
-	 * Then it iterates throuh the employee hashmap and adds employee to corresponding department objects
+	 * Then it iterates through the employee hashmap and adds employee to corresponding department objects
 	 * 
 	 */
 	public HashMap<String, Department> organizeEmployeesByDepartment(HashMap<String, Department> deptList, 

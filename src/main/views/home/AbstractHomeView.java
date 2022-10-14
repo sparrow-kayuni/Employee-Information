@@ -33,7 +33,7 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author Mwiinga Kayuni
  * @version 1.1
- * @implSpec AbstractHomeView lays out Home functionality and is extended by 
+ * @implSpec AbstractHomeView lays out basic Home functionality and is extended by 
  * GeneralHomeView and HumanResourcesHomeView
  *
  */
