@@ -10,9 +10,7 @@ import java.util.Iterator;
 /**
  * 
  * @author Mwiinga Kayuni 
- * @implSpec The App class defines the entire logic of the application.
- * @implSpec This class is never instantiated, however the App.run() method is 
- * called in the main file.
+ * @implSpec The App class contains start up logic of the application.
  * @version 1.1
  *
  */

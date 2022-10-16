@@ -3,9 +3,9 @@ package main.views.factories;
 import java.util.HashMap;
 
 import main.models.Department;
-import main.views.home.AbstractHomeView;
-import main.views.home.GeneralHomeView;
-import main.views.home.HumanResourceHomeView;
+import main.views.home.AbstractHomeFrame;
+import main.views.home.GeneralHomeFrame;
+import main.views.home.HumanResourceHomeFrame;
 
 /**
  * 
@@ -13,18 +13,18 @@ import main.views.home.HumanResourceHomeView;
  * @version 1.1
  *
  */
-public class HomeViewFactory {
+public class HomeFrameFactory {
 	
 	/**
 	 * 
 	 * @param deptList
 	 * @return AbstractHomeView 
 	 */
-	public static AbstractHomeView createHomeView(HashMap<String, Department> deptList) {
+	public static AbstractHomeFrame createHomeView(HashMap<String, Department> deptList) {
 		if(deptList.get("HUMAN RESOURCES").isLoggedIn) {
-			return new HumanResourceHomeView();
+			return new HumanResourceHomeFrame();
 		}else if(deptList.get("ACCOUNTS").isLoggedIn || deptList.get("EXECUTIVE").isLoggedIn){
-			return new GeneralHomeView();
+			return new GeneralHomeFrame();
 		}
 		
 		return null;

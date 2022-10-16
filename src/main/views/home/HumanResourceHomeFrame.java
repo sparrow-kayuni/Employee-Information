@@ -8,16 +8,16 @@ import main.views.components.EmployeeActionButton;
 /**
  * 
  * @author Mwiinga Kayuni
- * @implSpec HumanResourcesHomeView is an AbstractHomeView and includes an add employee button 
+ * @implSpec HumanResourcesHomeView is an implementation of AbstractHomeView and includes an add employee buttons 
  * @version 1.1
  *
  */
-public class HumanResourceHomeView extends AbstractHomeView {
+public class HumanResourceHomeFrame extends AbstractHomeFrame {
 
 	private static final long serialVersionUID = 1L;
 	//private HumanResourceEmployeeView employeeDetailsView = null;
 
-	public HumanResourceHomeView() {
+	public HumanResourceHomeFrame() {
 		setResizable(false);
 		setTitle("Employee Information System (HR)");
 		initialize();
@@ -25,7 +25,6 @@ public class HumanResourceHomeView extends AbstractHomeView {
 	}
 
 	private void initializeEditButtons() {
-		
 		addEmployeeButton = new EmployeeActionButton("Add Employee", new Color(0, 215, 120));
 		addEmployeeButton.addActionListener(this);
 		addEmployeeButton.enableButton();

@@ -8,10 +8,10 @@ package main.models;
 public class Employee implements Comparable<Employee>{
 	private String firstName;
 	private String surname;
-	private int employeeId = 0;
+	private int employeeId;
 	private String email;
 	private String phoneNumber;
-	private JobPosition jobPosition;
+	private JobPosition jobPosition = null;
 	
 	public Employee() {
 		//

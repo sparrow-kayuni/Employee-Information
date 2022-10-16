@@ -22,10 +22,11 @@ import javax.swing.event.ListSelectionEvent;
 import main.employeesystem.App;
 import main.models.Department;
 import main.models.Employee;
-import main.views.HomeViewListener;
 import main.views.components.EmployeeActionButton;
-import main.views.employee.AbstractEmployeeView;
-import main.views.factories.EmployeeViewFactory;
+import main.views.employee.AbstractEmployeeFrame;
+import main.views.employee.AddEmployeeFrame;
+import main.views.factories.EmployeeFrameFactory;
+import main.views.listeners.HomeViewListener;
 import net.miginfocom.swing.MigLayout;
 
 
@@ -33,21 +34,19 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author Mwiinga Kayuni
  * @version 1.1
- * @implSpec AbstractHomeView lays out basic Home functionality and is extended by 
- * GeneralHomeView and HumanResourcesHomeView
+ * @implSpec AbstractHomeFrame contains base Home components
  *
  */
-public abstract class AbstractHomeView extends JFrame implements HomeViewListener {
-	/**
-	 * 
-	 */
+public abstract class AbstractHomeFrame extends JFrame implements HomeViewListener {
+
 	private static final long serialVersionUID = 1L;
+	
 	protected JTextField searchTextField = null;
 	protected JButton searchButton = null;
 	protected EmployeeActionButton viewEmployeeButton = null;
 	protected EmployeeActionButton editEmployeeButton = null;
 	protected EmployeeActionButton addEmployeeButton = null;
-	protected JLabel deptNameHeaderLabel;
+	protected JLabel headerLabel;
 	
 	protected JPanel panel = null;
 	protected JPanel north_panel = null;
@@ -58,15 +57,16 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 	
 	protected JList<String> employeesListDisplay = null;
 	protected JList<String> deptsListDisplay = null;
-	protected static AbstractEmployeeView employeeDetailsView = null;
+	
+	protected static AbstractEmployeeFrame employeeDetailsFrame = null;
 	protected static Employee selectedEmployee = null;
 	protected static ArrayList<Employee> empVals = null;
+	
 	protected int selectedEmployeeIndex = 0;
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	
 	protected void initialize() {
+		setResizable(false);
 		this.setBounds(100, 100, 741, 570);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -148,10 +148,10 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 		panel.add(center_panel, BorderLayout.CENTER);
 		center_panel.setLayout(new MigLayout("", "[100.00][100.00][100.00][10.00][120.00][10.00][120.00]", "[25.00][10.00][25.00][45.00][45.00][45.00][45.00][45.00][45.00][45.00][45.00][40.00][9.00][25.00]"));
 		
-		deptNameHeaderLabel = new JLabel(deptsListDisplay.getSelectedValue());
-		deptNameHeaderLabel.setForeground(new Color(210, 210, 210));
-		deptNameHeaderLabel.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
-		center_panel.add(deptNameHeaderLabel, "cell 0 0");
+		headerLabel = new JLabel(deptsListDisplay.getSelectedValue());
+		headerLabel.setForeground(new Color(210, 210, 210));
+		headerLabel.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		center_panel.add(headerLabel, "cell 0 0");
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -186,28 +186,35 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 		//View Selected Employee
 		if(e.getSource().equals(viewEmployeeButton)) {
 			try {
-				if(employeeDetailsView != null) {
-					if(employeeDetailsView.isVisible()) {
-						System.out.println("Employee Details View Is Visible");
-					}
-					employeeDetailsView.setVisible(true);
+				//if employeeDetails view isn't null, bring current employeeDetailsView to front
+				if(employeeDetailsFrame != null) {
+					employeeDetailsFrame.setVisible(true);
 					
 				}else {
+					//if employeeDetailsFrame is null, create new employeeDetailsFrame with the current 
+					//selected employee
 					selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
 					selectedEmployee = empVals.get(selectedEmployeeIndex);
-					employeeDetailsView = null;
+					employeeDetailsFrame = null;
 					
-					employeeDetailsView = EmployeeViewFactory.createEmployeeView(this, selectedEmployee);
+					employeeDetailsFrame = EmployeeFrameFactory.createViewEmployeeFrame(this, selectedEmployee);
 					
 					employeesListDisplay.setSelectedIndex(selectedEmployeeIndex);
 					employeesListDisplay.setSelectionBackground(new Color(163, 163, 163));
 					
 					viewEmployeeButton.enableButton();
 					
-					employeeDetailsView.setVisible(true);
+					employeeDetailsFrame.setVisible(true);
 				}
 			}catch(Exception err) {
 				err.printStackTrace();
+			}
+		}
+		
+		if(e.getSource().equals(addEmployeeButton)) {
+			if(addEmployeeButton != null) {
+				AddEmployeeFrame addEmployeeFrame = EmployeeFrameFactory.createAddEmployeeFrame();
+				addEmployeeFrame.setVisible(true);
 			}
 		}
 	}
@@ -215,34 +222,35 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		
-		//Department Selection Handling
-		//When a department value changes, iterate through departmentslist employees
-		//and add them to empVals. Then set the values of employeeListDisplay to empVals
+		// Department Selection Handling
 		if(e.getSource().equals(deptsListDisplay)) {
+			
+			//stores employee values
 			empVals = new ArrayList<Employee>();
 			
+			//Iterate through department's employee map and add employee values to empVals
 			try {
 				Iterator<Employee> empItr = App.departmentsMap.get(deptsListDisplay.getSelectedValue())
 						.getEmployeesList().values().iterator();
 				while(empItr.hasNext()) {
 					empVals.add(empItr.next());
-				}
-				
+				}	
 			}catch(NullPointerException err) {
 				err.printStackTrace();
 			}
-			if(deptNameHeaderLabel != null) {
-				
+			
+			//Set Header to Department name
+			if(headerLabel != null) {
 				if(deptsListDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
-					deptNameHeaderLabel.setText(deptsListDisplay.getSelectedValue());
+					headerLabel.setText(deptsListDisplay.getSelectedValue());
 				}else {
-					deptNameHeaderLabel.setText(deptsListDisplay.getSelectedValue() + " DEPARTMENT");
+					headerLabel.setText(deptsListDisplay.getSelectedValue() + " DEPARTMENT");
 				}
 				
 			}
 			
+			//Set employeeListDisplay model with department employee values
 			employeesListDisplay.setModel(new AbstractListModel<String>() {
-				
 				private static final long serialVersionUID = 1L;
 				
 				ArrayList<Employee> values = empVals;
@@ -255,6 +263,7 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 				}
 			});
 			
+			//Disable view employee button
 			try {
 				viewEmployeeButton.disableButton();
 			}catch(Exception err) {
@@ -263,12 +272,11 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 		}
 		
 		//Employee Selection Handling
-		//When an employee has been selected, set the selectedEmployee 
-		//variable to the selected value and style it appropriately
 		if(e.getSource().equals(employeesListDisplay)) {
 			try {
-				if(employeeDetailsView == null) {
-					
+				
+				//if employeeDetailsFrame is null, enable all buttons
+				if(employeeDetailsFrame == null) {
 					employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
 					
 					selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
@@ -281,9 +289,10 @@ public abstract class AbstractHomeView extends JFrame implements HomeViewListene
 						addEmployeeButton.enableButton();
 					}
 				}else {
-					if(!employeeDetailsView.isShowing()) {
-						System.out.println("Employee Details View isn't Showing");
-						employeeDetailsView = null;
+					
+					//If employeeDetailsrame is not showing, initialize employeeDetailsFrame & enable buttons
+					if(!employeeDetailsFrame.isShowing()) {
+						employeeDetailsFrame = null;
 						
 						employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
 						

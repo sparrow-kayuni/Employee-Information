@@ -1,4 +1,4 @@
-package main.views;
+package main.views.listeners;
 
 import java.awt.event.ActionListener;
 

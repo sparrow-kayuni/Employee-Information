@@ -10,8 +10,8 @@ import javax.swing.JTextField;
 
 import main.models.Department;
 import main.models.Employee;
-import main.views.factories.HomeViewFactory;
-import main.views.home.AbstractHomeView;
+import main.views.factories.HomeFrameFactory;
+import main.views.home.AbstractHomeFrame;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -199,7 +199,7 @@ public class LoginView extends JFrame implements ActionListener {
 
 		System.out.println(departmentsMap.toString() + "\n" + departmentsMap.get("HUMAN RESOURCES").isLoggedIn);
 		
-		AbstractHomeView homeView = HomeViewFactory.createHomeView(departmentsMap);
+		AbstractHomeFrame homeView = HomeFrameFactory.createHomeView(departmentsMap);
 		
 		if(homeView != null) {
 			this.dispose();
