@@ -2,6 +2,7 @@ package main.employeesystem;
 
 import main.models.Department;
 import main.models.Employee;
+import main.models.JobPosition;
 import main.views.LoginView;
 
 import java.util.HashMap;
@@ -29,6 +30,8 @@ public class App{
 	 */
 	public static HashMap<String, Department> departmentsMap;
 	
+	public static int lastEmployeeId;
+	
 	/**
 	 * 
 	 * run() initializes the employee and department objects then displays 
@@ -37,9 +40,8 @@ public class App{
 	
 	public static void run() {
 		connectDatabase();
-		setEmployeesList();
-		setDepartmentsList();
-		printInfo();
+		setDepartments();
+//		printInfo();
 		showLoginView();
 	}
 	
@@ -48,15 +50,21 @@ public class App{
 		
 		while(deptItr.hasNext()) {
 			Department dept = deptItr.next();
-			System.out.println(dept.getDepartmentName() + "\n----------------------------");
 			
-			Iterator<Employee> empItr = dept.getEmployeesList().values().iterator();
+			System.out.println(dept.getDepartmentName() + "\n-----------------------------");
 			
-			while(empItr.hasNext()) {
-				System.out.println(empItr.next().getEmployeeInfoFormatted());
+			Iterator<String> jobTitleItr = dept.getFilledJobPositions().values().iterator();
+			
+			while(jobTitleItr.hasNext()) {
+				JobPosition job = dept.getJobPositions().get(jobTitleItr.next());
+				
+				if(job.isFilled) {
+					System.out.println(job.getJobId() + " - " + job.getJobTitle() + 
+							" - " + job.getEmployee().getFirstName() + " - " + job.getPassword());
+				}
+				
 			}
 		}
-		
 	}
 
 	/**
@@ -67,40 +75,11 @@ public class App{
 	}
 	
 	
-	/**
-	 * 
-	 * @return Hashmap containing all Employee objects generated from the db 
-	 */
-	private static HashMap<Integer, Employee>  createEmployeesList() {
-		return db.generateEmployeesList();
-	}
-	
-	
-	public static void setEmployeesList() {
-		allEmployeesMap = new HashMap<Integer, Employee>();
-		allEmployeesMap.putAll(createEmployeesList());
-		
-	}
-	
-	/**
-	 * 
-	 * @return Hashmap containing all Department objects generated from the db 
-	 */
-	private static HashMap<String, Department> generateDepartmentsList(
-			HashMap<String, Department> deptList, HashMap<Integer, Employee> empList) {
-		return db.organizeEmployeesByDepartment(deptList, empList);
-	}
-	
-	
-	private static void setDepartmentsList() {
+	private static void setDepartments() {
 		departmentsMap = new HashMap<String, Department>();
-		departmentsMap.putAll(generateDepartmentsList(departmentsMap, allEmployeesMap));
-		
+		departmentsMap.putAll(db.createDepartmentsMap());
 	}
 	
-	/**
-	 * Creates login window object and passes 
-	 */
 	
 	public static void showLoginView() {
 		try {
@@ -111,11 +90,14 @@ public class App{
 			e.printStackTrace();
 		}
 	}
-
 	
-	public static void updateEmployeesList(HashMap<Integer, Employee> list) {
-		allEmployeesMap = list;
-	}
+//	public static int getLastEmployeeId() {
+//		return lastEmployeeId;
+//	}
+//	
+//	public static void setLastEmployeeId(int empId) {
+//		lastEmployeeId = empId;
+//	}
 
 }
 

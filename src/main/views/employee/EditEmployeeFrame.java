@@ -14,10 +14,11 @@ public class EditEmployeeFrame extends AbstractEditEmployeeFrame {
 	private static final long serialVersionUID = 1L;
 	
 	public EditEmployeeFrame(Employee emp) {
-		setEmployee(emp);
+		setEmployeeInformation(emp);
 		setTitle("Edit Employee Details");
 		initializePanels();
 		addEditableFields();
+		addUpdateButtons();
 	}
 
 }

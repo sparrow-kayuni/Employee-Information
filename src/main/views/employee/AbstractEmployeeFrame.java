@@ -10,11 +10,12 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 
+import main.employeesystem.App;
+import main.models.Department;
 import main.models.Employee;
-import main.views.listeners.DefaultActionListener;
+import main.models.JobPosition;
 
 import javax.swing.JButton;
-import java.awt.event.ActionEvent;
 
 /**
  * 
@@ -22,10 +23,13 @@ import java.awt.event.ActionEvent;
  * @implSpec AbstractEmployeeFrame contains base frame components (panels, labels and close button)
  *
  */
-public class AbstractEmployeeFrame extends JFrame implements DefaultActionListener{
+public class AbstractEmployeeFrame extends JFrame {
 
 	protected static final long serialVersionUID = 1L;
 	protected static Employee employee = null;
+	protected static Department currentDepartment = null;
+	protected static JobPosition jobPosition = null;
+	
 	protected JButton closeButton = null;
 	
 	protected JPanel panel;
@@ -104,7 +108,7 @@ public class AbstractEmployeeFrame extends JFrame implements DefaultActionListen
 		departmentLabel.setForeground(new Color(215, 215, 215));
 		departmentLabel.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
 		center_panel.add(departmentLabel, "cell 0 8");
-				
+		
 		JLabel jobTitleLabel = new JLabel("JOB TITLE");
 		jobTitleLabel.setForeground(new Color(215, 215, 215));
 		jobTitleLabel.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
@@ -125,10 +129,10 @@ public class AbstractEmployeeFrame extends JFrame implements DefaultActionListen
 		hourlyPayLabel.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
 		center_panel.add(hourlyPayLabel, "cell 0 16");
 		
-		closeButton = new JButton("Close");
+		closeButton = new JButton("Back");
 		closeButton.setFocusable(false);
 		closeButton.setBackground(new Color(131, 131, 131));
-		closeButton.addActionListener(this);
+		
 		center_panel.add(closeButton, "cell 6 18,growx");
 	}
 	
@@ -136,15 +140,14 @@ public class AbstractEmployeeFrame extends JFrame implements DefaultActionListen
 		return employee;
 	}
 	
-	protected void setEmployee(Employee emp) {
-		employee = emp;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(closeButton)) {
-			this.dispose();
+	protected void setEmployeeInformation(Employee emp) {
+		String jobTitle = null;
+		if(emp != null) {
+			employee = emp;
+			currentDepartment = App.departmentsMap.get(employee.getDepartmentName());
+			jobTitle = currentDepartment.getFilledJobPositions().get(employee.getJobId());
 		}
+		
+		jobPosition = currentDepartment.getJobPositions().get(jobTitle);
 	}
-
 }

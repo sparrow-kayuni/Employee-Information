@@ -11,17 +11,27 @@ public class Employee implements Comparable<Employee>{
 	private int employeeId;
 	private String email;
 	private String phoneNumber;
-	private JobPosition jobPosition = null;
+	private String departmentName;
+	private int jobId;
 	
 	public Employee() {
 		//
 	}
 	
-	public Employee(String fName, String lName, int empId, String email2, String phone, int jobId) {
+	/**
+	 * 
+	 * @param fName
+	 * @param lName
+	 * @param empId
+	 * @param email
+	 * @param phone
+	 * @param jobId
+	 */
+	public Employee(String fName, String lName, int empId, String email, String phone, int jobId) {
 		setFirstName(fName);
 		setSurname(lName);
 		setEmployeeId(empId);
-		setEmail(email2);
+		setEmail(email);
 		setPhoneNumber(phone);
 		setJobId(jobId);
 	}
@@ -69,39 +79,36 @@ public class Employee implements Comparable<Employee>{
 	public String getEmployeeInfoFormatted() {
 		String id = Integer.toString(employeeId);
 		String fullName = firstName + " " + surname;
-		String jobTitle = jobPosition.getJobTitle();
-		String deptName = jobPosition.getDepartment().getDepartmentName();
 		
 		while(id.length() < 20) {
 			id = id + " ";
 		}
 		while(fullName.length() < 25) {
 			fullName = fullName + " ";
-		}
-		while(jobTitle.length() < 25) {
-			jobTitle = jobTitle + " ";
-		}
+		}		
 		
-		
-		return id + fullName + jobTitle + deptName;
-	}
-
-	public JobPosition getJobPosition() {
-		return jobPosition;
-	}
-
-	public void setJobPosition(JobPosition position) {
-		this.jobPosition = position;
-	}
-	
-	public void setJobId(int jobId) {
-		this.jobPosition = new JobPosition(jobId);
-		
+		return id + fullName;
 	}
 
 	@Override
 	public int compareTo(Employee o) {
 		// TODO Auto-generated method stub
 		return o.getEmployeeId();
+	}
+
+	public String getDepartmentName() {
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
+
+	public int getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(int jobId) {
+		this.jobId = jobId;
 	}
 }

@@ -8,19 +8,15 @@ package main.models;
 public class JobPosition {
 	private int jobId;
 	private String jobTitle;
-	private int departmentId;
 	private float hourlyPay;
 	private String password;
 	public boolean isLoggedIn = false;
-	private Department department;
+	public boolean isFilled = false;
+	private Employee employee = null;
 	
-	public JobPosition(int id) {
+	public JobPosition(int id, String title, float pay, String pw) {
 		setJobId(id);
-	}
-	
-	public void setJobPositionDetails(String title, int deptId, float pay, String pw) {
 		setJobTitle(title);
-		setDepartmentId(deptId);
 		setHourlyPay(pay);
 		setPassword(pw);
 	}
@@ -41,14 +37,6 @@ public class JobPosition {
 		this.jobTitle = jobTitle;
 	}
 
-	public int getDepartmentId() {
-		return departmentId;
-	}
-
-	public void setDepartmentId(int departmentId) {
-		this.departmentId = departmentId;
-	}
-
 	public float getHourlyPay() {
 		return hourlyPay;
 	}
@@ -65,13 +53,12 @@ public class JobPosition {
 		this.password = password;
 	}
 
-	public Department getDepartment() {
-		return department;
+	public Employee getEmployee() {
+		return employee;
 	}
 
-	public void setDepartment(Department department) {
-		
-		this.department = department;
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
 	}
 
 }

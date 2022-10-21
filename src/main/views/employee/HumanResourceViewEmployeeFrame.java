@@ -22,10 +22,9 @@ public class HumanResourceViewEmployeeFrame extends AbstractViewEmployeeFrame
 	private static final long serialVersionUID = 1L;
 	
 	protected EmployeeActionButton editEmployeeButton = null;
-	protected EmployeeActionButton deleteEmployeeButton = null;
 
 	public HumanResourceViewEmployeeFrame(Employee emp) {
-		setEmployee(emp);
+		setEmployeeInformation(emp);
 		setTitle("Employee Details");
 		initializePanels();
 		addTextPanes();
@@ -33,17 +32,14 @@ public class HumanResourceViewEmployeeFrame extends AbstractViewEmployeeFrame
 	}
 
 	private void initializeActionButtons() {
-		deleteEmployeeButton = new EmployeeActionButton("Delete Employee", new Color(215, 120, 120));
-		deleteEmployeeButton.addActionListener(this);
-		deleteEmployeeButton.enableButton();
-		
-		center_panel.add(deleteEmployeeButton, "cell 6 0,growx");
 		
 		editEmployeeButton = new EmployeeActionButton("Edit Employee", new Color(0, 120, 215));
 		editEmployeeButton.addActionListener(this);
 		editEmployeeButton.enableButton();
 		
 		center_panel.add(editEmployeeButton, "cell 4 18,growx");
+		
+		closeButton.addActionListener(this);
 	}
 	
 	@Override
@@ -57,10 +53,6 @@ public class HumanResourceViewEmployeeFrame extends AbstractViewEmployeeFrame
 			editEmployeeFrame.setVisible(true);
 			
 			this.dispose();
-		}
-		
-		if(e.getSource().equals(deleteEmployeeButton)) {
-			System.out.println("Delete Button Clicked");
 		}
 	}
 	

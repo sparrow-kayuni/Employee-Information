@@ -17,7 +17,7 @@ public class GeneralHomeFrame extends AbstractHomeFrame {
 	 */
 	public GeneralHomeFrame() {
 		employeeDetailsFrame = (GeneralViewEmployeeFrame) employeeDetailsFrame;
-		setTitle("Employee Information System");
+		setTitle("Employee Information");
 		initialize();
 	}
 

@@ -20,10 +20,10 @@ public class HomeFrameFactory {
 	 * @param deptList
 	 * @return AbstractHomeView 
 	 */
-	public static AbstractHomeFrame createHomeView(HashMap<String, Department> deptList) {
-		if(deptList.get("HUMAN RESOURCES").isLoggedIn) {
+	public static AbstractHomeFrame createHomeView(HashMap<String, Department> deptsMap) {
+		if(deptsMap.get("HUMAN RESOURCES").isLoggedIn) {
 			return new HumanResourceHomeFrame();
-		}else if(deptList.get("ACCOUNTS").isLoggedIn || deptList.get("EXECUTIVE").isLoggedIn){
+		}else if(deptsMap.get("ACCOUNTS").isLoggedIn || deptsMap.get("EXECUTIVE").isLoggedIn){
 			return new GeneralHomeFrame();
 		}
 		

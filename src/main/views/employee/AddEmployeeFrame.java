@@ -1,7 +1,8 @@
 package main.views.employee;
 
+
+import main.employeesystem.App;
 import main.models.Employee;
-import main.models.JobPosition;
 
 /**
  * 
@@ -12,25 +13,24 @@ import main.models.JobPosition;
 public class AddEmployeeFrame extends AbstractEditEmployeeFrame{
 
 	private static final long serialVersionUID = 1L;
+	private static String deptName = null;
 
-	public AddEmployeeFrame() {
-		employee = new Employee();
-		employee.setFirstName("");
-		employee.setSurname("");
-		employee.setEmail("");
-		employee.setPhoneNumber("");
-		employee.setJobId(0);
-		
-		JobPosition job = new JobPosition(0);
-		job.setJobTitle("");
-		job.setHourlyPay(0);
-		
-		employee.setJobPosition(job);
-		
-		setEmployee(employee);
-		setTitle("Edit Employee Details");
+	public AddEmployeeFrame(String dept) {
+		deptName = dept;
+		createNewEmployee();
+		setTitle("Add New Employee");
 		initializePanels();
 		addEditableFields();
+//		addUpdateButtons();
+	}
+
+	private static void createNewEmployee() {
+		int newEmployeeId = ++App.lastEmployeeId;
+		employee = new Employee("New", "Employee", newEmployeeId, "", "", 100001);
+		
+		currentDepartment = App.departmentsMap.get(deptName);
+		jobPosition = currentDepartment.getJobPositions().values().iterator().next();
+		
 	}
 
 }

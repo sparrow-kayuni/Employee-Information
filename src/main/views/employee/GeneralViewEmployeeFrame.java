@@ -18,7 +18,7 @@ public class GeneralViewEmployeeFrame extends AbstractViewEmployeeFrame
 	private static final long serialVersionUID = 1L;
 
 	public GeneralViewEmployeeFrame(Employee emp) {
-		setEmployee(emp);
+		setEmployeeInformation(emp);
 		setTitle("Employee Details");
 		initializePanels();
 		addTextPanes();

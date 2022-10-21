@@ -1,6 +1,6 @@
 package main.models;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 /**
  * 
  * @author Mwiinga Kayuni
@@ -11,14 +11,15 @@ public class Department {
 	private int departmentId;
 	private String departmentName;
 	private int managerId;
-	private HashMap<Integer, Employee> employeesMap;
+	private LinkedHashMap<String, JobPosition> jobPositionsMap = null;
+	private LinkedHashMap<Integer, String> filledJobPositions = null;
 	
 	public boolean isLoggedIn = false;
 	
 	public Department(int id, String deptName, int manager_id) {
 		setDepartmentId(id);
 		setDepartmentName(deptName);
-		initEmployeesList();
+		initializeJobPositions();
 		setManagerId(manager_id);
 	}
 	
@@ -33,27 +34,11 @@ public class Department {
 	public String getDepartmentName() {
 		return departmentName;
 	}
+	
 	public void setDepartmentName(String departmentName) {
 		this.departmentName = departmentName;
 	}
 	
-	public HashMap<Integer, Employee> getEmployeesList() {
-		return employeesMap;
-	}
-	
-	public void initEmployeesList() {
-		this.employeesMap = new HashMap<Integer, Employee>();
-	}
-	
-	public void setEmployeesList(HashMap<Integer, Employee> empList) {
-		this.employeesMap = empList;
-	}
-	
-	public void addEmployeeToDepartment(Employee emp) {
-		emp.getJobPosition().setDepartment(this);
-		this.employeesMap.put(emp.getEmployeeId(), emp);
-	}
-
 	public int getManagerId() {
 		return managerId;
 	}
@@ -61,9 +46,30 @@ public class Department {
 	public void setManagerId(int managerId) {
 		this.managerId = managerId;
 	}
+
+	public LinkedHashMap<String, JobPosition> getJobPositions() {
+		return jobPositionsMap;
+	}
 	
-//	private void sortEmployeesList() {
-//		//
-//	}
+	public void initializeJobPositions() {
+		this.jobPositionsMap = new LinkedHashMap<String, JobPosition>();
+		this.setFilledJobPositions(new LinkedHashMap<Integer, String>());
+	}
+	
+	public void addJobPosition(JobPosition jobPosition) {
+		this.jobPositionsMap.put(jobPosition.getJobTitle(), jobPosition);
+	}
+
+	public LinkedHashMap<Integer, String> getFilledJobPositions() {
+		return filledJobPositions;
+	}
+
+	public void setFilledJobPositions(LinkedHashMap<Integer, String> filledJobPositions) {
+		this.filledJobPositions = filledJobPositions;
+	}
+	
+	public void addToFilledPosition(int jobId, String jobTitle) {
+		this.filledJobPositions.put(jobId, jobTitle);
+	}
 	
 }

@@ -48,14 +48,14 @@ public class AbstractViewEmployeeFrame extends AbstractEmployeeFrame {
 		center_panel.add(surnameTextPane, "cell 2 6 5 1,grow");
 		
 		departmentTextPane = new JTextPane();
-		departmentTextPane.setText(employee.getJobPosition().getDepartment().getDepartmentName());
+		departmentTextPane.setText(employee.getDepartmentName());
 		departmentTextPane.setFont(new Font("Segoe UI Historic", Font.PLAIN, 13));
 		departmentTextPane.setEditable(false);
 		departmentTextPane.setBackground(new Color(167, 167, 167));
-		center_panel.add(departmentTextPane, "cell 2 8 5 1,grow");
+		center_panel.add(departmentTextPane, "cell 2 8 5 1,grow"); 
 		
 		jobTitleTextPane = new JTextPane();
-		jobTitleTextPane.setText(employee.getJobPosition().getJobTitle());
+		jobTitleTextPane.setText(jobPosition.getJobTitle());
 		jobTitleTextPane.setFont(new Font("Segoe UI Historic", Font.PLAIN, 13));
 		jobTitleTextPane.setEditable(false);
 		jobTitleTextPane.setBackground(new Color(167, 167, 167));
@@ -74,9 +74,8 @@ public class AbstractViewEmployeeFrame extends AbstractEmployeeFrame {
 		phoneTextPane.setBackground(new Color(167, 167, 167));
 		center_panel.add(phoneTextPane, "cell 2 12 5 1,grow");
 		
-		
 		hourlyPayTextPane = new JTextPane();
-		hourlyPayTextPane.setText(Float.toString(employee.getJobPosition().getHourlyPay()));
+		hourlyPayTextPane.setText(Float.toString(jobPosition.getHourlyPay()));
 		hourlyPayTextPane.setFont(new Font("Segoe UI Historic", Font.PLAIN, 13));
 		hourlyPayTextPane.setEditable(false);
 		hourlyPayTextPane.setBackground(new Color(167, 167, 167));

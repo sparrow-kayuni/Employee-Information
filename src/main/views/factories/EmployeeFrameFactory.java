@@ -19,6 +19,11 @@ public class EmployeeFrameFactory {
 		return null;
 	}
 	
+	public static HumanResourceViewEmployeeFrame returnToViewEmployeeFrame(Employee emp) {
+		return new HumanResourceViewEmployeeFrame(emp);
+	}
+	
+	
 	public static EditEmployeeFrame createEditEmployeeFrame(Employee emp) {
 		if(emp != null) {
 			return new EditEmployeeFrame(emp);
@@ -26,8 +31,8 @@ public class EmployeeFrameFactory {
 		return null;
 	}
 
-	public static AddEmployeeFrame createAddEmployeeFrame() {
+	public static AddEmployeeFrame createAddEmployeeFrame(String deptName) {
 //		
-		return new AddEmployeeFrame();
+		return new AddEmployeeFrame(deptName);
 	}
 }

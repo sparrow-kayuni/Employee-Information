@@ -7,9 +7,11 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import main.models.Department;
 import main.models.Employee;
+import main.models.JobPosition;
 
 
 /**
@@ -25,6 +27,7 @@ public class PostgresDatabase {
 	private String password = "123";
 	private static Connection conn = null;
 	private static Statement statement;
+	private static LinkedHashMap<String, Department> departmentsMap = null;
 	
 	//Initialize and connect to the database
 	public PostgresDatabase() {
@@ -38,128 +41,119 @@ public class PostgresDatabase {
 		}
 	}
 	
-	/**
-	 * 
-	 * @return hashmap of the list of employees
-	 */
-	public HashMap<Integer, Employee>  generateEmployeesList() {
-		HashMap<Integer, Employee> employeesMap = new HashMap<Integer, Employee>();
+	
+	public HashMap<String, Department> createDepartmentsMap() {
+		departmentsMap = new LinkedHashMap<String, Department>();
 		
-		employeesMap.putAll(addEmployees(employeesMap));
+		createDepartmentObjects();
+		addJobPositionsToDepartments();		
+		fillJobPositions();
 		
-		employeesMap.putAll(addEmployeeJobPositionDetails(employeesMap));
-
-		return employeesMap;
+		return departmentsMap;
 	}
 	
-	/**
-	 * 
-	 * @param empsMap
-	 * @return employeelist hashmap
-	 * @implNote queries the database for all the employees and creates employee objects
-	 * which it adds to the employeemap hashmap
-	 */
-	private HashMap<Integer, Employee> addEmployees(HashMap<Integer, Employee> empsMap) {
+	
+	//Creates departments objects and adds them to departments map
+	public void createDepartmentObjects() {
 		try {
-			if (conn != null) {
-				String query = "SELECT * FROM public.employees ORDER BY employee_id ASC";
-				ResultSet resultSet = statement.executeQuery(query);
-				
-				while(resultSet.next()) {
-					empsMap.put(
-						resultSet.getInt("employee_id"),
-						createEmployee(
-							resultSet.getString("first_name"), resultSet.getString("surname"),
-							resultSet.getInt("employee_id"), resultSet.getString("email"),
-							resultSet.getString("phone"), resultSet.getInt("job_id")
-						)	
-					);	
-				}
+			if(conn != null) {
+				String query = "SELECT * FROM departments ORDER BY department_id ASC";
+				ResultSet results = statement.executeQuery(query);
+
+				while(results.next()) {
+					Department dept = new Department(
+							results.getInt("department_id"), 
+							results.getString("department_name").toUpperCase(), 
+							results.getInt("department_manager_id"));
+					
+					departmentsMap.put(results.getString("department_name").toUpperCase(), dept);
+				}	
 			}
-		} catch(Exception e) {
+		}catch(Exception e) {
 			e.printStackTrace();
-		}
-		return empsMap;
-	}
-
-
-	private Employee createEmployee(String fName, String surname, int empId, String email, String phone, int jobId) {
-		return new Employee(fName, surname, empId, email, phone, jobId);
+		}		
 	}
 	
-	/**
-	 * 
-	 * @param employeesMap
-	 * @return complete employee hashmap
-	 * @implNote Queries the database for job positions, then iterates through the empoyee list
-	 * to set the employee job position details
-	 */
-	public HashMap<Integer, Employee> addEmployeeJobPositionDetails(HashMap<Integer, Employee> employeesMap) {
-		String query = "SELECT * FROM public.job_positions ORDER BY job_id ASC";
+	
+	//Add job positions to each department in the departments map
+	public void addJobPositionsToDepartments() {
+		String query = "SELECT * FROM public.job_positions ORDER BY job_title ASC";
+		
 		try {
 			ResultSet results = statement.executeQuery(query);
+			
 			while(results.next()) {
-				Iterator<Employee> empItr = employeesMap.values().iterator();
+				Iterator<Department> deptItr = departmentsMap.values().iterator();
 				
-				while(empItr.hasNext()) {
-					Employee emp = empItr.next();
-					if(emp.getJobPosition().getJobId() == results.getInt("job_id")){
-						emp.getJobPosition().setJobPositionDetails(
-							results.getString("job_title"), results.getInt("department_id"),
-							results.getFloat("hourly_pay"), results.getString("password")
+				//iterate through the departments map and add corresponding job positions
+				//to each department object then update departments map
+				while(deptItr.hasNext()) {
+					Department dept = deptItr.next();
+					
+					if(dept.getDepartmentId() == results.getInt("department_id")){
+						dept.addJobPosition(
+								new JobPosition(
+									results.getInt("job_id"), results.getString("job_title"), 
+									results.getFloat("hourly_pay"), results.getString("password")
+							)
 						);
 					}
+					departmentsMap.replace(dept.getDepartmentName(), dept);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return employeesMap;
 	}
 	
-	/**
-	 * 
-	 * @param departmentsMap
-	 * @param employeesMap
-	 * @return hashmap of departments
-	 * @implNote Queries the database or the departments, then creates the department objects.
-	 * Then it iterates through the employee hashmap and adds employee to corresponding department objects
-	 * 
-	 */
-	public HashMap<String, Department> organizeEmployeesByDepartment(HashMap<String, Department> deptsMap, 
-			HashMap<Integer, Employee> empsMap) {
+	
+	//Queries employees table and fills the appropriate job position
+	private void fillJobPositions() {
 		try {
-			if(conn != null) {
-				String query = "SELECT * FROM departments ORDER BY department_id ASC";
-				ResultSet results = statement.executeQuery(query);
+			if (conn != null) {
+				String query = "SELECT * FROM public.employees ORDER BY job_id ASC";
+				ResultSet resultSet = statement.executeQuery(query);
 				
-				Department universalDept = new Department(0, "All Departments", 0);
-				universalDept.setEmployeesList(empsMap);
-
-				while(results.next()) {
-					Department dept = new Department(
-							results.getInt("department_id"), results.getString("department_name"), 
-							results.getInt("department_manager_id"));
+				while(resultSet.next()) {
+					//create employee object
+					Employee emp = new Employee(
+							resultSet.getString("first_name"), resultSet.getString("surname"),
+							resultSet.getInt("employee_id"), resultSet.getString("email"),
+							resultSet.getString("phone"), resultSet.getInt("job_id")
+						);
 					
-					Iterator<Employee> empItr = empsMap.values().iterator();
-					
-					while(empItr.hasNext()) {
-						Employee emp = empItr.next();
-						if(emp.getJobPosition().getDepartmentId()
-								== results.getInt("department_id")){
-							dept.addEmployeeToDepartment(emp);
-						}
+					//Iterate through each department
+					Iterator<Department> deptItr = departmentsMap.values().iterator();
+					try {
+						while(deptItr.hasNext()) {
+							Department dept = deptItr.next();
+							
+							//Iterate through job positions of the department
+							Iterator<JobPosition> jobsItr = dept.getJobPositions().values().iterator();
+							while(jobsItr.hasNext()) {
+								JobPosition job = jobsItr.next();
+								
+								if(resultSet.getInt("job_id") == job.getJobId()) {
+									emp.setDepartmentName(dept.getDepartmentName());
+									
+									job.setEmployee(emp);
+									job.isFilled = true;
+									
+									App.lastEmployeeId = emp.getEmployeeId();
+									
+									dept.addToFilledPosition(job.getJobId(), job.getJobTitle());
+									dept.getJobPositions().replace(job.getJobTitle(), job);
+								}
+							}
+							departmentsMap.replace(dept.getDepartmentName(), dept);
+						}	
+					}catch(Exception e) {
+						e.printStackTrace();
 					}
-					
-					deptsMap.put(results.getString("department_name").toUpperCase(), dept);
 				}
-				deptsMap.put(universalDept.getDepartmentName().toUpperCase(), universalDept);	
 			}
-		}catch(Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
-		return deptsMap;
 	}
 }

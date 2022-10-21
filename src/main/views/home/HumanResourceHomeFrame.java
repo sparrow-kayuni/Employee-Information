@@ -19,7 +19,7 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 
 	public HumanResourceHomeFrame() {
 		setResizable(false);
-		setTitle("Employee Information System (HR)");
+		setTitle("Employee Information (HR)");
 		initialize();
 		initializeEditButtons();
 	}

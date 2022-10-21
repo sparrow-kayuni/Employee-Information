@@ -118,10 +118,12 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 		
 		ArrayList<String> deptListVals = new ArrayList<String>();
 		
-		Iterator<Department> itr = App.departmentsMap.values().iterator();
+		deptListVals.add("ALL DEPARTMENTS");
 		
-		while(itr.hasNext()) {
-			deptListVals.add(itr.next().getDepartmentName().toUpperCase());
+		Iterator<Department> deptItr = App.departmentsMap.values().iterator();
+		
+		while(deptItr.hasNext()) {
+			deptListVals.add(deptItr.next().getDepartmentName());
 		}
 		
 		deptsListDisplay.setModel(new AbstractListModel<String>() {
@@ -213,12 +215,19 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 		
 		if(e.getSource().equals(addEmployeeButton)) {
 			if(addEmployeeButton != null) {
-				AddEmployeeFrame addEmployeeFrame = EmployeeFrameFactory.createAddEmployeeFrame();
+				String deptName = null;
+				if(deptsListDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) deptName = "EXECUTIVE"; 
+				else deptName = deptsListDisplay.getSelectedValue();
+				
+				System.out.println(deptName);
+				
+				AddEmployeeFrame addEmployeeFrame = EmployeeFrameFactory.createAddEmployeeFrame(deptName);
 				addEmployeeFrame.setVisible(true);
 			}
 		}
 	}
 
+	
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		
@@ -228,13 +237,27 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 			//stores employee values
 			empVals = new ArrayList<Employee>();
 			
-			//Iterate through department's employee map and add employee values to empVals
 			try {
-				Iterator<Employee> empItr = App.departmentsMap.get(deptsListDisplay.getSelectedValue())
-						.getEmployeesList().values().iterator();
-				while(empItr.hasNext()) {
-					empVals.add(empItr.next());
-				}	
+				if(deptsListDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
+					Iterator<Department> deptItr = App.departmentsMap.values().iterator();
+					
+					while(deptItr.hasNext()) {
+						Department dept = deptItr.next();
+						Iterator<String> jobIdItr  = dept.getFilledJobPositions().values().iterator();
+						
+						while(jobIdItr.hasNext()) {
+							empVals.add(dept.getJobPositions().get(jobIdItr.next()).getEmployee());
+						}
+					}
+				}else {
+					Department dept = App.departmentsMap.get(deptsListDisplay.getSelectedValue());
+					
+					Iterator<String> jobIdItr  = dept.getFilledJobPositions().values().iterator();
+					
+					while(jobIdItr.hasNext()) {
+						empVals.add(dept.getJobPositions().get(jobIdItr.next()).getEmployee());
+					}
+				}
 			}catch(NullPointerException err) {
 				err.printStackTrace();
 			}
