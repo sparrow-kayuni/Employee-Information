@@ -18,7 +18,8 @@ public class EditEmployeeFrame extends AbstractEditEmployeeFrame {
 		setTitle("Edit Employee Details");
 		initializePanels();
 		addEditableFields();
-		addUpdateButtons();
+		addSaveButton();
+		addDeleteButton();
 	}
 
 }

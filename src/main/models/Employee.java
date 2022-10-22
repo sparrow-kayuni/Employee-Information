@@ -13,6 +13,7 @@ public class Employee implements Comparable<Employee>{
 	private String phoneNumber;
 	private String departmentName;
 	private int jobId;
+	private boolean infoFilled = false;
 	
 	public Employee() {
 		//
@@ -110,5 +111,13 @@ public class Employee implements Comparable<Employee>{
 
 	public void setJobId(int jobId) {
 		this.jobId = jobId;
+	}
+
+	public boolean hasInfoFilled() {
+		return infoFilled;
+	}
+
+	public void setHasInfo(boolean infoFilled) {
+		this.infoFilled = infoFilled;
 	}
 }

@@ -29,6 +29,7 @@ public class AbstractEmployeeFrame extends JFrame {
 	protected static Employee employee = null;
 	protected static Department currentDepartment = null;
 	protected static JobPosition jobPosition = null;
+	protected static boolean hasInfo = false;
 	
 	protected JButton closeButton = null;
 	
@@ -146,6 +147,7 @@ public class AbstractEmployeeFrame extends JFrame {
 			employee = emp;
 			currentDepartment = App.departmentsMap.get(employee.getDepartmentName());
 			jobTitle = currentDepartment.getFilledJobPositions().get(employee.getJobId());
+			
 		}
 		
 		jobPosition = currentDepartment.getJobPositions().get(jobTitle);

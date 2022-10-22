@@ -20,6 +20,8 @@ import main.models.Department;
 import main.models.Employee;
 import main.models.JobPosition;
 import main.views.components.EmployeeActionButton;
+import main.views.dialogs.AbstractUpdateChangesDialog;
+import main.views.dialogs.DeleteEmployeeDialog;
 import main.views.dialogs.SaveChangesDialog;
 import main.views.factories.EmployeeFrameFactory;
 import main.views.listeners.EditActionListener;
@@ -47,7 +49,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 	protected EmployeeActionButton deleteEmployeeButton = null;
 	protected EmployeeActionButton saveChangesButton = null;
 	
-	protected SaveChangesDialog saveChangesDialog = null;
+	protected AbstractUpdateChangesDialog saveChangesDialog = null;
 	
 	private int selectedDepartmentIndex = 0;
 	private int selectedJobPositionIndex = 0;
@@ -139,18 +141,19 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		center_panel.add(hourlyPaySpinner, "cell 2 16 5 1,grow");		
 	}
 	
-	
-	protected void addUpdateButtons() {
-		deleteEmployeeButton = new EmployeeActionButton("Delete Employee", new Color(215, 120, 120));
-		deleteEmployeeButton.addActionListener(this);
-		deleteEmployeeButton.enableButton();
-		center_panel.add(deleteEmployeeButton, "cell 6 0,growx");
-		
+	protected void addSaveButton() {
 		saveChangesButton = new EmployeeActionButton("Save", new Color(0, 120, 215));
 		saveChangesButton.addActionListener(this);
 		saveChangesButton.enableButton();
 		center_panel.add(saveChangesButton, "cell 4 18,growx");
 		closeButton.addActionListener(this);
+	}
+	
+	protected void addDeleteButton() {
+		deleteEmployeeButton = new EmployeeActionButton("Delete Employee", new Color(215, 120, 120));
+		deleteEmployeeButton.addActionListener(this);
+		deleteEmployeeButton.enableButton();
+		center_panel.add(deleteEmployeeButton, "cell 6 0,growx");
 	}
 	
 	
@@ -159,8 +162,11 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		
 		//Close button clicked
 		if(e.getSource().equals(closeButton)) {
-			HumanResourceViewEmployeeFrame frame = EmployeeFrameFactory.returnToViewEmployeeFrame(employee);
-			frame.setVisible(true);
+			AbstractEmployeeFrame frame = null;
+			if(!employee.getFirstName().equals("New")) {
+				frame = EmployeeFrameFactory.returnToViewEmployeeFrame(employee);
+				frame.setVisible(true);
+			}
 			this.dispose();
 		}
 		
@@ -220,10 +226,10 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 			}
 		}
 		
-//		if(saveChangesDialog != null) {
-//			if(saveChangesDialog.isVisible()) {
-//				deactivateEditableFields();
-//			}
-//		}
+		if(e.getSource().equals(deleteEmployeeButton)) {
+			saveChangesDialog = new DeleteEmployeeDialog(employee);
+			saveChangesDialog.setVisible(true);
+		}
+		
 	}
 }

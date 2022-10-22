@@ -21,7 +21,7 @@ public class AddEmployeeFrame extends AbstractEditEmployeeFrame{
 		setTitle("Add New Employee");
 		initializePanels();
 		addEditableFields();
-//		addUpdateButtons();
+		addSaveButton();
 	}
 
 	private static void createNewEmployee() {
