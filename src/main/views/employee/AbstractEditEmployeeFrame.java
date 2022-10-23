@@ -64,7 +64,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		center_panel.add(employeeIdNumber, "cell 2 2");
 		
 		firstNameTextField = new JTextField();
-		firstNameTextField.setToolTipText("Enter First Name Here");
+		firstNameTextField.setToolTipText("Enter First Name");
 		firstNameTextField.setText(employee.getFirstName());
 		firstNameTextField.setFont(new Font("Segoe UI Historic", Font.PLAIN, 13));
 		firstNameTextField.setBackground(new Color(167, 167, 167));
@@ -72,6 +72,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		center_panel.add(firstNameTextField, "cell 2 4 5 1,grow");
 		
 		surnameTextField = new JTextField();
+		surnameTextField.setToolTipText("Enter Surname");
 		surnameTextField.setText(employee.getSurname());
 		surnameTextField.setFont(new Font("Segoe UI Historic", Font.PLAIN, 13));
 		surnameTextField.setBackground(new Color(167, 167, 167));
@@ -92,6 +93,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		}
 		
 		departmentNameComboBox = new JComboBox<String>();
+		departmentNameComboBox.setToolTipText("Select Department");
 		departmentNameComboBox.setBackground(new Color(167, 167, 167));
 		departmentNameComboBox.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
 		departmentNameComboBox.setModel(new DefaultComboBoxModel<String>(departmentsList));
@@ -113,6 +115,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		}
 		
 		jobTitleComboBox = new JComboBox<String>();
+		jobTitleComboBox.setToolTipText("Select Job Position");
 		jobTitleComboBox.setModel(new DefaultComboBoxModel<String>(jobsList));
 		jobTitleComboBox.setSelectedIndex(selectedJobPositionIndex);
 		jobTitleComboBox.setBackground(new Color(167, 167, 167));
@@ -121,6 +124,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		center_panel.add(jobTitleComboBox, "cell 2 10 5 1,grow");
 		
 		phoneTextField = new JTextField();
+		phoneTextField.setToolTipText("Enter Phone Number");
 		phoneTextField.setText(employee.getPhoneNumber());
 		phoneTextField.setFont(new Font("Segoe UI Historic", Font.PLAIN, 13));
 		phoneTextField.setBackground(new Color(167, 167, 167));
@@ -128,6 +132,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		center_panel.add(phoneTextField, "cell 2 12 5 1,grow");
 		
 		emailTextField = new JFormattedTextField();
+		emailTextField.setToolTipText("Enter Email Address");
 		emailTextField.setText(employee.getEmail());
 		emailTextField.setFont(new Font("Segoe UI Historic", Font.PLAIN, 13));
 		emailTextField.setBackground(new Color(167, 167, 167));
@@ -135,6 +140,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		center_panel.add(emailTextField, "cell 2 14 5 1,grow");
 		
 		hourlyPaySpinner = new JSpinner();
+		hourlyPaySpinner.setToolTipText("Enter Hourly Pay");
 		hourlyPaySpinner.setModel(new SpinnerNumberModel(
 				Float.valueOf(jobPosition.getHourlyPay()), 
 				null, null, Float.valueOf(5)));
