@@ -20,13 +20,18 @@ public class AddEmployeeFrame extends AbstractEditEmployeeFrame{
 		createNewEmployee();
 		setTitle("Add New Employee");
 		initializePanels();
+		try {
+			employeeNameHeader.setText("New Employee");
+		}catch(Exception err){
+			err.printStackTrace();
+		}
 		addEditableFields();
 		addSaveButton();
 	}
 
 	private static void createNewEmployee() {
 		int newEmployeeId = ++App.lastEmployeeId;
-		employee = new Employee("New", "Employee", newEmployeeId, "", "", 100001);
+		employee = new Employee("", "", newEmployeeId, "", "", 100001);
 		
 		currentDepartment = App.departmentsMap.get(deptName);
 		jobPosition = currentDepartment.getJobPositions().values().iterator().next();

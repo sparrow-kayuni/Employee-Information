@@ -116,12 +116,11 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 		deptsListDisplay.setForeground(new Color(214, 214, 214));
 		deptsListDisplay.setBackground(new Color(60, 60, 60));
 		
+		//Set department list values
 		ArrayList<String> deptListVals = new ArrayList<String>();
-		
 		deptListVals.add("ALL DEPARTMENTS");
 		
 		Iterator<Department> deptItr = App.departmentsMap.values().iterator();
-		
 		while(deptItr.hasNext()) {
 			deptListVals.add(deptItr.next().getDepartmentName());
 		}
@@ -188,13 +187,12 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 		//View Selected Employee
 		if(e.getSource().equals(viewEmployeeButton)) {
 			try {
-				//if employeeDetails view isn't null, bring current employeeDetailsView to front
+				//if employee view frame exists, bring current employee view frame to front
 				if(employeeDetailsFrame != null) {
 					employeeDetailsFrame.setVisible(true);
 					
 				}else {
-					//if employeeDetailsFrame is null, create new employeeDetailsFrame with the current 
-					//selected employee
+					//if employee view frame exists, create new employee view frame with the current selected employee
 					selectedEmployeeIndex = employeesListDisplay.getSelectedIndex();
 					selectedEmployee = empVals.get(selectedEmployeeIndex);
 					employeeDetailsFrame = null;
@@ -213,13 +211,14 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 			}
 		}
 		
+		//
 		if(e.getSource().equals(addEmployeeButton)) {
 			if(addEmployeeButton != null) {
 				String deptName = null;
+				
+				//if department selected is "ALL DEPARTMENTS", set, by default, to EXECUTIVE department
 				if(deptsListDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) deptName = "EXECUTIVE"; 
 				else deptName = deptsListDisplay.getSelectedValue();
-				
-				System.out.println(deptName);
 				
 				AddEmployeeFrame addEmployeeFrame = EmployeeFrameFactory.createAddEmployeeFrame(deptName);
 				addEmployeeFrame.setVisible(true);
@@ -233,27 +232,28 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 		
 		// Department Selection Handling
 		if(e.getSource().equals(deptsListDisplay)) {
-			
-			//stores employee values
+
 			empVals = new ArrayList<Employee>();
+			Department dept = null;
 			
 			try {
+				
+				//when selected department is "ALL DEPARTMENTS", iterate through all departments and their job positions
 				if(deptsListDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
 					Iterator<Department> deptItr = App.departmentsMap.values().iterator();
 					
 					while(deptItr.hasNext()) {
-						Department dept = deptItr.next();
-						Iterator<String> jobIdItr  = dept.getFilledJobPositions().values().iterator();
+						dept = deptItr.next();
 						
+						Iterator<String> jobIdItr  = dept.getFilledJobPositions().values().iterator();
 						while(jobIdItr.hasNext()) {
 							empVals.add(dept.getJobPositions().get(jobIdItr.next()).getEmployee());
 						}
 					}
 				}else {
-					Department dept = App.departmentsMap.get(deptsListDisplay.getSelectedValue());
+					dept = App.departmentsMap.get(deptsListDisplay.getSelectedValue());
 					
 					Iterator<String> jobIdItr  = dept.getFilledJobPositions().values().iterator();
-					
 					while(jobIdItr.hasNext()) {
 						empVals.add(dept.getJobPositions().get(jobIdItr.next()).getEmployee());
 					}
@@ -272,7 +272,7 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 				
 			}
 			
-			//Set employeeListDisplay model with department employee values
+			//show job positions of selected department
 			employeesListDisplay.setModel(new AbstractListModel<String>() {
 				private static final long serialVersionUID = 1L;
 				
@@ -298,7 +298,7 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 		if(e.getSource().equals(employeesListDisplay)) {
 			try {
 				
-				//if employeeDetailsFrame is null, enable all buttons
+				//if employee view doesn't exist, enable all buttons
 				if(employeeDetailsFrame == null) {
 					employeesListDisplay.setSelectionBackground(new Color(1, 120, 255));
 					
@@ -313,7 +313,7 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 					}
 				}else {
 					
-					//If employeeDetailsrame is not showing, initialize employeeDetailsFrame & enable buttons
+					//If employee view exists, enable view button
 					if(!employeeDetailsFrame.isShowing()) {
 						employeeDetailsFrame = null;
 						

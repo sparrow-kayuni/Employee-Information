@@ -13,7 +13,6 @@ public class Employee implements Comparable<Employee>{
 	private String phoneNumber;
 	private String departmentName;
 	private int jobId;
-	private boolean infoFilled = false;
 	
 	public Employee() {
 		//
@@ -93,7 +92,6 @@ public class Employee implements Comparable<Employee>{
 
 	@Override
 	public int compareTo(Employee o) {
-		// TODO Auto-generated method stub
 		return o.getEmployeeId();
 	}
 
@@ -112,12 +110,15 @@ public class Employee implements Comparable<Employee>{
 	public void setJobId(int jobId) {
 		this.jobId = jobId;
 	}
-
-	public boolean hasInfoFilled() {
-		return infoFilled;
+	
+	public boolean isIdenticalTo(Employee emp) {
+		return getFirstName().equals(emp.getFirstName()) && getSurname().equals(emp.getSurname()) &&
+				getEmail().equals(emp.getEmail()) && getPhoneNumber().equals(emp.getPhoneNumber())
+				&& getEmployeeId() == emp.getEmployeeId() ? true: false;
 	}
-
-	public void setHasInfo(boolean infoFilled) {
-		this.infoFilled = infoFilled;
+	
+	public boolean hasInfoFilled() {
+		return !getFirstName().equals("") || !getSurname().equals("") ||
+				!getEmail().equals("") || !getPhoneNumber().equals("")? true: false;
 	}
 }

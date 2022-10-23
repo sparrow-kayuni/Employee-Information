@@ -41,6 +41,7 @@ public class AbstractEmployeeFrame extends JFrame {
 	protected JPanel center_panel;
 	
 	protected JLabel frameHeader;
+	protected static JLabel employeeNameHeader;
 
 
 	/**
@@ -83,7 +84,7 @@ public class AbstractEmployeeFrame extends JFrame {
 		panel.add(center_panel, BorderLayout.CENTER);
 		center_panel.setLayout(new MigLayout("", "[100.00][30.00][100.00,grow][100.00,grow][100.00][30.00][100.00,grow][40.00]", "[35.00][15.00][35.00,grow][20.00][35.00,grow][20.00,grow][35.00,grow][20.00][35.00,grow][20.00][35.00,grow][20.00][35.00,grow][20.00][35.00][20.00,grow][35.00][30.00][30.00]"));
 		
-		JLabel employeeNameHeader = new JLabel(employee.getFirstName().toUpperCase() 
+		employeeNameHeader = new JLabel(employee.getFirstName().toUpperCase() 
 				+ " " + employee.getSurname().toUpperCase());
 		employeeNameHeader.setHorizontalAlignment(SwingConstants.CENTER);
 		employeeNameHeader.setForeground(new Color(215, 215, 215));
@@ -143,11 +144,11 @@ public class AbstractEmployeeFrame extends JFrame {
 	
 	protected void setEmployeeInformation(Employee emp) {
 		String jobTitle = null;
+		
 		if(emp != null) {
 			employee = emp;
 			currentDepartment = App.departmentsMap.get(employee.getDepartmentName());
-			jobTitle = currentDepartment.getFilledJobPositions().get(employee.getJobId());
-			
+			jobTitle = currentDepartment.getFilledJobPositions().get(employee.getJobId());	
 		}
 		
 		jobPosition = currentDepartment.getJobPositions().get(jobTitle);
