@@ -59,6 +59,12 @@ public class JobPosition {
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+		this.isFilled = true;
+	}
+	
+	public void removeEmployee() {
+		this.employee = null;
+		this.isFilled = false;
 	}
 
 }

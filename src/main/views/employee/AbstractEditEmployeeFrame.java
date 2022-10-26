@@ -80,8 +80,8 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		center_panel.add(surnameTextField, "cell 2 6 5 1,grow");
 		
 		//initialize department options values and select current employee's department
-		String[] departmentsList = new String[App.departmentsMap.size()];
-		Iterator<Department> deptItr = App.departmentsMap.values().iterator();
+		String[] departmentsList = new String[App.getDepartments().size()];
+		Iterator<Department> deptItr = App.getDepartments().values().iterator();
 		int i = 0;
 		while(deptItr.hasNext()) {
 			Department dept = deptItr.next();
@@ -101,7 +101,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		departmentNameComboBox.setSelectedIndex(selectedDepartmentIndex);
 		center_panel.add(departmentNameComboBox, "cell 2 8 5 1,grow");
 		
-		//initialize job position values and select employee's current employee's job position 
+		//initialize job positions drop-down menu and select employee's current employee's job position,
 		String[] jobsList = new String[currentDepartment.getJobPositions().size()];
 		Iterator<JobPosition> jobsItr = currentDepartment.getJobPositions().values().iterator();
 		i = 0;
@@ -109,6 +109,8 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 			JobPosition job = jobsItr.next();
 			if(job.getJobId() == employee.getJobId()) {
 				selectedJobPositionIndex = i;
+			}else if(employee.getJobId() == 0) {
+				selectedJobPositionIndex = -1;
 			}
 			jobsList[i] = job.getJobTitle();
 			i++;
@@ -185,7 +187,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 			this.dispose();
 		}
 		
-		Department dept = App.departmentsMap.get(departmentNameComboBox.getSelectedItem());
+		Department dept = App.getDepartments().get(departmentNameComboBox.getSelectedItem());
 		
 		//Department selection handling
 		if(e.getSource().equals(departmentNameComboBox)) {
@@ -211,10 +213,12 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		if(e.getSource().equals(jobTitleComboBox)) {
 			try {
 				JobPosition job = dept.getJobPositions().get(jobTitleComboBox.getSelectedItem());
+				
 				hourlyPaySpinner.setValue(job.getHourlyPay());
 				
 				//if selected job is filled && isn't the same current job, show flash message
 				if(job.isFilled && employee.getJobId() != job.getJobId()) {
+					
 					//reset text fields and to default color
 					firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
 					surnameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
@@ -247,13 +251,16 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 					employee.getEmployeeId(), emailTextField.getText(), 
 					phoneTextField.getText(), newJobId
 					);
+			newEmployee.setDepartmentName((String) departmentNameComboBox.getSelectedItem());
+			
+			job.setHourlyPay((Float) hourlyPaySpinner.getValue());
 			
 			if(newEmployee.hasInfoFilled()){
 				//If changes where made
 				if(!employee.isIdenticalTo(newEmployee) || employee.getJobId() != job.getJobId()
 						|| !hourlyPaySpinner.getValue().equals(job.getHourlyPay())) {
 					//show save dialog
-					saveChangesDialog = new SaveChangesDialog(newEmployee);
+					saveChangesDialog = new SaveChangesDialog(this, newEmployee, employee, job);
 					saveChangesDialog.setVisible(true);
 					
 					//reset text fields and to default color

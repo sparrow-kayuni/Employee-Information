@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import main.models.Employee;
+import main.views.employee.AbstractEditEmployeeFrame;
 
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
@@ -25,12 +26,14 @@ public class AbstractUpdateChangesDialog extends JDialog {
 	protected JButton okButton = null;
 	protected JButton cancelButton = null;
 	protected Employee employee = null;
+	protected Employee oldEmployee = null;
+	protected AbstractEditEmployeeFrame editView = null;
 	
 
 	/**
 	 * Create the dialog.
 	 */
-	public void initializeDialog(Employee newEmployee, String prompt) {
+	public void initializeDialog(String prompt) {
 		setType(Type.POPUP);
 		setTitle("Are You Sure?");
 		setAlwaysOnTop(true);

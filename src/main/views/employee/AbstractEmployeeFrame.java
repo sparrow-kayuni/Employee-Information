@@ -147,8 +147,8 @@ public class AbstractEmployeeFrame extends JFrame {
 		
 		if(emp != null) {
 			employee = emp;
-			currentDepartment = App.departmentsMap.get(employee.getDepartmentName());
-			jobTitle = currentDepartment.getFilledJobPositions().get(employee.getJobId());	
+			currentDepartment = App.getDepartments().get(employee.getDepartmentName());
+			jobTitle = currentDepartment.getJobTitle(employee.getJobId());	
 		}
 		
 		jobPosition = currentDepartment.getJobPositions().get(jobTitle);

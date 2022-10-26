@@ -31,9 +31,9 @@ public class AddEmployeeFrame extends AbstractEditEmployeeFrame{
 
 	private static void createNewEmployee() {
 		int newEmployeeId = ++App.lastEmployeeId;
-		employee = new Employee("", "", newEmployeeId, "", "", 100001);
-		
-		currentDepartment = App.departmentsMap.get(deptName);
+		employee = new Employee("", "", newEmployeeId, "", "", 0);
+		employee.setDepartmentName(deptName);
+		currentDepartment = App.getDepartments().get(deptName);
 		jobPosition = currentDepartment.getJobPositions().values().iterator().next();
 		
 	}

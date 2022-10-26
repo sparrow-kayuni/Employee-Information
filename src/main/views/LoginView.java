@@ -8,6 +8,7 @@ import java.awt.FlowLayout;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
 
+import main.employeesystem.App;
 import main.models.Department;
 import main.views.factories.HomeFrameFactory;
 import main.views.home.AbstractHomeFrame;
@@ -19,7 +20,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 
 import javax.swing.JPasswordField;
 import java.awt.Component;
@@ -32,16 +32,13 @@ public class LoginView extends JFrame implements ActionListener {
 	private JTextField jobIdTextField;
 	private JPasswordField passwordField;
 	private JLabel flashMessage;
-	private static HashMap<String, Department> departmentsMap;
 	public boolean isLoggedIn = false;
 	
 	/**
 	 * Create the application.
 	 * @param managersList 
 	 */
-	public LoginView(HashMap<String, Department> deptsMap) {
-		departmentsMap = deptsMap;
-		
+	public LoginView(HashMap<String, Department> deptsMap) {		
 		initialize();
 	}
 
@@ -151,27 +148,29 @@ public class LoginView extends JFrame implements ActionListener {
 		try {
 			if(jobId == 0) throw new Exception();
 			
-			Iterator<Department> deptItr = departmentsMap.values().iterator();
-			LinkedHashMap<Integer, String> filledJobTitles;
-			
+			Iterator<Department> deptItr = App.getDepartments().values().iterator();
 			while(deptItr.hasNext()) {
 				Department dept = deptItr.next();
-				filledJobTitles = dept.getFilledJobPositions(); 
-				if(filledJobTitles.containsKey(jobId)) {
+				
+				//check if job id exists
+				if(dept.containsJobPosition(jobId)) {
+					String jobTitle = dept.getJobTitle(jobId);
+					
+					//check if job id and password are valid
 					if(getJobIdText().equals(
 							Integer.toString(dept.getJobPositions()
-									.get(filledJobTitles.get(jobId)).getJobId())) && 
+									.get(jobTitle).getJobId())) && 
 							getPasswordText().equals(dept.getJobPositions()
-									.get(filledJobTitles.get(jobId)).getPassword())) {
+									.get(jobTitle).getPassword())) {
 						
 						flashMessage.setText("Logging In");
 						flashMessage.setForeground(new Color(55, 146, 255));
 						flashMessage.setVisible(true);
 						
-						Department newDept = dept;
-						newDept.isLoggedIn = true;
+						//log in employee
+						App.logInEmployee(dept.getJobPositions().get(jobTitle).getEmployee());
 						
-						if(departmentsMap.replace(newDept.getDepartmentName(), dept, newDept)) {
+						if(App.getDepartments().get(dept.getDepartmentName()).isLoggedIn) {
 							proceedToHomeView();
 						};
 						
@@ -182,6 +181,7 @@ public class LoginView extends JFrame implements ActionListener {
 						flashMessage.setVisible(true);
 					}
 				}else{
+//					System.out.println("Job ID Doesn't Exist";)
 					flashMessage.setText("Job ID Doesn't Exist");
 					flashMessage.setForeground(new Color(215, 120, 0));
 					flashMessage.setVisible(true);
@@ -197,10 +197,8 @@ public class LoginView extends JFrame implements ActionListener {
 	
 	
 	private void proceedToHomeView() {
-
-		System.out.println(departmentsMap.toString() + "\n" + departmentsMap.get("HUMAN RESOURCES").isLoggedIn);
 		
-		AbstractHomeFrame homeView = HomeFrameFactory.createHomeView(departmentsMap);
+		AbstractHomeFrame homeView = HomeFrameFactory.createHomeView();
 		
 		if(homeView != null) {
 			this.dispose();

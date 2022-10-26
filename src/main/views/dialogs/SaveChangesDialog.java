@@ -3,7 +3,10 @@ package main.views.dialogs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import main.employeesystem.App;
 import main.models.Employee;
+import main.models.JobPosition;
+import main.views.employee.AbstractEditEmployeeFrame;
 import main.views.employee.HumanResourceViewEmployeeFrame;
 import main.views.factories.EmployeeFrameFactory;
 
@@ -13,9 +16,14 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private JobPosition jobPosition = null;
 
-	public SaveChangesDialog(Employee newEmployee) {
-		initializeDialog(newEmployee, "Are you sure you want to update changes made?");
+	public SaveChangesDialog(AbstractEditEmployeeFrame view, Employee newEmp, Employee oldEmp, JobPosition job) {
+		employee = newEmp;
+		oldEmployee = oldEmp;
+		editView = view;
+		jobPosition = job;
+		initializeDialog("Are you sure you want to update changes made?");
 		okButton.addActionListener(this);
 		cancelButton.addActionListener(this);
 	}
@@ -24,11 +32,37 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(okButton)) {
-			if(isValidEmployee()) {
-				HumanResourceViewEmployeeFrame frame = EmployeeFrameFactory.returnToViewEmployeeFrame(employee);
-				frame.setVisible(true);
-				this.dispose();
-			}	
+			
+			try{
+				
+				if(!oldEmployee.getFirstName().equals("")) {
+					//get previous job title and remove its employee
+					String oldJobTitle = App.getDepartments().get(oldEmployee.getDepartmentName())
+							.getJobTitle(oldEmployee.getJobId());
+					
+					App.getDepartments().get(oldEmployee.getDepartmentName())
+					.getJobPositions().get(oldJobTitle).removeEmployee();
+				}
+				
+				//get updated/new employee job title and set employee to the job position
+				String newJobTitle = App.getDepartments().get(employee.getDepartmentName())
+						.getJobTitle(employee.getJobId());
+				
+				App.getDepartments().get(employee.getDepartmentName())
+				.getJobPositions().get(newJobTitle).setEmployee(employee);
+				
+				App.getDepartments().get(employee.getDepartmentName())
+				.getJobPositions().get(jobPosition.getJobTitle()).setHourlyPay(jobPosition.getHourlyPay());
+				
+			}catch(Exception err) {
+				err.printStackTrace();
+			}
+
+			HumanResourceViewEmployeeFrame frame = EmployeeFrameFactory.returnToViewEmployeeFrame(employee);
+			
+			frame.setVisible(true);
+			this.dispose();
+			editView.dispose();
 		}
 		
 		if(e.getSource().equals(cancelButton)) {
@@ -37,9 +71,8 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 		
 	}
 
-	private boolean isValidEmployee() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+//	private boolean isValidEmployee() {
+//		return false;
+//	}
 
 }

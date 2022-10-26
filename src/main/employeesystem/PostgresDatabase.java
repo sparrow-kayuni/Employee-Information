@@ -137,13 +137,11 @@ public class PostgresDatabase {
 									emp.setDepartmentName(dept.getDepartmentName());
 									
 									job.setEmployee(emp);
-									job.isFilled = true;
 									
 									App.lastEmployeeId = emp.getEmployeeId();
-									
-									dept.addToFilledPosition(job.getJobId(), job.getJobTitle());
 									dept.getJobPositions().replace(job.getJobTitle(), job);
 								}
+								dept.addToJobTitlesMap(job.getJobId(), job.getJobTitle());
 							}
 							departmentsMap.replace(dept.getDepartmentName(), dept);
 						}	

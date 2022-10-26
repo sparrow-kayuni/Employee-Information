@@ -1,4 +1,7 @@
 package main.models;
+
+import main.employeesystem.App;
+
 /**
  * 
  * @author Mwiinga Kayuni
@@ -79,6 +82,7 @@ public class Employee implements Comparable<Employee>{
 	public String getEmployeeInfoFormatted() {
 		String id = Integer.toString(employeeId);
 		String fullName = firstName + " " + surname;
+		String jobTitle = App.getDepartments().get(this.departmentName).getJobTitle(this.jobId);
 		
 		while(id.length() < 20) {
 			id = id + " ";
@@ -87,7 +91,7 @@ public class Employee implements Comparable<Employee>{
 			fullName = fullName + " ";
 		}		
 		
-		return id + fullName;
+		return id + fullName + jobTitle;
 	}
 
 	@Override

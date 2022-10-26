@@ -18,17 +18,12 @@ import java.util.Iterator;
 public class App{
 	
 	private static PostgresDatabase db;
-	/**
-	 * 
-	 * stores all employee objects
-	 */
-	public static HashMap<Integer, Employee> allEmployeesMap;
-	
+
 	/**
 	 * 
 	 * stores all department objects
 	 */
-	public static HashMap<String, Department> departmentsMap;
+	private static HashMap<String, Department> departmentsMap;
 	
 	public static int lastEmployeeId;
 	
@@ -53,10 +48,10 @@ public class App{
 			
 			System.out.println(dept.getDepartmentName() + "\n-----------------------------");
 			
-			Iterator<String> jobTitleItr = dept.getFilledJobPositions().values().iterator();
+			Iterator<JobPosition> jobItr = dept.getJobPositions().values().iterator();
 			
-			while(jobTitleItr.hasNext()) {
-				JobPosition job = dept.getJobPositions().get(jobTitleItr.next());
+			while(jobItr.hasNext()) {
+				JobPosition job = jobItr.next();
 				
 				if(job.isFilled) {
 					System.out.println(job.getJobId() + " - " + job.getJobTitle() + 
@@ -91,13 +86,18 @@ public class App{
 		}
 	}
 	
-//	public static int getLastEmployeeId() {
-//		return lastEmployeeId;
-//	}
-//	
-//	public static void setLastEmployeeId(int empId) {
-//		lastEmployeeId = empId;
-//	}
+	public static void logInEmployee(Employee employee) {
+		departmentsMap.get(employee.getDepartmentName()).isLoggedIn = true;
+	}
+	
+	
+	public static void logOutEmployee(Employee employee) {
+		departmentsMap.get(employee.getDepartmentName()).isLoggedIn = false;
+	}
+	
+	public static HashMap<String, Department> getDepartments(){
+		return departmentsMap;
+	}
 
 }
 

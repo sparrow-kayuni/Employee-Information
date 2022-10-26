@@ -13,7 +13,7 @@ public class DeleteEmployeeDialog extends AbstractUpdateChangesDialog implements
 	private static final long serialVersionUID = 1L;
 	
 	public DeleteEmployeeDialog(Employee emp) {
-		initializeDialog(emp, "This action will permanently delete employee. Continue?");
+		initializeDialog("Action will permanently delete employee. Continue?");
 		okButton.addActionListener(this);
 		cancelButton.addActionListener(this);
 	}

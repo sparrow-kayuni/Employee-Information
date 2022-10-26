@@ -11,8 +11,10 @@ public class Department {
 	private int departmentId;
 	private String departmentName;
 	private int managerId;
-	private LinkedHashMap<String, JobPosition> jobPositionsMap = null;
-	private LinkedHashMap<Integer, String> filledJobPositions = null;
+	private LinkedHashMap<String, JobPosition> jobPositions = null;
+	
+	//maps job id 
+	private LinkedHashMap<Integer, String> jobTitlesMap = null;
 	
 	public boolean isLoggedIn = false;
 	
@@ -48,28 +50,32 @@ public class Department {
 	}
 
 	public LinkedHashMap<String, JobPosition> getJobPositions() {
-		return jobPositionsMap;
+		return jobPositions;
 	}
 	
 	public void initializeJobPositions() {
-		this.jobPositionsMap = new LinkedHashMap<String, JobPosition>();
-		this.setFilledJobPositions(new LinkedHashMap<Integer, String>());
+		this.jobPositions = new LinkedHashMap<String, JobPosition>();
+		this.setJobPositionsMap(new LinkedHashMap<Integer, String>());
 	}
 	
 	public void addJobPosition(JobPosition jobPosition) {
-		this.jobPositionsMap.put(jobPosition.getJobTitle(), jobPosition);
+		this.jobPositions.put(jobPosition.getJobTitle(), jobPosition);
 	}
 
-	public LinkedHashMap<Integer, String> getFilledJobPositions() {
-		return filledJobPositions;
-	}
-
-	public void setFilledJobPositions(LinkedHashMap<Integer, String> filledJobPositions) {
-		this.filledJobPositions = filledJobPositions;
+	public String getJobTitle(int jobId) {
+		return jobTitlesMap.get(jobId);
 	}
 	
-	public void addToFilledPosition(int jobId, String jobTitle) {
-		this.filledJobPositions.put(jobId, jobTitle);
+	public boolean containsJobPosition(int jobId) {
+		return jobTitlesMap.containsKey(jobId);
+	}
+
+	public void setJobPositionsMap(LinkedHashMap<Integer, String> jobTitlesMap) {
+		this.jobTitlesMap = jobTitlesMap;
+	}
+	
+	public void addToJobTitlesMap(int jobId, String jobTitle) {
+		this.jobTitlesMap.put(jobId, jobTitle);
 	}
 	
 }
