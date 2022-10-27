@@ -58,11 +58,7 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 				err.printStackTrace();
 			}
 			
-			//notify all update listeners
-			UpdateEvent event = new UpdateEvent(this);
-			for(int i = 0; i < updateListeners.size(); i++) {
-				((EmployeeUpdateListener) updateListeners.get(i)).onEmployeeUpdate(event);
-			}
+			notifyListeners();
 
 			HumanResourceViewEmployeeFrame frame = EmployeeFrameFactory.returnToViewEmployeeFrame(employee);
 			
@@ -73,7 +69,14 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 		if(e.getSource().equals(cancelButton)) {
 			this.dispose();
 		}
-		
+	}
+	
+	private void notifyListeners() {
+		//notify all update listeners
+		UpdateEvent event = new UpdateEvent(this);
+		for(int i = 0; i < updateListeners.size(); i++) {
+			((EmployeeUpdateListener) updateListeners.get(i)).onEmployeeUpdate(event);
+		}
 	}
 
 }

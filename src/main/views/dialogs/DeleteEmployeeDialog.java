@@ -3,7 +3,10 @@ package main.views.dialogs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import main.employeesystem.App;
 import main.models.Employee;
+import main.views.events.UpdateEvent;
+import main.views.listeners.EmployeeUpdateListener;
 
 public class DeleteEmployeeDialog extends AbstractUpdateChangesDialog implements ActionListener {
 
@@ -13,6 +16,7 @@ public class DeleteEmployeeDialog extends AbstractUpdateChangesDialog implements
 	private static final long serialVersionUID = 1L;
 	
 	public DeleteEmployeeDialog(Employee emp) {
+		employee = emp;
 		initializeDialog("Action will permanently delete employee. Continue?");
 		okButton.addActionListener(this);
 		cancelButton.addActionListener(this);
@@ -20,8 +24,31 @@ public class DeleteEmployeeDialog extends AbstractUpdateChangesDialog implements
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		if(e.getSource().equals(okButton)) {
+			//get previous job title and remove its employee
+			String jobTitle = App.getDepartments().get(employee.getDepartmentName())
+					.getJobTitle(employee.getJobId());
+			
+			App.getDepartments().get(employee.getDepartmentName())
+			.getJobPositions().get(jobTitle).removeEmployee();
+			
+			notifyListeners();
+			
+			this.dispose();
+		}
 		
+		if(e.getSource().equals(cancelButton)) {
+			this.dispose();
+		}
+		
+	}
+	
+	private void notifyListeners() {
+		//notify all update listeners
+		UpdateEvent event = new UpdateEvent(this);
+		for(int i = 0; i < updateListeners.size(); i++) {
+			((EmployeeUpdateListener) updateListeners.get(i)).onEmployeeUpdate(event);
+		}
 	}
 
 }

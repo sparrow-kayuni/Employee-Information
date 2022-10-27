@@ -22,6 +22,7 @@ public class HomeFrameFactory {
 	 * @return AbstractHomeView 
 	 */
 	public static AbstractHomeFrame createHomeView() {
+		
 		if(App.getDepartments().get("HUMAN RESOURCES").isLoggedIn) {
 			return new HumanResourceHomeFrame();
 		}else if(App.getDepartments().get("ACCOUNTS").isLoggedIn || App.getDepartments().get("EXECUTIVE").isLoggedIn){

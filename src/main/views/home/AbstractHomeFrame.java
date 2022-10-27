@@ -67,11 +67,14 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 	protected static AbstractEmployeeFrame viewEmployeeFrame = null;
 	protected static Employee selectedEmployee = null;
 	protected static ArrayList<Employee> empVals = null;
+	protected static ArrayList<String> deptListVals = null;
+	
+	protected static boolean searchMode = false;
 	
 	protected int selectedEmployeeIndex = 0;
 	
-	private final int width = 740;
-	private final int height = 570;
+	private final int width = 810;
+	private final int height = 660;
 
 	
 	protected void initialize() {
@@ -101,6 +104,7 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 		
 		searchButton = new JButton("Search");
 		searchButton.setBackground(new Color(140, 140, 140));
+		searchButton.addActionListener(this);
 		searchButton.setFocusable(false);
 		
 		north_panel.add(searchButton);
@@ -130,7 +134,7 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 		departmentsDisplay.setBackground(new Color(60, 60, 60));
 		
 		//Set department list values
-		ArrayList<String> deptListVals = new ArrayList<String>();
+		deptListVals = new ArrayList<String>();
 		deptListVals.add("ALL DEPARTMENTS");
 		
 		Iterator<Department> deptItr = App.getDepartments().values().iterator();
@@ -237,8 +241,73 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 				addEmployeeFrame.setVisible(true);
 			}
 		}
+		
+		
+		//search handling
+		if(e.getSource().equals(searchButton)) {
+			if(searchTextField.getText().equals("Enter Text Here") || searchTextField.getText().equals("")) {
+				//Enter valid text
+			}
+			empVals = new ArrayList<Employee>();
+			
+			String search = searchTextField.getText();
+			
+			deptListVals.add("SEARCH RESULTS");
+			
+			searchMode = true;
+			
+			departmentsDisplay.setModel(new AbstractListModel<String>() {
+				private static final long serialVersionUID = 1L;
+				
+				ArrayList<String> values = deptListVals;
+				public int getSize() {
+					return values.size();
+				}
+				public String getElementAt(int index) {
+					return values.get(index);
+				}
+			});
+			
+			departmentsDisplay.setSelectedIndex(6);
+			
+			headerLabel = new JLabel(departmentsDisplay.getSelectedValue());
+			
+			Iterator<Department> deptItr = App.getDepartments().values().iterator();
+			while(deptItr.hasNext()) {
+				Department dept = deptItr.next();
+				JobPosition[] jobs = dept.getJobPositions().values()
+						.toArray(new JobPosition[dept.getJobPositions().size()]);
+				for(int i = 0; i < jobs.length; i++) {
+					if(jobs[i].isFilled) {
+						if(jobs[i].getEmployee().getFirstName().matches(String.format("\\w{0,}%s\\w{0,}", search)) || 
+								jobs[i].getEmployee().getSurname().matches(String.format("\\w{0,}%s\\w{0,}", search))) {
+							empVals.add(jobs[i].getEmployee());
+						}
+					}
+				}
+			}
+			
+			//sort employees by employee id
+			empVals.sort((Comparator<? super Employee>) new Employee());
+			
+			//show job positions of selected department
+			employeesDisplay.setModel(new AbstractListModel<String>() {
+				private static final long serialVersionUID = 1L;
+				
+				ArrayList<Employee> values = empVals;
+				public int getSize() {
+					return values.size();
+				}
+				
+				public String getElementAt(int index) {
+					return values.get(index).getEmployeeInfoFormatted();
+				}
+			});
+		}
 	}
 
+	
+	//
 	protected void refreshEmployeesDisplay() {
 		empVals = new ArrayList<Employee>();
 		Department dept = null;
@@ -308,12 +377,13 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 		}
 	}
 	
+	
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		
 		// Department Selection Handling
 		if(e.getSource().equals(departmentsDisplay)) {
-			refreshEmployeesDisplay();
+			if(!searchMode) refreshEmployeesDisplay();
 		}
 		
 		//Employee Selection Handling

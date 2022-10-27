@@ -3,6 +3,8 @@ package main.views.employee;
 
 import main.employeesystem.App;
 import main.models.Employee;
+import main.views.events.UpdateEvent;
+import main.views.listeners.EmployeeUpdateListener;
 
 /**
  * 
@@ -10,7 +12,7 @@ import main.models.Employee;
  * @implSpec AddEmployeeFrame contains empty AbstractEditEmployeeFrame
  *
  */
-public class AddEmployeeFrame extends AbstractEditEmployeeFrame{
+public class AddEmployeeFrame extends AbstractEditEmployeeFrame implements EmployeeUpdateListener{
 
 	private static final long serialVersionUID = 1L;
 	private static String deptName = null;
@@ -30,7 +32,7 @@ public class AddEmployeeFrame extends AbstractEditEmployeeFrame{
 	}
 
 	private static void createNewEmployee() {
-		int newEmployeeId = ++App.lastEmployeeId;
+		int newEmployeeId = App.lastEmployeeId + 1;
 		employee = new Employee("", "", newEmployeeId, "", "", 0);
 		employee.setDepartmentName(deptName);
 		currentDepartment = App.getDepartments().get(deptName);
@@ -38,4 +40,11 @@ public class AddEmployeeFrame extends AbstractEditEmployeeFrame{
 		
 	}
 
+	@Override
+	public void onEmployeeUpdate(UpdateEvent event) {
+		if(event.getSource().equals(saveChangesDialog)) {
+			App.lastEmployeeId++;
+			this.dispose();
+		}
+	}
 }

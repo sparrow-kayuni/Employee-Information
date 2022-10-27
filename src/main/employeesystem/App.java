@@ -13,7 +13,7 @@ import java.util.Iterator;
 /**
  * 
  * @author Mwiinga Kayuni 
- * @implSpec The App class contains start up logic of the application.
+ * @implSpec The App class contains
  * @version 1.1
  *
  */

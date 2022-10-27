@@ -45,7 +45,7 @@ public class AbstractEmployeeFrame extends AbstractFrame {
 	protected JLabel frameHeader;
 	protected static JLabel employeeNameHeader;
 
-	private final int width = 560;
+	private final int width = 600;
 	private final int height = 500;
 
 	/**

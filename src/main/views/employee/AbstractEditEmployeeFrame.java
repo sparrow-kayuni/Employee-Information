@@ -33,7 +33,7 @@ import main.views.listeners.EmployeeUpdateListener;
  * @implSpec AbstractEditEmployeeFrame adds editable fields to AbstractEmployeeFrame
  *
  */
-public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements EditActionListener, EmployeeUpdateListener{
+public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements EditActionListener{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -302,16 +302,9 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		if(e.getSource().equals(deleteEmployeeButton)) {
 			saveChangesDialog = new DeleteEmployeeDialog(employee);
 			saveChangesDialog.setVisible(true);
+			saveChangesDialog.addUpdateListener(this);
+			saveChangesDialog.addUpdateListener(homeView);
 		}
-		
-	}
-
-	@Override
-	public void onEmployeeUpdate(UpdateEvent event) {
-		if(event.getSource().equals(saveChangesDialog)) {
-			this.dispose();
-		}
-		
 		
 	}
 }
