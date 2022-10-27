@@ -7,13 +7,17 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import main.employeesystem.App;
 import main.models.Employee;
+import main.views.AbstractFrame;
 import main.views.employee.AbstractEditEmployeeFrame;
 
 import java.awt.Color;
+
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.util.ArrayList;
 
 public class AbstractUpdateChangesDialog extends JDialog {
 
@@ -28,6 +32,10 @@ public class AbstractUpdateChangesDialog extends JDialog {
 	protected Employee employee = null;
 	protected Employee oldEmployee = null;
 	protected AbstractEditEmployeeFrame editView = null;
+	protected ArrayList<AbstractFrame> updateListeners = new ArrayList<AbstractFrame>();
+	
+	private final int width = 360;
+	private final int height = 220;
 	
 
 	/**
@@ -39,7 +47,11 @@ public class AbstractUpdateChangesDialog extends JDialog {
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
-		setBounds(100, 100, 360, 220);
+		
+		int xPos = (App.screen.width / 2) - width / 2;
+		int yPos = (App.screen.height / 2) - height / 2;
+		
+		setBounds(xPos, yPos, width, height);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(69, 69, 69));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -72,6 +84,11 @@ public class AbstractUpdateChangesDialog extends JDialog {
 				buttonPane.add(cancelButton, "cell 4 0,growx,aligny center");
 			}
 		}
+	}
+	
+	//registers the objects that will listen for any updates
+	public void addUpdateListener(AbstractFrame frame) {
+		updateListeners.add(frame);
 	}
 
 }

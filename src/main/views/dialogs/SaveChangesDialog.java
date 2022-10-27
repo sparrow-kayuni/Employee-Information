@@ -6,9 +6,10 @@ import java.awt.event.ActionListener;
 import main.employeesystem.App;
 import main.models.Employee;
 import main.models.JobPosition;
-import main.views.employee.AbstractEditEmployeeFrame;
 import main.views.employee.HumanResourceViewEmployeeFrame;
+import main.views.events.UpdateEvent;
 import main.views.factories.EmployeeFrameFactory;
+import main.views.listeners.EmployeeUpdateListener;
 
 public class SaveChangesDialog extends AbstractUpdateChangesDialog implements ActionListener {
 
@@ -18,10 +19,9 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 	private static final long serialVersionUID = 1L;
 	private JobPosition jobPosition = null;
 
-	public SaveChangesDialog(AbstractEditEmployeeFrame view, Employee newEmp, Employee oldEmp, JobPosition job) {
+	public SaveChangesDialog(Employee newEmp, Employee oldEmp, JobPosition job) {
 		employee = newEmp;
 		oldEmployee = oldEmp;
-		editView = view;
 		jobPosition = job;
 		initializeDialog("Are you sure you want to update changes made?");
 		okButton.addActionListener(this);
@@ -57,12 +57,17 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 			}catch(Exception err) {
 				err.printStackTrace();
 			}
+			
+			//notify all update listeners
+			UpdateEvent event = new UpdateEvent(this);
+			for(int i = 0; i < updateListeners.size(); i++) {
+				((EmployeeUpdateListener) updateListeners.get(i)).onEmployeeUpdate(event);
+			}
 
 			HumanResourceViewEmployeeFrame frame = EmployeeFrameFactory.returnToViewEmployeeFrame(employee);
 			
 			frame.setVisible(true);
 			this.dispose();
-			editView.dispose();
 		}
 		
 		if(e.getSource().equals(cancelButton)) {
@@ -70,9 +75,5 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 		}
 		
 	}
-
-//	private boolean isValidEmployee() {
-//		return false;
-//	}
 
 }

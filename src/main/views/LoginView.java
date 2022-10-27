@@ -11,7 +11,6 @@ import javax.swing.JTextField;
 import main.employeesystem.App;
 import main.models.Department;
 import main.views.factories.HomeFrameFactory;
-import main.views.home.AbstractHomeFrame;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -25,7 +24,7 @@ import javax.swing.JPasswordField;
 import java.awt.Component;
 import javax.swing.Box;
 
-public class LoginView extends JFrame implements ActionListener {
+public class LoginView extends AbstractFrame implements ActionListener {
 
 
 	private static final long serialVersionUID = 1L;
@@ -33,6 +32,9 @@ public class LoginView extends JFrame implements ActionListener {
 	private JPasswordField passwordField;
 	private JLabel flashMessage;
 	public boolean isLoggedIn = false;
+	
+	private final int width = 480;
+	private final int height = 400;
 	
 	/**
 	 * Create the application.
@@ -47,7 +49,11 @@ public class LoginView extends JFrame implements ActionListener {
 	 */
 	private void initialize() {
 		this.setTitle("Employee Information");
-		this.setBounds(100, 100, 480, 400);
+		
+		int yPos = (App.screen.height / 2) - height/2;
+		int xPos = (App.screen.width / 2) - width/2;
+		
+		this.setBounds(xPos, yPos, width, height);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -198,7 +204,7 @@ public class LoginView extends JFrame implements ActionListener {
 	
 	private void proceedToHomeView() {
 		
-		AbstractHomeFrame homeView = HomeFrameFactory.createHomeView();
+		homeView = HomeFrameFactory.createHomeView();
 		
 		if(homeView != null) {
 			this.dispose();

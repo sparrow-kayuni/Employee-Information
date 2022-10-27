@@ -1,6 +1,7 @@
 package main.views.home;
 
 import main.views.employee.GeneralViewEmployeeFrame;
+import main.views.events.UpdateEvent;
 
 /**
  * 
@@ -19,6 +20,12 @@ public class GeneralHomeFrame extends AbstractHomeFrame {
 		viewEmployeeFrame = (GeneralViewEmployeeFrame) viewEmployeeFrame;
 		setTitle("Employee Information");
 		initialize();
+	}
+
+	@Override
+	public void onEmployeeUpdate(UpdateEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

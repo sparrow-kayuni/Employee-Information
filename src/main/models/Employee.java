@@ -1,5 +1,7 @@
 package main.models;
 
+import java.util.Comparator;
+
 import main.employeesystem.App;
 
 /**
@@ -8,7 +10,7 @@ import main.employeesystem.App;
  * @version 1.1 
  *
  */
-public class Employee implements Comparable<Employee>{
+public class Employee implements Comparable<Employee>, Comparator<Employee>{
 	private String firstName;
 	private String surname;
 	private int employeeId;
@@ -124,5 +126,10 @@ public class Employee implements Comparable<Employee>{
 	public boolean hasInfoFilled() {
 		return !getFirstName().equals("") || !getSurname().equals("") ||
 				!getEmail().equals("") || !getPhoneNumber().equals("")? true: false;
+	}
+
+	@Override
+	public int compare(Employee o1, Employee o2) {
+		return o1.employeeId - o2.employeeId;
 	}
 }

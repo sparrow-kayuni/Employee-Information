@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import javax.swing.AbstractListModel;
@@ -23,10 +24,13 @@ import main.employeesystem.App;
 import main.models.Department;
 import main.models.Employee;
 import main.models.JobPosition;
+import main.views.AbstractFrame;
 import main.views.components.EmployeeActionButton;
+import main.views.dialogs.SaveChangesDialog;
 import main.views.employee.AbstractEmployeeFrame;
 import main.views.employee.AddEmployeeFrame;
 import main.views.factories.EmployeeFrameFactory;
+import main.views.listeners.EmployeeUpdateListener;
 import main.views.listeners.HomeViewListener;
 import net.miginfocom.swing.MigLayout;
 
@@ -38,7 +42,7 @@ import net.miginfocom.swing.MigLayout;
  * @implSpec AbstractHomeFrame contains base Home components
  *
  */
-public abstract class AbstractHomeFrame extends JFrame implements HomeViewListener {
+public abstract class AbstractHomeFrame extends AbstractFrame implements HomeViewListener, EmployeeUpdateListener {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -48,6 +52,7 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 	protected EmployeeActionButton editEmployeeButton = null;
 	protected EmployeeActionButton addEmployeeButton = null;
 	protected JLabel headerLabel;
+	protected SaveChangesDialog saveEmployeeDialog = null;
 	
 	protected JPanel panel = null;
 	protected JPanel north_panel = null;
@@ -64,11 +69,18 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 	protected static ArrayList<Employee> empVals = null;
 	
 	protected int selectedEmployeeIndex = 0;
+	
+	private final int width = 740;
+	private final int height = 570;
 
 	
 	protected void initialize() {
 		setResizable(false);
-		this.setBounds(100, 100, 741, 570);
+		
+		int yPos = (App.screen.height / 2) - height/2;
+		int xPos = (App.screen.width / 2) - width/2;
+		
+		this.setBounds(xPos, yPos, width, height);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		var panel = new JPanel();
@@ -227,75 +239,81 @@ public abstract class AbstractHomeFrame extends JFrame implements HomeViewListen
 		}
 	}
 
-	
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
+	protected void refreshEmployeesDisplay() {
+		empVals = new ArrayList<Employee>();
+		Department dept = null;
 		
-		// Department Selection Handling
-		if(e.getSource().equals(departmentsDisplay)) {
-
-			empVals = new ArrayList<Employee>();
-			Department dept = null;
+		try {
 			
-			try {
+			//when selected department is "ALL DEPARTMENTS", iterate through all departments and their job positions
+			if(departmentsDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
+				Iterator<Department> deptItr = App.getDepartments().values().iterator();
 				
-				//when selected department is "ALL DEPARTMENTS", iterate through all departments and their job positions
-				if(departmentsDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
-					Iterator<Department> deptItr = App.getDepartments().values().iterator();
+				while(deptItr.hasNext()) {
+					dept = deptItr.next();
 					
-					while(deptItr.hasNext()) {
-						dept = deptItr.next();
-						
-						//get employees from filled job positions from all departments
-						Iterator<JobPosition> jobItr  = dept.getJobPositions().values().iterator();
-						while(jobItr.hasNext()) {
-							JobPosition job = jobItr.next();
-							if(job.isFilled) empVals.add(job.getEmployee());
-						}
-					}
-				}else {
-					dept = App.getDepartments().get(departmentsDisplay.getSelectedValue());
-					
-					//get employees from filled job positions from selected departments
+					//get employees from filled job positions from all departments
 					Iterator<JobPosition> jobItr  = dept.getJobPositions().values().iterator();
 					while(jobItr.hasNext()) {
 						JobPosition job = jobItr.next();
 						if(job.isFilled) empVals.add(job.getEmployee());
 					}
 				}
-			}catch(NullPointerException err) {
-				err.printStackTrace();
-			}
-			
-			//Set Header to Department name
-			if(headerLabel != null) {
-				if(departmentsDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
-					headerLabel.setText(departmentsDisplay.getSelectedValue());
-				}else {
-					headerLabel.setText(departmentsDisplay.getSelectedValue() + " DEPARTMENT");
-				}
-			}
-			
-			//show job positions of selected department
-			employeesDisplay.setModel(new AbstractListModel<String>() {
-				private static final long serialVersionUID = 1L;
+			}else {
+				//get selected department object
+				dept = App.getDepartments().get(departmentsDisplay.getSelectedValue());
 				
-				ArrayList<Employee> values = empVals;
-				public int getSize() {
-					return values.size();
+				//get employees from filled job positions from selected department object
+				Iterator<JobPosition> jobItr  = dept.getJobPositions().values().iterator();
+				while(jobItr.hasNext()) {
+					JobPosition job = jobItr.next();
+					if(job.isFilled) empVals.add(job.getEmployee());
 				}
-				
-				public String getElementAt(int index) {
-					return values.get(index).getEmployeeInfoFormatted();
-				}
-			});
-			
-			//Disable view employee button
-			try {
-				viewEmployeeButton.disableButton();
-			}catch(Exception err) {
-//				System.out.println("View Employee Button is null");
 			}
+		}catch(NullPointerException err) {
+			err.printStackTrace();
+		}
+		
+		//Set Header to Department name
+		if(headerLabel != null) {
+			if(departmentsDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
+				headerLabel.setText(departmentsDisplay.getSelectedValue());
+			}else {
+				headerLabel.setText(departmentsDisplay.getSelectedValue() + " DEPARTMENT");
+			}
+		}
+		
+		//sort employees by employee id
+		empVals.sort((Comparator<? super Employee>) new Employee());
+		
+		//show job positions of selected department
+		employeesDisplay.setModel(new AbstractListModel<String>() {
+			private static final long serialVersionUID = 1L;
+			
+			ArrayList<Employee> values = empVals;
+			public int getSize() {
+				return values.size();
+			}
+			
+			public String getElementAt(int index) {
+				return values.get(index).getEmployeeInfoFormatted();
+			}
+		});
+		
+		//Disable view employee button
+		try {
+			viewEmployeeButton.disableButton();
+		}catch(Exception err) {
+//			System.out.println("View Employee Button is null");
+		}
+	}
+	
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		
+		// Department Selection Handling
+		if(e.getSource().equals(departmentsDisplay)) {
+			refreshEmployeesDisplay();
 		}
 		
 		//Employee Selection Handling

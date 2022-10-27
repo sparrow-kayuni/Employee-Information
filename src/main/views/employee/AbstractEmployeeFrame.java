@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
+
 import net.miginfocom.swing.MigLayout;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
@@ -14,6 +15,7 @@ import main.employeesystem.App;
 import main.models.Department;
 import main.models.Employee;
 import main.models.JobPosition;
+import main.views.AbstractFrame;
 
 import javax.swing.JButton;
 
@@ -23,7 +25,7 @@ import javax.swing.JButton;
  * @implSpec AbstractEmployeeFrame contains base frame components (panels, labels and close button)
  *
  */
-public class AbstractEmployeeFrame extends JFrame {
+public class AbstractEmployeeFrame extends AbstractFrame {
 
 	protected static final long serialVersionUID = 1L;
 	protected static Employee employee = null;
@@ -43,6 +45,8 @@ public class AbstractEmployeeFrame extends JFrame {
 	protected JLabel frameHeader;
 	protected static JLabel employeeNameHeader;
 
+	private final int width = 560;
+	private final int height = 500;
 
 	/**
 	 * Initialize the contents of the frame.
@@ -50,7 +54,10 @@ public class AbstractEmployeeFrame extends JFrame {
 	protected void initializePanels() {
 		setResizable(false);
 		
-		this.setBounds(100, 100, 560, 500);
+		int yPos = (App.screen.height / 2) - height / 2;
+		int xPos = (App.screen.width / 2) - width / 2;
+				
+		this.setBounds(xPos, yPos, width, height);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		panel = new JPanel();

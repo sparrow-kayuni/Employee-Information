@@ -3,6 +3,7 @@ package main.views.home;
 import java.awt.Color;
 
 import main.views.components.EmployeeActionButton;
+import main.views.events.UpdateEvent;
 
 
 /**
@@ -29,6 +30,12 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 		addEmployeeButton.addActionListener(this);
 		addEmployeeButton.enableButton();
 		center_panel.add(addEmployeeButton, "cell 4 13,growx");
+		
+	}
+
+	@Override
+	public void onEmployeeUpdate(UpdateEvent e) {
+		refreshEmployeesDisplay();
 		
 	}
 }

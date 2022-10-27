@@ -5,6 +5,8 @@ import main.models.Employee;
 import main.models.JobPosition;
 import main.views.LoginView;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -27,6 +29,8 @@ public class App{
 	
 	public static int lastEmployeeId;
 	
+	public static Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	
 	/**
 	 * 
 	 * run() initializes the employee and department objects then displays 
@@ -36,7 +40,7 @@ public class App{
 	public static void run() {
 		connectDatabase();
 		setDepartments();
-//		printInfo();
+		printInfo();
 		showLoginView();
 	}
 	

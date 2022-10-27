@@ -20,11 +20,12 @@ import main.models.Department;
 import main.models.Employee;
 import main.models.JobPosition;
 import main.views.components.EmployeeActionButton;
-import main.views.dialogs.AbstractUpdateChangesDialog;
 import main.views.dialogs.DeleteEmployeeDialog;
 import main.views.dialogs.SaveChangesDialog;
+import main.views.events.UpdateEvent;
 import main.views.factories.EmployeeFrameFactory;
 import main.views.listeners.EditActionListener;
+import main.views.listeners.EmployeeUpdateListener;
 
 /**
  * 
@@ -32,7 +33,7 @@ import main.views.listeners.EditActionListener;
  * @implSpec AbstractEditEmployeeFrame adds editable fields to AbstractEmployeeFrame
  *
  */
-public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements EditActionListener{
+public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements EditActionListener, EmployeeUpdateListener{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -49,8 +50,6 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 	
 	protected EmployeeActionButton deleteEmployeeButton = null;
 	protected EmployeeActionButton saveChangesButton = null;
-	
-	protected AbstractUpdateChangesDialog saveChangesDialog = null;
 	
 	private int selectedDepartmentIndex = 0;
 	private int selectedJobPositionIndex = 0;
@@ -107,6 +106,8 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		i = 0;
 		while(jobsItr.hasNext()) {
 			JobPosition job = jobsItr.next();
+//			System.out.println(job.getJobId());
+			
 			if(job.getJobId() == employee.getJobId()) {
 				selectedJobPositionIndex = i;
 			}else if(employee.getJobId() == 0) {
@@ -258,10 +259,13 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 			if(newEmployee.hasInfoFilled()){
 				//If changes where made
 				if(!employee.isIdenticalTo(newEmployee) || employee.getJobId() != job.getJobId()
-						|| !hourlyPaySpinner.getValue().equals(job.getHourlyPay())) {
+						|| hourlyPaySpinner.getValue().equals(job.getHourlyPay())) {
 					//show save dialog
-					saveChangesDialog = new SaveChangesDialog(this, newEmployee, employee, job);
+					saveChangesDialog = new SaveChangesDialog(newEmployee, employee, job);
 					saveChangesDialog.setVisible(true);
+					
+					saveChangesDialog.addUpdateListener(this);
+					saveChangesDialog.addUpdateListener(homeView);
 					
 					//reset text fields and to default color
 					firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
@@ -299,6 +303,15 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 			saveChangesDialog = new DeleteEmployeeDialog(employee);
 			saveChangesDialog.setVisible(true);
 		}
+		
+	}
+
+	@Override
+	public void onEmployeeUpdate(UpdateEvent event) {
+		if(event.getSource().equals(saveChangesDialog)) {
+			this.dispose();
+		}
+		
 		
 	}
 }
