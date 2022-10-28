@@ -204,9 +204,12 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 				i++;
 			}
 			
+			JobPosition job = null;
 			//set the values of job titles to the jobs in the deprtment
 			if(jobTitleComboBox != null) {
 				jobTitleComboBox.setModel(new DefaultComboBoxModel<String>(jobsList));
+				job = dept.getJobPositions().get(jobTitleComboBox.getSelectedItem());
+				hourlyPaySpinner.setValue(job.getHourlyPay());
 			}
 		}
 		

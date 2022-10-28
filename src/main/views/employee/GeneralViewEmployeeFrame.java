@@ -22,6 +22,8 @@ public class GeneralViewEmployeeFrame extends AbstractViewEmployeeFrame
 		setTitle("Employee Details");
 		initializePanels();
 		addTextPanes();
+		
+		closeButton.addActionListener(this);
 	}
 	
 	@Override

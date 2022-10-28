@@ -323,8 +323,7 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 			departmentsTab.setSelectedIndex(i);
 			
 		}catch(Exception err) {
-			departmentsTab.setSelectedIndex(i);
-			System.out.println("During: " + departmentsTab.getSelectedValue());	
+			departmentsTab.setSelectedIndex(i);	
 		}		
 	}
 	

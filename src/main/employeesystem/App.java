@@ -31,6 +31,8 @@ public class App{
 	
 	public static Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	
+	public static HashMap<String, JobPosition> loginInfo = null;
+	
 	/**
 	 * 
 	 * run() initializes the employee and department objects then displays 
@@ -40,10 +42,30 @@ public class App{
 	public static void run() {
 		connectDatabase();
 		setDepartments();
-//		printInfo();
+		addLoginInfo();
+		printInfo();
 		showLoginView();
 	}
 	
+	private static void addLoginInfo() {
+		loginInfo = new HashMap<String, JobPosition>();
+		
+		Iterator<Department> deptItr = departmentsMap.values().iterator();
+		while(deptItr.hasNext()) {
+			Department dept = deptItr.next();
+			Iterator<JobPosition> jobItr = dept.getJobPositions().values().iterator();
+			while(jobItr.hasNext()) {
+				JobPosition job = jobItr.next();
+				if(job.getPassword() != null) loginInfo.put(job.getJobTitle(), job);
+			}
+		}
+		
+	}
+	
+	public static JobPosition getLoginInfo(String jobTitle){
+		return loginInfo.get(jobTitle);
+	}
+
 	private static void printInfo() {
 		Iterator<Department> deptItr = departmentsMap.values().iterator();
 		
