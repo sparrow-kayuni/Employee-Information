@@ -40,7 +40,7 @@ public class App{
 	public static void run() {
 		connectDatabase();
 		setDepartments();
-		printInfo();
+//		printInfo();
 		showLoginView();
 	}
 	

@@ -62,18 +62,16 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 	protected JPanel center_panel = null;
 	
 	protected JList<String> employeesDisplay = null;
-	protected JList<String> departmentsDisplay = null;
+	protected JList<String> departmentsTab = null;
 	
 	protected static AbstractEmployeeFrame viewEmployeeFrame = null;
 	protected static Employee selectedEmployee = null;
 	protected static ArrayList<Employee> empVals = null;
 	protected static ArrayList<String> deptListVals = null;
 	
-	protected static boolean searchMode = false;
-	
 	protected int selectedEmployeeIndex = 0;
 	
-	private final int width = 810;
+	private final int width = 780;
 	private final int height = 660;
 
 	
@@ -123,15 +121,15 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 		lblNewLabel.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		west_panel.add(lblNewLabel, "cell 0 0");
 		
-		departmentsDisplay = new JList<String>();
+		departmentsTab = new JList<String>();
 		
 		employeesDisplay = new JList<String>();
 		employeesDisplay.setSelectionBackground(new Color(0, 120, 215));
-		departmentsDisplay.addListSelectionListener(this);
+		departmentsTab.addListSelectionListener(this);
 		
-		departmentsDisplay.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
-		departmentsDisplay.setForeground(new Color(214, 214, 214));
-		departmentsDisplay.setBackground(new Color(60, 60, 60));
+		departmentsTab.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+		departmentsTab.setForeground(new Color(214, 214, 214));
+		departmentsTab.setBackground(new Color(60, 60, 60));
 		
 		//Set department list values
 		deptListVals = new ArrayList<String>();
@@ -142,20 +140,9 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 			deptListVals.add(deptItr.next().getDepartmentName());
 		}
 		
-		departmentsDisplay.setModel(new AbstractListModel<String>() {
-			private static final long serialVersionUID = 1L;
-			
-			ArrayList<String> values = deptListVals;
-			public int getSize() {
-				return values.size();
-			}
-			public String getElementAt(int index) {
-				return values.get(index);
-			}
-		});
+		setDepartmentDisplay(0);
 		
-		departmentsDisplay.setSelectedIndex(0);
-		west_panel.add(departmentsDisplay, "cell 0 1 1 6,grow");
+		west_panel.add(departmentsTab, "cell 0 1 1 6,grow");
 		
 		east_panel = new JPanel();
 		east_panel.setBackground(new Color(51, 51, 51));
@@ -166,7 +153,7 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 		panel.add(center_panel, BorderLayout.CENTER);
 		center_panel.setLayout(new MigLayout("", "[100.00][100.00][100.00][10.00][120.00][10.00][120.00]", "[25.00][10.00][25.00][45.00][45.00][45.00][45.00][45.00][45.00][45.00][45.00][40.00][9.00][25.00]"));
 		
-		headerLabel = new JLabel(departmentsDisplay.getSelectedValue());
+		headerLabel = new JLabel(departmentsTab.getSelectedValue());
 		headerLabel.setForeground(new Color(210, 210, 210));
 		headerLabel.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		center_panel.add(headerLabel, "cell 0 0");
@@ -228,14 +215,16 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 			}
 		}
 		
-		//
+		
+		//Add button clicked
 		if(e.getSource().equals(addEmployeeButton)) {
 			if(addEmployeeButton != null) {
 				String deptName = null;
 				
-				//if department selected is "ALL DEPARTMENTS", set, by default, to EXECUTIVE department
-				if(departmentsDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) deptName = "EXECUTIVE"; 
-				else deptName = departmentsDisplay.getSelectedValue();
+				//if tab selected is "ALL DEPARTMENTS" or "SEARCH RESULTS", set, by default, to EXECUTIVE department
+				if(departmentsTab.getSelectedValue().equals("ALL DEPARTMENTS") ||
+						departmentsTab.getSelectedValue().equals("SEARCH RESULTS")) deptName = "EXECUTIVE"; 
+				else deptName = departmentsTab.getSelectedValue();
 				
 				AddEmployeeFrame addEmployeeFrame = EmployeeFrameFactory.createAddEmployeeFrame(deptName);
 				addEmployeeFrame.setVisible(true);
@@ -243,147 +232,30 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 		}
 		
 		
-		//search handling
+		//search button clicked
 		if(e.getSource().equals(searchButton)) {
-			if(searchTextField.getText().equals("Enter Text Here") || searchTextField.getText().equals("")) {
-				//Enter valid text
-			}
-			empVals = new ArrayList<Employee>();
-			
-			String search = searchTextField.getText();
-			
-			deptListVals.add("SEARCH RESULTS");
-			
-			searchMode = true;
-			
-			departmentsDisplay.setModel(new AbstractListModel<String>() {
-				private static final long serialVersionUID = 1L;
-				
-				ArrayList<String> values = deptListVals;
-				public int getSize() {
-					return values.size();
-				}
-				public String getElementAt(int index) {
-					return values.get(index);
-				}
-			});
-			
-			departmentsDisplay.setSelectedIndex(6);
-			
-			headerLabel = new JLabel(departmentsDisplay.getSelectedValue());
-			
-			Iterator<Department> deptItr = App.getDepartments().values().iterator();
-			while(deptItr.hasNext()) {
-				Department dept = deptItr.next();
-				JobPosition[] jobs = dept.getJobPositions().values()
-						.toArray(new JobPosition[dept.getJobPositions().size()]);
-				for(int i = 0; i < jobs.length; i++) {
-					if(jobs[i].isFilled) {
-						if(jobs[i].getEmployee().getFirstName().matches(String.format("\\w{0,}%s\\w{0,}", search)) || 
-								jobs[i].getEmployee().getSurname().matches(String.format("\\w{0,}%s\\w{0,}", search))) {
-							empVals.add(jobs[i].getEmployee());
-						}
-					}
-				}
+			if(searchTextField.getText().equals("Enter Text Here")) {
+				searchTextField.setText("");
 			}
 			
-			//sort employees by employee id
-			empVals.sort((Comparator<? super Employee>) new Employee());
-			
-			//show job positions of selected department
-			employeesDisplay.setModel(new AbstractListModel<String>() {
-				private static final long serialVersionUID = 1L;
+			if(!deptListVals.contains("SEARCH RESULTS")) {
+				deptListVals.add("SEARCH RESULTS");
 				
-				ArrayList<Employee> values = empVals;
-				public int getSize() {
-					return values.size();
-				}
-				
-				public String getElementAt(int index) {
-					return values.get(index).getEmployeeInfoFormatted();
-				}
-			});
+				setDepartmentDisplay(6);
+			}else {
+				departmentsTab.setSelectedIndex(6);
+				refreshEmployeesDisplay();
+			}
 		}
 	}
 
-	
 	//
-	protected void refreshEmployeesDisplay() {
-		empVals = new ArrayList<Employee>();
-		Department dept = null;
-		
-		try {
-			
-			//when selected department is "ALL DEPARTMENTS", iterate through all departments and their job positions
-			if(departmentsDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
-				Iterator<Department> deptItr = App.getDepartments().values().iterator();
-				
-				while(deptItr.hasNext()) {
-					dept = deptItr.next();
-					
-					//get employees from filled job positions from all departments
-					Iterator<JobPosition> jobItr  = dept.getJobPositions().values().iterator();
-					while(jobItr.hasNext()) {
-						JobPosition job = jobItr.next();
-						if(job.isFilled) empVals.add(job.getEmployee());
-					}
-				}
-			}else {
-				//get selected department object
-				dept = App.getDepartments().get(departmentsDisplay.getSelectedValue());
-				
-				//get employees from filled job positions from selected department object
-				Iterator<JobPosition> jobItr  = dept.getJobPositions().values().iterator();
-				while(jobItr.hasNext()) {
-					JobPosition job = jobItr.next();
-					if(job.isFilled) empVals.add(job.getEmployee());
-				}
-			}
-		}catch(NullPointerException err) {
-			err.printStackTrace();
-		}
-		
-		//Set Header to Department name
-		if(headerLabel != null) {
-			if(departmentsDisplay.getSelectedValue().equals("ALL DEPARTMENTS")) {
-				headerLabel.setText(departmentsDisplay.getSelectedValue());
-			}else {
-				headerLabel.setText(departmentsDisplay.getSelectedValue() + " DEPARTMENT");
-			}
-		}
-		
-		//sort employees by employee id
-		empVals.sort((Comparator<? super Employee>) new Employee());
-		
-		//show job positions of selected department
-		employeesDisplay.setModel(new AbstractListModel<String>() {
-			private static final long serialVersionUID = 1L;
-			
-			ArrayList<Employee> values = empVals;
-			public int getSize() {
-				return values.size();
-			}
-			
-			public String getElementAt(int index) {
-				return values.get(index).getEmployeeInfoFormatted();
-			}
-		});
-		
-		//Disable view employee button
-		try {
-			viewEmployeeButton.disableButton();
-		}catch(Exception err) {
-//			System.out.println("View Employee Button is null");
-		}
-	}
-	
-	
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		
 		// Department Selection Handling
-		if(e.getSource().equals(departmentsDisplay)) {
-			if(!searchMode) refreshEmployeesDisplay();
+		if(e.getSource().equals(departmentsTab)) {
+			refreshEmployeesDisplay();
 		}
 		
 		//Employee Selection Handling
@@ -428,6 +300,122 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 				selectedEmployeeIndex = employeesDisplay.getSelectedIndex();
 				viewEmployeeButton.disableButton();
 			}
+		}
+	}
+	
+
+	//
+	protected void setDepartmentDisplay(int i) {
+		
+		try {
+			departmentsTab.setModel(new AbstractListModel<String>() {
+				private static final long serialVersionUID = 1L;
+				
+				ArrayList<String> values = deptListVals;
+				public int getSize() {
+					return values.size();
+				}
+				public String getElementAt(int index) {
+					return values.get(index);
+				}
+			});
+			
+			departmentsTab.setSelectedIndex(i);
+			
+		}catch(Exception err) {
+			departmentsTab.setSelectedIndex(i);
+			System.out.println("During: " + departmentsTab.getSelectedValue());	
+		}		
+	}
+	
+	
+	//
+	protected void refreshEmployeesDisplay() {
+		empVals = new ArrayList<Employee>();
+		Department dept = null;
+		
+		try {
+			
+			//when selected department is "ALL DEPARTMENTS", iterate through all departments and their job positions			
+			if(departmentsTab.getSelectedValue().equals("ALL DEPARTMENTS")) {
+				Iterator<Department> deptItr = App.getDepartments().values().iterator();
+				
+				while(deptItr.hasNext()) {
+					dept = deptItr.next();
+					
+					//get employees from filled job positions from all departments
+					Iterator<JobPosition> jobItr  = dept.getJobPositions().values().iterator();
+					while(jobItr.hasNext()) {
+						JobPosition job = jobItr.next();
+						if(job.isFilled) empVals.add(job.getEmployee());
+					}
+				}
+			}else if(departmentsTab.getSelectedValue().equals("SEARCH RESULTS")){
+				Iterator<Department> deptItr = App.getDepartments().values().iterator();
+				String search = searchTextField.getText();
+				
+				//brute force search algorithm, lol
+				while(deptItr.hasNext()) {
+					dept = deptItr.next();
+					JobPosition[] jobs = dept.getJobPositions().values()
+							.toArray(new JobPosition[dept.getJobPositions().size()]);
+					for(int i = 0; i < jobs.length; i++) {
+						if(jobs[i].isFilled) {
+							if(jobs[i].getEmployee().getFirstName().matches(String.format("\\w{0,}%s\\w{0,}", search)) || 
+									jobs[i].getEmployee().getSurname().matches(String.format("\\w{0,}%s\\w{0,}", search))) {
+								empVals.add(jobs[i].getEmployee());
+							}
+						}
+					}
+				}
+			}else {
+				//get selected department object
+				dept = App.getDepartments().get(departmentsTab.getSelectedValue());
+				
+				//get employees from filled job positions from selected department object
+				Iterator<JobPosition> jobItr  = dept.getJobPositions().values().iterator();
+				while(jobItr.hasNext()) {
+					JobPosition job = jobItr.next();
+					if(job.isFilled) empVals.add(job.getEmployee());
+				}
+			}
+		}catch(NullPointerException err) {
+			System.out.println("Something broke... Nevermind it tho");
+		}
+		
+		
+		//Set Header to Department name
+		if(headerLabel != null) {
+			if(departmentsTab.getSelectedValue().equals("ALL DEPARTMENTS") ||
+					departmentsTab.getSelectedValue().equals("SEARCH RESULTS")) {
+				headerLabel.setText(departmentsTab.getSelectedValue());
+			}else {
+				headerLabel.setText(departmentsTab.getSelectedValue() + " DEPARTMENT");
+			}
+		}
+		
+		//sort employees by employee id
+		empVals.sort((Comparator<? super Employee>) new Employee());
+		
+		//show job positions of selected department
+		employeesDisplay.setModel(new AbstractListModel<String>() {
+			private static final long serialVersionUID = 1L;
+			
+			ArrayList<Employee> values = empVals;
+			public int getSize() {
+				return values.size();
+			}
+			
+			public String getElementAt(int index) {
+				return values.get(index).getEmployeeInfoFormatted();
+			}
+		});
+		
+		//Disable view employee button
+		try {
+			viewEmployeeButton.disableButton();
+		}catch(Exception err) {
+//			System.out.println("View Employee Button is null");
 		}
 	}
 }
