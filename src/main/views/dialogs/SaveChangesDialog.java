@@ -18,6 +18,7 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 	 */
 	private static final long serialVersionUID = 1L;
 	private JobPosition jobPosition = null;
+	private Employee oldEmployee = null;
 
 	public SaveChangesDialog(Employee newEmp, Employee oldEmp, JobPosition job) {
 		employee = newEmp;
@@ -33,31 +34,19 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(okButton)) {
 			
-			try{
-				
-				if(!oldEmployee.getFirstName().equals("")) {
-					//get previous job title and remove its employee
-					String oldJobTitle = App.getDepartments().get(oldEmployee.getDepartmentName())
-							.getJobTitle(oldEmployee.getJobId());
-					
-					App.getDepartments().get(oldEmployee.getDepartmentName())
-					.getJobPositions().get(oldJobTitle).removeEmployee();
-				}
-				
-				//get updated/new employee job title and set employee to the job position
-				String newJobTitle = App.getDepartments().get(employee.getDepartmentName())
-						.getJobTitle(employee.getJobId());
-				
-				App.getDepartments().get(employee.getDepartmentName())
-				.getJobPositions().get(newJobTitle).setEmployee(employee);
-				
-				App.getDepartments().get(employee.getDepartmentName())
-				.getJobPositions().get(jobPosition.getJobTitle()).setHourlyPay(jobPosition.getHourlyPay());
-				
-			}catch(Exception err) {
-				err.printStackTrace();
+			if(!oldEmployee.getFirstName().equals("")) {
+				removeEmployee(oldEmployee);
+				setNewEmployee();
+				updateJobInfo();
+				App.getDb().updateEmployee(employee);
+			}else {
+				setNewEmployee();
+				updateJobInfo();
+				App.getDb().addNewEmployee(employee);
 			}
 			
+			App.getDb().updateJobPosition(jobPosition);
+						
 			notifyListeners();
 
 			HumanResourceViewEmployeeFrame frame = EmployeeFrameFactory.returnToViewEmployeeFrame(employee);
@@ -70,6 +59,24 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 			this.dispose();
 		}
 	}
+	
+	
+	private void setNewEmployee() {
+		//get updated/new employee job title and set employee to the job position
+		String newJobTitle = App.getDepartments().get(employee.getDepartmentName())
+				.getJobTitle(employee.getJobId());
+		
+		App.getDepartments().get(employee.getDepartmentName())
+		.getJobPositions().get(newJobTitle).setEmployee(employee);
+		
+	}
+	
+	
+	private void updateJobInfo() {
+		App.getDepartments().get(employee.getDepartmentName())
+		.getJobPositions().get(jobPosition.getJobTitle()).setHourlyPay(jobPosition.getHourlyPay());
+	}
+	
 	
 	private void notifyListeners() {
 		//notify all update listeners

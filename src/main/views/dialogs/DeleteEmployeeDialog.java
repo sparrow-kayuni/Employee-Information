@@ -25,12 +25,10 @@ public class DeleteEmployeeDialog extends AbstractUpdateChangesDialog implements
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(okButton)) {
-			//get previous job title and remove its employee
-			String jobTitle = App.getDepartments().get(employee.getDepartmentName())
-					.getJobTitle(employee.getJobId());
 			
-			App.getDepartments().get(employee.getDepartmentName())
-			.getJobPositions().get(jobTitle).removeEmployee();
+			removeEmployee(employee);
+			
+			App.getDb().deleteEmployee(employee);
 			
 			notifyListeners();
 			

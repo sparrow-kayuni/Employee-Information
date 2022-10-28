@@ -112,7 +112,7 @@ public class LoginView extends AbstractFrame implements ActionListener {
 		jobIdTextField = new JTextField();
 		jobIdTextField.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		jobIdTextField.setBackground(new Color(234, 234, 234));
-		jobIdTextField.setText(Integer.toString(App.getLoginInfo("General Manager").getJobId()));
+		jobIdTextField.setText(Integer.toString(App.getLoginInfo("Human Resource Manager").getJobId()));
 		center_panel.add(jobIdTextField, "cell 2 3 4 1,grow");
 		jobIdTextField.setColumns(10);
 		
@@ -124,7 +124,7 @@ public class LoginView extends AbstractFrame implements ActionListener {
 		
 		passwordField = new JPasswordField();
 		passwordField.setBackground(new Color(234, 234, 234));
-		passwordField.setText(App.getLoginInfo("General Manager").getPassword());
+		passwordField.setText(App.getLoginInfo("Human Resource Manager").getPassword());
 		center_panel.add(passwordField, "cell 2 6 4 1,grow");
 		passwordField.setColumns(10);
 		

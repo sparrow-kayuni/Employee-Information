@@ -30,7 +30,6 @@ public class AbstractUpdateChangesDialog extends JDialog {
 	protected JButton okButton = null;
 	protected JButton cancelButton = null;
 	protected Employee employee = null;
-	protected Employee oldEmployee = null;
 	protected AbstractEditEmployeeFrame editView = null;
 	protected ArrayList<AbstractFrame> updateListeners = new ArrayList<AbstractFrame>();
 	
@@ -89,6 +88,15 @@ public class AbstractUpdateChangesDialog extends JDialog {
 	//registers the objects that will listen for any updates
 	public void addUpdateListener(AbstractFrame frame) {
 		updateListeners.add(frame);
+	}
+	
+	protected void removeEmployee(Employee emp) {
+		//get previous job title and remove its employee
+		String jobTitle = App.getDepartments().get(emp.getDepartmentName())
+				.getJobTitle(emp.getJobId());
+		
+		App.getDepartments().get(emp.getDepartmentName())
+		.getJobPositions().get(jobTitle).removeEmployee();
 	}
 
 }

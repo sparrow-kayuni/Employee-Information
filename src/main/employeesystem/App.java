@@ -43,7 +43,7 @@ public class App{
 		connectDatabase();
 		setDepartments();
 		addLoginInfo();
-		printInfo();
+//		printInfo();
 		showLoginView();
 	}
 	
@@ -92,13 +92,13 @@ public class App{
 	 * Connects App to postgres database 
 	 */
 	private static void connectDatabase() {
-		db = new PostgresDatabase();
+		setDb(new PostgresDatabase());
 	}
 	
 	
 	private static void setDepartments() {
 		departmentsMap = new HashMap<String, Department>();
-		departmentsMap.putAll(db.createDepartmentsMap());
+		departmentsMap.putAll(getDb().createDepartmentsMap());
 	}
 	
 	
@@ -123,6 +123,14 @@ public class App{
 	
 	public static HashMap<String, Department> getDepartments(){
 		return departmentsMap;
+	}
+
+	public static PostgresDatabase getDb() {
+		return db;
+	}
+
+	public static void setDb(PostgresDatabase db) {
+		App.db = db;
 	}
 
 }

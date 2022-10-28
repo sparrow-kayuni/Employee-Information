@@ -154,4 +154,71 @@ public class PostgresDatabase {
 			e.printStackTrace();
 		}
 	}
+	
+	public void updateEmployee(Employee employee) {
+		try {
+			if(conn != null) {
+				String query = String.format("UPDATE public.employees "
+						+ "SET first_name='%s', surname='%s', email='%s', phone='%s', job_id=%d"
+						+ "	WHERE employee_id=%d;", employee.getFirstName(), employee.getSurname(),
+						employee.getEmail(), employee.getPhoneNumber(), employee.getJobId(), employee.getEmployeeId());
+				
+				if(!statement.execute(query)) {
+					System.out.println(employee.getFirstName() + " " + employee.getSurname() + "'s info updated");
+				}
+			}
+		}catch(Exception err) {
+			err.printStackTrace();
+		}
+	}
+	
+	public void addNewEmployee(Employee employee) {
+		try {
+			if(conn != null) {
+				String query = String.format("INSERT INTO public.employees "
+						+ "(employee_id, first_name, surname, email, phone, job_id) "
+						+ "	VALUES (%d, '%s', '%s', '%s', '%s', %d);", employee.getEmployeeId(), 
+						employee.getFirstName(), employee.getSurname(),
+						employee.getEmail(), employee.getPhoneNumber(), employee.getJobId());
+				
+				if(!statement.execute(query)) {
+					System.out.println(employee.getFirstName() + " " + employee.getSurname() + " inserted into database");
+				}
+			}
+		}catch(Exception err) {
+			err.printStackTrace();
+		}
+	}
+	
+	public void deleteEmployee(Employee employee) {
+		try {
+			if(conn != null) {
+				String query = String.format("DELETE FROM public.employees WHERE employee_id=%d", 
+						employee.getEmployeeId());
+				
+				if(!statement.execute(query)) {
+					System.out.println(employee.getFirstName() + " was deleted");
+				}
+			}
+		}catch(Exception err) {
+			err.printStackTrace();
+		}
+	}
+	
+
+	public void updateJobPosition(JobPosition jobPosition) {
+		try {
+			if(conn != null){
+				String query = String.format("UPDATE public.job_positions "
+						+ "SET hourly_pay = %f WHERE job_id=%d", 
+						jobPosition.getHourlyPay(), jobPosition.getJobId());
+				
+				if(!statement.execute(query)) {
+					System.out.println(jobPosition.getJobTitle() + " is updated");
+				}
+			}
+		}catch(Exception err) {
+			err.printStackTrace();
+		}
+	}
 }

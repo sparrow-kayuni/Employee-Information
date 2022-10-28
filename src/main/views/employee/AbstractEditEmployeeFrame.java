@@ -260,24 +260,36 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 			job.setHourlyPay((Float) hourlyPaySpinner.getValue());
 			
 			if(newEmployee.hasInfoFilled()){
-				//If changes where made
-				if(!employee.isIdenticalTo(newEmployee) || employee.getJobId() != job.getJobId()
-						|| hourlyPaySpinner.getValue().equals(job.getHourlyPay())) {
-					//show save dialog
-					saveChangesDialog = new SaveChangesDialog(newEmployee, employee, job);
-					saveChangesDialog.setVisible(true);
+				//check if changes where made
+				if((!employee.isIdenticalTo(newEmployee) || employee.getJobId() != job.getJobId()
+						|| hourlyPaySpinner.getValue().equals(job.getHourlyPay()))) {
 					
-					saveChangesDialog.addUpdateListener(this);
-					saveChangesDialog.addUpdateListener(homeView);
-					
-					//reset text fields and to default color
-					firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
-					surnameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
-					phoneTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
-					emailTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
-					
-					flashMessageLabel.setText("");
-					flashMessageLabel.setVisible(false);
+					//check if phone number & email are valid
+					if(!employee.getPhoneNumber().matches("/^[+]{0,1}[0-9]{10,14}$/")
+							|| !employee.getEmail().matches("/^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$/")) {
+						
+						phoneTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 180, 40)));
+						emailTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 180, 40)));
+						
+						flashMessageLabel.setText("Invalid values");
+						flashMessageLabel.setVisible(true);
+					}else {
+						//show save dialog
+						saveChangesDialog = new SaveChangesDialog(newEmployee, employee, job);
+						saveChangesDialog.setVisible(true);
+						
+						saveChangesDialog.addUpdateListener(this);
+						saveChangesDialog.addUpdateListener(homeView);
+						
+						//reset text fields and to default color
+						firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
+						surnameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
+						phoneTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
+						emailTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
+						
+						flashMessageLabel.setText("");
+						flashMessageLabel.setVisible(false);
+					}
 				}else {
 					//highlight unchanged fields and show flash message
 					firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 180, 40)));
