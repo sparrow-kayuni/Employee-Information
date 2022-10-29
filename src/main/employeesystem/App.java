@@ -31,7 +31,7 @@ public class App{
 	
 	public static Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	
-	public static HashMap<String, JobPosition> loginInfo = null;
+	public static HashMap<Integer, JobPosition> loginJobPositions = null;
 	
 	/**
 	 * 
@@ -43,27 +43,40 @@ public class App{
 		connectDatabase();
 		setDepartments();
 		addLoginInfo();
-//		printInfo();
+		printInfo();
 		showLoginView();
 	}
 	
 	private static void addLoginInfo() {
-		loginInfo = new HashMap<String, JobPosition>();
+		loginJobPositions = new HashMap<Integer, JobPosition>();
 		
 		Iterator<Department> deptItr = departmentsMap.values().iterator();
 		while(deptItr.hasNext()) {
 			Department dept = deptItr.next();
-			Iterator<JobPosition> jobItr = dept.getJobPositions().values().iterator();
+			Iterator<JobPosition> jobItr = dept.getAllJobPositions().values().iterator();
 			while(jobItr.hasNext()) {
 				JobPosition job = jobItr.next();
-				if(job.getPassword() != null) loginInfo.put(job.getJobTitle(), job);
+				if(job.getPassword() != null) loginJobPositions.put(job.getJobId(), job);
 			}
 		}
 		
 	}
+	public static boolean isLoginPositionPresent(int jobId) {
+		boolean isPresent = false;
+		Iterator<JobPosition> jobItr = loginJobPositions.values().iterator();
+		while(jobItr.hasNext()) {
+			isPresent = (jobItr.next().getJobId() == jobId)? true: false;
+		}
+		
+		return isPresent;
+	}
 	
-	public static JobPosition getLoginInfo(String jobTitle){
-		return loginInfo.get(jobTitle);
+	public static JobPosition getLoginPosition(int jobId){
+		return loginJobPositions.get(jobId);
+	}
+	
+	public static HashMap<Integer, JobPosition> getAllLoginPositions(){
+		return loginJobPositions;
 	}
 
 	private static void printInfo() {
@@ -74,7 +87,7 @@ public class App{
 			
 			System.out.println(dept.getDepartmentName() + "\n-----------------------------");
 			
-			Iterator<JobPosition> jobItr = dept.getJobPositions().values().iterator();
+			Iterator<JobPosition> jobItr = dept.getAllJobPositions().values().iterator();
 			
 			while(jobItr.hasNext()) {
 				JobPosition job = jobItr.next();
@@ -121,7 +134,11 @@ public class App{
 		departmentsMap.get(employee.getDepartmentName()).isLoggedIn = false;
 	}
 	
-	public static HashMap<String, Department> getDepartments(){
+	public static Department getDepartment(String deptName){
+		return departmentsMap.get(deptName);
+	}
+	
+	public static HashMap<String, Department> getAllDepartments() {
 		return departmentsMap;
 	}
 

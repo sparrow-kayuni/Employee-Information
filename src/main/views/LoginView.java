@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 
 import main.employeesystem.App;
 import main.models.Department;
+import main.models.JobPosition;
 import main.views.factories.HomeFrameFactory;
 
 import javax.swing.JLabel;
@@ -35,6 +36,8 @@ public class LoginView extends AbstractFrame implements ActionListener {
 	
 	private final int width = 480;
 	private final int height = 400;
+	
+	private JobPosition currentJobPositionLogin = null;
 	
 	/**
 	 * Create the application.
@@ -109,10 +112,10 @@ public class LoginView extends AbstractFrame implements ActionListener {
 		jobIdLabel.setForeground(new Color(234, 234, 234));
 		center_panel.add(jobIdLabel, "cell 2 2");
 		
+		
 		jobIdTextField = new JTextField();
 		jobIdTextField.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		jobIdTextField.setBackground(new Color(234, 234, 234));
-		jobIdTextField.setText(Integer.toString(App.getLoginInfo("Human Resource Manager").getJobId()));
 		center_panel.add(jobIdTextField, "cell 2 3 4 1,grow");
 		jobIdTextField.setColumns(10);
 		
@@ -124,7 +127,6 @@ public class LoginView extends AbstractFrame implements ActionListener {
 		
 		passwordField = new JPasswordField();
 		passwordField.setBackground(new Color(234, 234, 234));
-		passwordField.setText(App.getLoginInfo("Human Resource Manager").getPassword());
 		center_panel.add(passwordField, "cell 2 6 4 1,grow");
 		passwordField.setColumns(10);
 		
@@ -151,54 +153,33 @@ public class LoginView extends AbstractFrame implements ActionListener {
 		if(getJobIdText().matches("[0-9]+")) jobId = Integer.valueOf(getJobIdText());
 		else jobId = 0;
 		
-		try {
-			if(jobId == 0) throw new Exception();
+//		Iterator<JobPosition> loginItr = App.getAllLoginPositions().values().iterator();
+		
+		if(App.isLoginPositionPresent(jobId)) {
+			currentJobPositionLogin = App.getLoginPosition(jobId);
 			
-			Iterator<Department> deptItr = App.getDepartments().values().iterator();
-			while(deptItr.hasNext()) {
-				Department dept = deptItr.next();
+			if(getPasswordText().equals(currentJobPositionLogin.getPassword())){
 				
-				//check if job id exists
-				if(dept.containsJobPosition(jobId)) {
-					String jobTitle = dept.getJobTitle(jobId);
-					
-					//check if job id and password are valid
-					if(getJobIdText().equals(
-							Integer.toString(dept.getJobPositions()
-									.get(jobTitle).getJobId())) && 
-							getPasswordText().equals(dept.getJobPositions()
-									.get(jobTitle).getPassword())) {
-						
-						flashMessage.setText("Logging In");
-						flashMessage.setForeground(new Color(55, 146, 255));
-						flashMessage.setVisible(true);
-						
-						//log in employee
-						App.logInEmployee(dept.getJobPositions().get(jobTitle).getEmployee());
-						
-						if(App.getDepartments().get(dept.getDepartmentName()).isLoggedIn) {
-							proceedToHomeView();
-						};
-						
-						break;
-					}else{
-						flashMessage.setText("Incorrect Password");
-						flashMessage.setForeground(new Color(215, 120, 0));
-						flashMessage.setVisible(true);
-					}
-				}else{
-//					System.out.println("Job ID Doesn't Exist";)
-					flashMessage.setText("Job ID Doesn't Exist");
-					flashMessage.setForeground(new Color(215, 120, 0));
-					flashMessage.setVisible(true);
-				}
-			}			
-		}catch(Exception err) {
-			err.printStackTrace();
-			flashMessage.setText("Enter Job ID");
-			flashMessage.setForeground(new Color(215, 120, 0));
+				flashMessage.setText("Logging In");
+				flashMessage.setForeground(new Color(55, 146, 255));
+				flashMessage.setVisible(true);
+				
+				//log in employee
+				App.logInEmployee(currentJobPositionLogin.getEmployee());
+				
+				if(App.getDepartment(currentJobPositionLogin.getEmployee().getDepartmentName()).isLoggedIn) {
+					proceedToHomeView();
+				};	
+			}else {
+				flashMessage.setText("Wrong Password");
+				flashMessage.setForeground(new Color(55, 146, 255));
+				flashMessage.setVisible(true);
+			}
+		}else {
+			flashMessage.setText("Invalid User");
+			flashMessage.setForeground(new Color(55, 146, 255));
 			flashMessage.setVisible(true);
-		}	
+		}
 	}
 	
 	

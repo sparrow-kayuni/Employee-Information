@@ -92,11 +92,10 @@ public class AbstractUpdateChangesDialog extends JDialog {
 	
 	protected void removeEmployee(Employee emp) {
 		//get previous job title and remove its employee
-		String jobTitle = App.getDepartments().get(emp.getDepartmentName())
+		String jobTitle = App.getDepartment(emp.getDepartmentName())
 				.getJobTitle(emp.getJobId());
 		
-		App.getDepartments().get(emp.getDepartmentName())
-		.getJobPositions().get(jobTitle).removeEmployee();
+		App.getDepartment(emp.getDepartmentName()).getJobPosition(jobTitle).removeEmployee();
 	}
 
 }

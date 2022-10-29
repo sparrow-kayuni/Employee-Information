@@ -63,18 +63,18 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 	
 	private void setNewEmployee() {
 		//get updated/new employee job title and set employee to the job position
-		String newJobTitle = App.getDepartments().get(employee.getDepartmentName())
+		String newJobTitle = App.getDepartment(employee.getDepartmentName())
 				.getJobTitle(employee.getJobId());
 		
-		App.getDepartments().get(employee.getDepartmentName())
-		.getJobPositions().get(newJobTitle).setEmployee(employee);
+		App.getDepartment(employee.getDepartmentName())
+			.getJobPosition(newJobTitle).setEmployee(employee);
 		
 	}
 	
 	
 	private void updateJobInfo() {
-		App.getDepartments().get(employee.getDepartmentName())
-		.getJobPositions().get(jobPosition.getJobTitle()).setHourlyPay(jobPosition.getHourlyPay());
+		App.getDepartment(employee.getDepartmentName())
+		.getJobPosition(jobPosition.getJobTitle()).setHourlyPay(jobPosition.getHourlyPay());
 	}
 	
 	

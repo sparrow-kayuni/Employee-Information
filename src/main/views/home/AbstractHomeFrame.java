@@ -135,7 +135,7 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 		deptListVals = new ArrayList<String>();
 		deptListVals.add("ALL DEPARTMENTS");
 		
-		Iterator<Department> deptItr = App.getDepartments().values().iterator();
+		Iterator<Department> deptItr = App.getAllDepartments().values().iterator();
 		while(deptItr.hasNext()) {
 			deptListVals.add(deptItr.next().getDepartmentName());
 		}
@@ -337,27 +337,27 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 			
 			//when selected department is "ALL DEPARTMENTS", iterate through all departments and their job positions			
 			if(departmentsTab.getSelectedValue().equals("ALL DEPARTMENTS")) {
-				Iterator<Department> deptItr = App.getDepartments().values().iterator();
+				Iterator<Department> deptItr = App.getAllDepartments().values().iterator();
 				
 				while(deptItr.hasNext()) {
 					dept = deptItr.next();
 					
 					//get employees from filled job positions from all departments
-					Iterator<JobPosition> jobItr  = dept.getJobPositions().values().iterator();
+					Iterator<JobPosition> jobItr  = dept.getAllJobPositions().values().iterator();
 					while(jobItr.hasNext()) {
 						JobPosition job = jobItr.next();
 						if(job.isFilled) empVals.add(job.getEmployee());
 					}
 				}
 			}else if(departmentsTab.getSelectedValue().equals("SEARCH RESULTS")){
-				Iterator<Department> deptItr = App.getDepartments().values().iterator();
+				Iterator<Department> deptItr = App.getAllDepartments().values().iterator();
 				String search = searchTextField.getText();
 				
 				//brute force search algorithm, lol
 				while(deptItr.hasNext()) {
 					dept = deptItr.next();
-					JobPosition[] jobs = dept.getJobPositions().values()
-							.toArray(new JobPosition[dept.getJobPositions().size()]);
+					JobPosition[] jobs = dept.getAllJobPositions().values()
+							.toArray(new JobPosition[dept.getAllJobPositions().size()]);
 					for(int i = 0; i < jobs.length; i++) {
 						if(jobs[i].isFilled) {
 							if(jobs[i].getEmployee().getFirstName().matches(String.format("\\w{0,}%s\\w{0,}", search)) || 
@@ -369,10 +369,10 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 				}
 			}else {
 				//get selected department object
-				dept = App.getDepartments().get(departmentsTab.getSelectedValue());
+				dept = App.getDepartment((String) departmentsTab.getSelectedValue());
 				
 				//get employees from filled job positions from selected department object
-				Iterator<JobPosition> jobItr  = dept.getJobPositions().values().iterator();
+				Iterator<JobPosition> jobItr  = dept.getAllJobPositions().values().iterator();
 				while(jobItr.hasNext()) {
 					JobPosition job = jobItr.next();
 					if(job.isFilled) empVals.add(job.getEmployee());

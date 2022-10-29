@@ -129,7 +129,7 @@ public class PostgresDatabase {
 							Department dept = deptItr.next();
 							
 							//Iterate through job positions of the department
-							Iterator<JobPosition> jobsItr = dept.getJobPositions().values().iterator();
+							Iterator<JobPosition> jobsItr = dept.getAllJobPositions().values().iterator();
 							while(jobsItr.hasNext()) {
 								JobPosition job = jobsItr.next();
 								
@@ -139,7 +139,7 @@ public class PostgresDatabase {
 									job.setEmployee(emp);
 									
 									App.lastEmployeeId = emp.getEmployeeId();
-									dept.getJobPositions().replace(job.getJobTitle(), job);
+									dept.getAllJobPositions().replace(job.getJobTitle(), job);
 								}
 								dept.addToJobTitlesMap(job.getJobId(), job.getJobTitle());
 							}

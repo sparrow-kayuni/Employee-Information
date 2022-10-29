@@ -49,8 +49,12 @@ public class Department {
 		this.managerId = managerId;
 	}
 
-	public LinkedHashMap<String, JobPosition> getJobPositions() {
+	public LinkedHashMap<String, JobPosition> getAllJobPositions() {
 		return jobPositions;
+	}
+	
+	public JobPosition getJobPosition(String jobTitle) {
+		return jobPositions.get(jobTitle);
 	}
 	
 	public void initializeJobPositions() {

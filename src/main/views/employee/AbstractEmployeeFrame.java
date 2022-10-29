@@ -154,10 +154,10 @@ public class AbstractEmployeeFrame extends AbstractFrame {
 		
 		if(emp != null) {
 			employee = emp;
-			currentDepartment = App.getDepartments().get(employee.getDepartmentName());
+			currentDepartment = App.getDepartment(employee.getDepartmentName());
 			jobTitle = currentDepartment.getJobTitle(employee.getJobId());	
 		}
 		
-		jobPosition = currentDepartment.getJobPositions().get(jobTitle);
+		jobPosition = currentDepartment.getJobPosition(jobTitle);
 	}
 }

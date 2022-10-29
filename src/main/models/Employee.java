@@ -84,7 +84,7 @@ public class Employee implements Comparable<Employee>, Comparator<Employee>{
 	public String getEmployeeInfoFormatted() {
 		String id = Integer.toString(employeeId);
 		String fullName = firstName + " " + surname;
-		String jobTitle = App.getDepartments().get(this.departmentName).getJobTitle(this.jobId);
+		String jobTitle = App.getDepartment(this.departmentName).getJobTitle(this.jobId);
 		
 		while(id.length() < 20) {
 			id = id + " ";
@@ -124,8 +124,8 @@ public class Employee implements Comparable<Employee>, Comparator<Employee>{
 	}
 	
 	public boolean hasInfoFilled() {
-		return !getFirstName().equals("") || !getSurname().equals("") ||
-				!getEmail().equals("") || !getPhoneNumber().equals("")? true: false;
+		return !getFirstName().equals("") && !getSurname().equals("") &&
+				!getEmail().equals("") && !getPhoneNumber().equals("")? true: false;
 	}
 
 	@Override
