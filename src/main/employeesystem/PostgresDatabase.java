@@ -138,7 +138,10 @@ public class PostgresDatabase {
 									
 									job.setEmployee(emp);
 									
-									App.lastEmployeeId = emp.getEmployeeId();
+									//set last employee id
+									if(App.lastEmployeeId < emp.getEmployeeId()) {
+										App.lastEmployeeId = emp.getEmployeeId();
+									}
 									dept.getAllJobPositions().replace(job.getJobTitle(), job);
 								}
 								dept.addToJobTitlesMap(job.getJobId(), job.getJobTitle());

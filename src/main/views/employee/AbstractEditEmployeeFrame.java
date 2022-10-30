@@ -22,10 +22,8 @@ import main.models.JobPosition;
 import main.views.components.EmployeeActionButton;
 import main.views.dialogs.DeleteEmployeeDialog;
 import main.views.dialogs.SaveChangesDialog;
-import main.views.events.UpdateEvent;
 import main.views.factories.EmployeeFrameFactory;
 import main.views.listeners.EditActionListener;
-import main.views.listeners.EmployeeUpdateListener;
 
 /**
  * 
@@ -181,7 +179,7 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		if(e.getSource().equals(closeButton)) {
 			AbstractEmployeeFrame frame = null;
 			
-			if(employee.hasInfoFilled()) {
+			if(!hasEmptyField()) {
 				frame = EmployeeFrameFactory.returnToViewEmployeeFrame(employee);
 				frame.setVisible(true);
 			}
@@ -247,71 +245,47 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 		//Save button clicked
 		if(e.getSource().equals(saveChangesButton)) {
 			
-			//get previous employee
-			Department prevDept = App.getDepartment(employee.getDepartmentName());
-			String prevJobTitle = prevDept.getJobTitle(employee.getJobId());
-			JobPosition prevJob = prevDept.getJobPosition(prevJobTitle);
+			resetFieldBorders();
 			
-			//create new employee
-			Department newDept = App.getDepartment((String) departmentNameComboBox.getSelectedItem());
-			JobPosition newJob = dept.getJobPosition((String) jobTitleComboBox.getSelectedItem());
-			
-			Employee newEmployee = new Employee(
-					firstNameTextField.getText(), surnameTextField.getText(),
-					employee.getEmployeeId(), emailTextField.getText(), 
-					phoneTextField.getText(), newJob.getJobId()
-					);
-			newEmployee.setDepartmentName(newDept.getDepartmentName());
-			
-			//reset text fields and to default color
-			firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
-			surnameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
-			phoneTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
-			emailTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
-			hourlyPaySpinner.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
-			
-			flashMessageLabel.setText("");
-			flashMessageLabel.setVisible(false);
-			
-			System.out.println(newEmployee.hasInfoFilled());
-			
-			if(newEmployee.hasInfoFilled()){
+			if(hasValidFields()) {
+				//get previous employee
+				Department prevDept = null;
+				prevDept = App.getDepartment(employee.getDepartmentName());
+				
+				JobPosition prevJob = null;
+				
+				if(prevDept == null) prevJob = new JobPosition(0, "", 0, null);
+				else {
+					String prevJobTitle = prevDept.getJobTitle(employee.getJobId());
+					prevJob = prevDept.getJobPosition(prevJobTitle);
+				}
+				
+				Department newDept = null;
+				newDept = App.getDepartment((String) departmentNameComboBox.getSelectedItem());
+				JobPosition newJob = dept.getJobPosition((String) jobTitleComboBox.getSelectedItem());
+				int newJobId = 0;
+				
+				if(newJob != null) newJobId = newJob.getJobId();
+				
+				//create new employee
+				Employee newEmployee = new Employee(
+						firstNameTextField.getText(), surnameTextField.getText(),
+						employee.getEmployeeId(), emailTextField.getText(), 
+						phoneTextField.getText(), newJobId
+						);
+				newEmployee.setDepartmentName(newDept.getDepartmentName());
 				
 				//check if changes where made
 				if((!employee.isIdenticalTo(newEmployee) || newJob.getJobId() != prevJob.getJobId()
 						|| !hourlyPaySpinner.getValue().equals(prevJob.getHourlyPay()))) {
+					newJob.setHourlyPay((Float) hourlyPaySpinner.getValue());
 					
-					boolean validField = true;
+					//show save dialog
+					saveChangesDialog = new SaveChangesDialog(newEmployee, employee, newJob);
+					saveChangesDialog.setVisible(true);
 					
-					//check if phone number & email are valid
-					if(!employee.getPhoneNumber().matches("/^[+]{0,1}[0-9]{10,14}$/")) {
-						
-						phoneTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
-						
-//						System.out.println("Invalid Phone Number");
-						flashMessageLabel.setText("Invalid Fields");
-						flashMessageLabel.setVisible(true);
-						validField = false;
-					}
-					
-					if(!employee.getEmail().matches("/^[\\w0-9\\.]+@\\w+.\\w{2,3}")) {
-						emailTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
-						
-//						System.out.println("Invalid Email Address");
-//						flashMessageLabel.setText(invalidPhoneMessage + "Invalid Email Address");
-						flashMessageLabel.setVisible(true);
-						validField = false;
-					}
-					
-					if(validField){
-						//show save dialog
-						saveChangesDialog = new SaveChangesDialog(newEmployee, employee, newJob);
-						saveChangesDialog.setVisible(true);
-						
-						saveChangesDialog.addUpdateListener(this);
-						saveChangesDialog.addUpdateListener(homeView);
-						
-					}
+					saveChangesDialog.addUpdateListener(this);
+					saveChangesDialog.addUpdateListener(homeView);
 				}else {
 					//highlight unchanged fields and show flash message
 					firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
@@ -324,24 +298,6 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 					flashMessageLabel.setVisible(true);
 				}
 			}else {
-				//highlight unchanged fields and show flash message
-				if(newEmployee.getFirstName().equals("")) {
-					firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
-				}
-				
-				if(newEmployee.getSurname().equals("")) {
-					surnameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
-				}
-				
-				if(newEmployee.getPhoneNumber().equals("")) {
-					phoneTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
-				}
-				
-				if(newEmployee.getEmail().equals("")) {
-					emailTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
-				}
-				
-				flashMessageLabel.setText("Empty Field");
 				flashMessageLabel.setVisible(true);
 			}
 		}
@@ -354,5 +310,116 @@ public class AbstractEditEmployeeFrame extends AbstractEmployeeFrame implements 
 			saveChangesDialog.addUpdateListener(homeView);
 		}
 		
+	}
+
+	
+	private boolean hasValidFields() {
+		
+		boolean hasInvalidFields = false;
+		
+		//check for empty fields
+		if(hasEmptyField()) {
+			if(firstNameTextField.getText().matches("[\\s]*")) {
+				firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
+				hasInvalidFields = true;
+			}
+			
+			if(surnameTextField.getText().matches("[\\s]*")) {
+				surnameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
+				hasInvalidFields = true;
+			}
+			
+			if(phoneTextField.getText().matches("[\\s]*")) {
+				phoneTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
+				hasInvalidFields = true;
+			}
+			
+			if(emailTextField.getText().matches("[\\s]*")) {
+				emailTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
+				hasInvalidFields = true;
+			}
+			
+			if(jobTitleComboBox.getSelectedItem() == null) {
+				jobTitleComboBox.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
+				hasInvalidFields = true;
+			}
+			
+			if(hasInvalidFields) {
+				flashMessageLabel.setText("Empty Field");
+			}
+		}
+		
+		//check if phone number is valid Zambian line
+		if(!phoneTextField.getText().matches("((\\+26)|(26))?0[97]?[567]?[0-9]{7}")) {
+			phoneTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
+
+			flashMessageLabel.setText("Enter Zambian Phone Number");
+			hasInvalidFields = true;
+		}
+		
+		//check if email address is valid
+		if(!emailTextField.getText().matches("[a-zA-Z0-9_\\-\\.]+@[a-z]+\\.[a-z]{2,3}([\\.][a-z]{2,3})?")) {
+			emailTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
+			
+			flashMessageLabel.setText("Invalid Email Address");
+			hasInvalidFields = true;
+		}
+		
+		//check if firstname includes letters, hyphen or apostrophe
+		if(!firstNameTextField.getText().matches("[A-Za-z\\-']+")) {
+			firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
+			
+			flashMessageLabel.setText("Invalid first name");
+			hasInvalidFields = true;
+		}else {
+			if(firstNameTextField.getText().matches("[a-z\\-']+")) {
+				String caps = firstNameTextField.getText().substring(0, 1).toUpperCase();
+				String remainder = firstNameTextField.getText().substring(1);
+				firstNameTextField.setText(caps + remainder);
+			}
+		}
+		
+		//checks if surname includes letters, hyphen or apostrophe
+		if(!surnameTextField.getText().matches("[A-Za-z\\-']+")){
+			
+			//checks if there are previous invalid fields
+			if(!hasInvalidFields) {
+				surnameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
+				
+				flashMessageLabel.setText("Invalid surname");
+				hasInvalidFields = true;
+			}else {
+				//multiple tested fields are invalid are invalid
+				flashMessageLabel.setText("Invalid Fields");
+			}
+		}else {
+			if(surnameTextField.getText().matches("[a-z\\-']+")) {
+				String caps = surnameTextField.getText().substring(0, 1).toUpperCase();
+				String remaider = surnameTextField.getText().substring(1);
+				surnameTextField.setText(caps + remaider);
+			}
+		}
+		
+		return !hasInvalidFields;
+	}
+	
+	private boolean hasEmptyField() {
+		return firstNameTextField.getText().matches("[\\s]*") ||
+				surnameTextField.getText().matches("[\\s]*") ||
+				phoneTextField.getText().matches("[\\s]*") ||
+				emailTextField.getText().equals("[\\s]*") ||
+				jobTitleComboBox.getSelectedIndex() != -1? true: false;
+	}
+
+	private void resetFieldBorders() {
+		//reset text fields and to default color
+		firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
+		surnameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
+		phoneTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
+		emailTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
+		hourlyPaySpinner.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));
+		
+		flashMessageLabel.setText("");
+		flashMessageLabel.setVisible(false);
 	}
 }

@@ -19,7 +19,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.swing.JPasswordField;
 import java.awt.Component;
@@ -112,9 +111,9 @@ public class LoginView extends AbstractFrame implements ActionListener {
 		jobIdLabel.setForeground(new Color(234, 234, 234));
 		center_panel.add(jobIdLabel, "cell 2 2");
 		
-		
 		jobIdTextField = new JTextField();
 		jobIdTextField.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		jobIdTextField.setText("400001");
 		jobIdTextField.setBackground(new Color(234, 234, 234));
 		center_panel.add(jobIdTextField, "cell 2 3 4 1,grow");
 		jobIdTextField.setColumns(10);
@@ -127,6 +126,7 @@ public class LoginView extends AbstractFrame implements ActionListener {
 		
 		passwordField = new JPasswordField();
 		passwordField.setBackground(new Color(234, 234, 234));
+		passwordField.setText("1234");
 		center_panel.add(passwordField, "cell 2 6 4 1,grow");
 		passwordField.setColumns(10);
 		

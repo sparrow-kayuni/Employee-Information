@@ -122,11 +122,6 @@ public class Employee implements Comparable<Employee>, Comparator<Employee>{
 				getEmail().equals(emp.getEmail()) && getPhoneNumber().equals(emp.getPhoneNumber())
 				&& getEmployeeId() == emp.getEmployeeId() ? true: false;
 	}
-	
-	public boolean hasInfoFilled() {
-		return !getFirstName().equals("") && !getSurname().equals("") &&
-				!getEmail().equals("") && !getPhoneNumber().equals("")? true: false;
-	}
 
 	@Override
 	public int compare(Employee o1, Employee o2) {

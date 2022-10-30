@@ -27,7 +27,7 @@ public class App{
 	 */
 	private static HashMap<String, Department> departmentsMap;
 	
-	public static int lastEmployeeId;
+	public static int lastEmployeeId = 0;
 	
 	public static Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	
@@ -47,6 +47,7 @@ public class App{
 		showLoginView();
 	}
 	
+	
 	private static void addLoginInfo() {
 		loginJobPositions = new HashMap<Integer, JobPosition>();
 		
@@ -61,6 +62,8 @@ public class App{
 		}
 		
 	}
+	
+	//checks if job position of given job id is present
 	public static boolean isLoginPositionPresent(int jobId) {
 		boolean isPresent = false;
 		Iterator<JobPosition> jobItr = loginJobPositions.values().iterator();
@@ -71,9 +74,11 @@ public class App{
 		return isPresent;
 	}
 	
+	
 	public static JobPosition getLoginPosition(int jobId){
 		return loginJobPositions.get(jobId);
 	}
+	
 	
 	public static HashMap<Integer, JobPosition> getAllLoginPositions(){
 		return loginJobPositions;

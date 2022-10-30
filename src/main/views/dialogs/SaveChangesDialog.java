@@ -68,7 +68,6 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 		
 		App.getDepartment(employee.getDepartmentName())
 			.getJobPosition(newJobTitle).setEmployee(employee);
-		
 	}
 	
 	
