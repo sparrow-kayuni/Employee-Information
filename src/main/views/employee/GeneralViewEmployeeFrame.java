@@ -1,9 +1,10 @@
 package main.views.employee;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import main.models.Employee;
-import main.views.listeners.DefaultActionListener;
+import main.views.events.CloseEvent;
 
 /**
  * 
@@ -12,7 +13,7 @@ import main.views.listeners.DefaultActionListener;
  *
  */
 public class GeneralViewEmployeeFrame extends AbstractViewEmployeeFrame 
-		implements DefaultActionListener {
+		implements ActionListener {
 
 
 	private static final long serialVersionUID = 1L;
@@ -21,7 +22,9 @@ public class GeneralViewEmployeeFrame extends AbstractViewEmployeeFrame
 		setEmployeeInformation(emp);
 		setTitle("Employee Details");
 		initializePanels();
-		addTextPanes();
+		setFrameHeader();
+		initializeTextPanes();
+		setTextPaneValues();
 		
 		closeButton.addActionListener(this);
 	}
@@ -29,6 +32,7 @@ public class GeneralViewEmployeeFrame extends AbstractViewEmployeeFrame
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(closeButton)) {
+			notifyClosedListeners(CloseEvent.Event.CANCEL);
 			this.dispose();
 		}	
 	}

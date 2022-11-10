@@ -120,7 +120,12 @@ public class Employee implements Comparable<Employee>, Comparator<Employee>{
 	public boolean isIdenticalTo(Employee emp) {
 		return getFirstName().equals(emp.getFirstName()) && getSurname().equals(emp.getSurname()) &&
 				getEmail().equals(emp.getEmail()) && getPhoneNumber().equals(emp.getPhoneNumber())
-				&& getEmployeeId() == emp.getEmployeeId() ? true: false;
+				&& getEmployeeId() == emp.getEmployeeId();
+	}
+	
+	public boolean isEmptyEmployee() {
+		return getFirstName().equals("") && getSurname().equals("") &&
+				getEmail().equals("") && getPhoneNumber().equals("");
 	}
 
 	@Override

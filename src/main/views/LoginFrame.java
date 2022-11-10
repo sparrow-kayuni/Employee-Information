@@ -24,7 +24,7 @@ import javax.swing.JPasswordField;
 import java.awt.Component;
 import javax.swing.Box;
 
-public class LoginView extends AbstractFrame implements ActionListener {
+public class LoginFrame extends AbstractFrame implements ActionListener {
 
 
 	private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class LoginView extends AbstractFrame implements ActionListener {
 	 * Create the application.
 	 * @param managersList 
 	 */
-	public LoginView(HashMap<String, Department> deptsMap) {		
+	public LoginFrame(HashMap<String, Department> deptsMap) {		
 		initialize();
 	}
 
@@ -185,11 +185,11 @@ public class LoginView extends AbstractFrame implements ActionListener {
 	
 	private void proceedToHomeView() {
 		
-		homeView = HomeFrameFactory.createHomeView();
+		App.setHomeView(HomeFrameFactory.createHomeView());
 		
-		if(homeView != null) {
+		if(App.getHomeView() != null) {
 			this.dispose();
-			homeView.setVisible(true);
+			App.getHomeView().setVisible(true);
 		}		
 	}
 

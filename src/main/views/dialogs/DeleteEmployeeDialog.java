@@ -16,7 +16,7 @@ public class DeleteEmployeeDialog extends AbstractUpdateChangesDialog implements
 	private static final long serialVersionUID = 1L;
 	
 	public DeleteEmployeeDialog(Employee emp) {
-		employee = emp;
+		this.employee = emp;
 		initializeDialog("Action will permanently delete employee. Continue?");
 		okButton.addActionListener(this);
 		cancelButton.addActionListener(this);
@@ -27,11 +27,14 @@ public class DeleteEmployeeDialog extends AbstractUpdateChangesDialog implements
 		if(e.getSource().equals(okButton)) {
 			
 			removeEmployee(employee);
-			
-			App.getDb().deleteEmployee(employee);
-			
-			notifyListeners();
-			
+			try {
+				App.getDb().deleteEmployee(employee);
+				notifyListeners();
+				App.getDb().commitChanges();
+			}catch(Exception err) {
+				err.printStackTrace();
+				App.getDb().undoChanges();
+			}
 			this.dispose();
 		}
 		
@@ -44,9 +47,10 @@ public class DeleteEmployeeDialog extends AbstractUpdateChangesDialog implements
 	private void notifyListeners() {
 		//notify all update listeners
 		UpdateEvent event = new UpdateEvent(this);
+		event.setEmployee(null);
+		event.setJob(null);
 		for(int i = 0; i < updateListeners.size(); i++) {
 			((EmployeeUpdateListener) updateListeners.get(i)).onEmployeeUpdate(event);
 		}
 	}
-
 }

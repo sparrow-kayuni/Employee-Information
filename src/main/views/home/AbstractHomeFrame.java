@@ -4,7 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import main.employeesystem.App;
 import main.models.Department;
@@ -26,12 +26,9 @@ import main.models.Employee;
 import main.models.JobPosition;
 import main.views.AbstractFrame;
 import main.views.components.EmployeeActionButton;
-import main.views.dialogs.SaveChangesDialog;
-import main.views.employee.AbstractEmployeeFrame;
-import main.views.employee.AddEmployeeFrame;
-import main.views.factories.EmployeeFrameFactory;
+import main.views.employee.AbstractViewEmployeeFrame;
 import main.views.listeners.EmployeeUpdateListener;
-import main.views.listeners.HomeViewListener;
+import main.views.listeners.FrameClosedListener;
 import net.miginfocom.swing.MigLayout;
 
 
@@ -42,17 +39,15 @@ import net.miginfocom.swing.MigLayout;
  * @implSpec AbstractHomeFrame contains base Home components
  *
  */
-public abstract class AbstractHomeFrame extends AbstractFrame implements HomeViewListener, EmployeeUpdateListener {
+public abstract class AbstractHomeFrame extends AbstractFrame 
+implements ActionListener, ListSelectionListener, EmployeeUpdateListener, FrameClosedListener {
 
 	private static final long serialVersionUID = 1L;
 	
 	protected JTextField searchTextField = null;
 	protected JButton searchButton = null;
 	protected EmployeeActionButton viewEmployeeButton = null;
-	protected EmployeeActionButton editEmployeeButton = null;
-	protected EmployeeActionButton addEmployeeButton = null;
 	protected JLabel headerLabel;
-	protected SaveChangesDialog saveEmployeeDialog = null;
 	
 	protected JPanel panel = null;
 	protected JPanel north_panel = null;
@@ -64,7 +59,6 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 	protected JList<String> employeesDisplay = null;
 	protected JList<String> departmentsTab = null;
 	
-	protected static AbstractEmployeeFrame viewEmployeeFrame = null;
 	protected static Employee selectedEmployee = null;
 	protected static ArrayList<Employee> empVals = null;
 	protected static ArrayList<String> deptListVals = null;
@@ -140,7 +134,7 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 			deptListVals.add(deptItr.next().getDepartmentName());
 		}
 		
-		setDepartmentDisplay(0);
+		setDepartmentTab(0);
 		
 		west_panel.add(departmentsTab, "cell 0 1 1 6,grow");
 		
@@ -184,128 +178,8 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 		center_panel.add(viewEmployeeButton, "cell 6 13,grow");
 	}
 
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-		//View Selected Employee
-		if(e.getSource().equals(viewEmployeeButton)) {
-			try {
-				//if employee view frame exists, bring current employee view frame to front
-				if(viewEmployeeFrame != null) {
-					viewEmployeeFrame.setVisible(true);
-					
-				}else {
-					//if employee view frame exists, create new employee view frame with the current selected employee
-					selectedEmployeeIndex = employeesDisplay.getSelectedIndex();
-					selectedEmployee = empVals.get(selectedEmployeeIndex);
-					viewEmployeeFrame = null;
-					
-					viewEmployeeFrame = EmployeeFrameFactory.createViewEmployeeFrame(this, selectedEmployee);
-					
-					employeesDisplay.setSelectedIndex(selectedEmployeeIndex);
-					employeesDisplay.setSelectionBackground(new Color(163, 163, 163));
-					
-					viewEmployeeButton.enableButton();
-					
-					viewEmployeeFrame.setVisible(true);
-				}
-			}catch(Exception err) {
-				err.printStackTrace();
-			}
-		}
-		
-		
-		//Add button clicked
-		if(e.getSource().equals(addEmployeeButton)) {
-			if(addEmployeeButton != null) {
-				String deptName = null;
-				
-				//if tab selected is "ALL DEPARTMENTS" or "SEARCH RESULTS", set, by default, to EXECUTIVE department
-				if(departmentsTab.getSelectedValue().equals("ALL DEPARTMENTS") ||
-						departmentsTab.getSelectedValue().equals("SEARCH RESULTS")) deptName = "EXECUTIVE"; 
-				else deptName = departmentsTab.getSelectedValue();
-				
-				AddEmployeeFrame addEmployeeFrame = EmployeeFrameFactory.createAddEmployeeFrame(deptName);
-				addEmployeeFrame.setVisible(true);
-			}
-		}
-		
-		
-		//search button clicked
-		if(e.getSource().equals(searchButton)) {
-			if(searchTextField.getText().equals("Enter Text Here")) {
-				searchTextField.setText("");
-			}
-			
-			if(!deptListVals.contains("SEARCH RESULTS")) {
-				deptListVals.add("SEARCH RESULTS");
-				
-				setDepartmentDisplay(6);
-			}else {
-				departmentsTab.setSelectedIndex(6);
-				refreshEmployeesDisplay();
-			}
-		}
-	}
-
 	//
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		
-		// Department Selection Handling
-		if(e.getSource().equals(departmentsTab)) {
-			refreshEmployeesDisplay();
-		}
-		
-		//Employee Selection Handling
-		if(e.getSource().equals(employeesDisplay)) {
-			try {
-				
-				//if employee view doesn't exist, enable all buttons
-				if(viewEmployeeFrame == null) {
-					employeesDisplay.setSelectionBackground(new Color(1, 120, 255));
-					
-					selectedEmployeeIndex = employeesDisplay.getSelectedIndex();
-					selectedEmployee = empVals.get(selectedEmployeeIndex);
-					
-					viewEmployeeButton.enableButton();
-					
-					if(editEmployeeButton != null && addEmployeeButton != null) {
-						editEmployeeButton.enableButton();
-						addEmployeeButton.enableButton();
-					}
-				}else {
-					
-					//If employee view exists, enable view button
-					if(!viewEmployeeFrame.isShowing()) {
-						viewEmployeeFrame = null;
-						
-						employeesDisplay.setSelectionBackground(new Color(1, 120, 255));
-						
-						selectedEmployeeIndex = employeesDisplay.getSelectedIndex();
-						selectedEmployee = empVals.get(selectedEmployeeIndex);
-						
-						viewEmployeeButton.enableButton();
-						
-						if(editEmployeeButton != null) {
-							editEmployeeButton.enableButton();
-						}
-					}else {
-						addEmployeeButton.disableButton();
-					}
-				}
-			}catch(IndexOutOfBoundsException err) {
-//				System.out.println("Out of bounds index");
-				selectedEmployeeIndex = employeesDisplay.getSelectedIndex();
-				viewEmployeeButton.disableButton();
-			}
-		}
-	}
-	
-
-	//
-	protected void setDepartmentDisplay(int i) {
+	protected void setDepartmentTab(int i) {
 		
 		try {
 			departmentsTab.setModel(new AbstractListModel<String>() {
@@ -382,7 +256,6 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 			System.out.println("Something broke... Nevermind it tho");
 		}
 		
-		
 		//Set Header to Department name
 		if(headerLabel != null) {
 			if(departmentsTab.getSelectedValue().equals("ALL DEPARTMENTS") ||
@@ -415,6 +288,22 @@ public abstract class AbstractHomeFrame extends AbstractFrame implements HomeVie
 			viewEmployeeButton.disableButton();
 		}catch(Exception err) {
 //			System.out.println("View Employee Button is null");
+		}
+	}
+	
+	
+	protected void getSearchResults() {
+		if(searchTextField.getText().equals("Enter Text Here")) {
+			searchTextField.setText("");
+		}
+		
+		if(!deptListVals.contains("SEARCH RESULTS")) {
+			deptListVals.add("SEARCH RESULTS");
+			
+			setDepartmentTab(6);
+		}else {
+			departmentsTab.setSelectedIndex(6);
+			refreshEmployeesDisplay();
 		}
 	}
 }

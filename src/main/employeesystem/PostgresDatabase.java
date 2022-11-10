@@ -34,6 +34,7 @@ public class PostgresDatabase {
 		try {
 			Class.forName("org.postgresql.Driver");
 			conn = DriverManager.getConnection(pgURL, userName, password);
+			conn.setAutoCommit(false);
 			statement = conn.createStatement();
 			
 		} catch(Exception e) {
@@ -219,6 +220,26 @@ public class PostgresDatabase {
 				if(!statement.execute(query)) {
 					System.out.println(jobPosition.getJobTitle() + " is updated");
 				}
+			}
+		}catch(Exception err) {
+			err.printStackTrace();
+		}
+	}
+	
+	public void undoChanges() {
+		try {
+			if(conn != null) {
+				conn.rollback();
+			}
+		}catch(Exception err) {
+			err.printStackTrace();
+		}
+	}
+	
+	public void commitChanges() {
+		try {
+			if(conn != null) {
+				conn.commit();
 			}
 		}catch(Exception err) {
 			err.printStackTrace();

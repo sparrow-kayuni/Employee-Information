@@ -9,6 +9,11 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+
 import javax.swing.SwingConstants;
 
 import main.employeesystem.App;
@@ -16,8 +21,9 @@ import main.models.Department;
 import main.models.Employee;
 import main.models.JobPosition;
 import main.views.AbstractFrame;
-
-import javax.swing.JButton;
+import main.views.components.CloseActionButton;
+import main.views.events.CloseEvent;
+import main.views.listeners.FrameClosedListener;
 
 /**
  * 
@@ -25,15 +31,16 @@ import javax.swing.JButton;
  * @implSpec AbstractEmployeeFrame contains base frame components (panels, labels and close button)
  *
  */
-public class AbstractEmployeeFrame extends AbstractFrame {
+public abstract class AbstractEmployeeFrame extends AbstractFrame implements ActionListener {
 
 	protected static final long serialVersionUID = 1L;
-	protected static Employee employee = null;
-	protected static Department currentDepartment = null;
-	protected static JobPosition jobPosition = null;
-	protected static boolean hasInfo = false;
+	protected Employee currentEmployee = null;
+	protected Department currentDepartment = null;
+	protected JobPosition currentJobPosition = null;
+	protected boolean hasInfo = false;
 	
-	protected JButton closeButton = null;
+	protected CloseActionButton closeButton = null;
+	private ArrayList<AbstractFrame> listeners = new ArrayList<AbstractFrame>();
 	
 	protected JPanel panel;
 	protected JPanel west_panel;
@@ -43,10 +50,21 @@ public class AbstractEmployeeFrame extends AbstractFrame {
 	protected JPanel center_panel;
 	
 	protected JLabel frameHeader;
-	protected static JLabel employeeNameHeader;
+	protected JLabel employeeNameHeader;
 
-	private final int width = 600;
-	private final int height = 500;
+	protected final int width = 600;
+	protected final int height = 500;
+	
+	//specifies what caused the frame to close
+	protected CloseEvent.Event closedEvent = null;
+	
+	public void setClosedEvent(CloseEvent.Event event) {
+		closedEvent = event;
+	}
+	
+	public CloseEvent.Event getClosedEvent() {
+		return this.closedEvent;
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -59,6 +77,14 @@ public class AbstractEmployeeFrame extends AbstractFrame {
 				
 		this.setBounds(xPos, yPos, width, height);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				if(getClosedEvent() == null) setClosedEvent(CloseEvent.Event.CANCEL);
+				notifyClosedListeners(getClosedEvent());
+			}
+		});
 		
 		panel = new JPanel();
 		panel.setBackground(new Color(69, 69, 69));
@@ -91,12 +117,11 @@ public class AbstractEmployeeFrame extends AbstractFrame {
 		panel.add(center_panel, BorderLayout.CENTER);
 		center_panel.setLayout(new MigLayout("", "[100.00][30.00][100.00,grow][100.00,grow][100.00][30.00][100.00,grow][40.00]", "[35.00][15.00][35.00,grow][20.00][35.00,grow][20.00,grow][35.00,grow][20.00][35.00,grow][20.00][35.00,grow][20.00][35.00,grow][20.00][35.00][20.00,grow][35.00][30.00][30.00]"));
 		
-		employeeNameHeader = new JLabel(employee.getFirstName().toUpperCase() 
-				+ " " + employee.getSurname().toUpperCase());
-		employeeNameHeader.setHorizontalAlignment(SwingConstants.CENTER);
-		employeeNameHeader.setForeground(new Color(215, 215, 215));
-		employeeNameHeader.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
-		center_panel.add(employeeNameHeader, "cell 0 0,alignx center,aligny center");
+		this.employeeNameHeader = new JLabel();
+		this.employeeNameHeader.setHorizontalAlignment(SwingConstants.CENTER);
+		this.employeeNameHeader.setForeground(new Color(215, 215, 215));
+		this.employeeNameHeader.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
+		center_panel.add(this.employeeNameHeader, "cell 0 0,alignx center,aligny center");
 		
 		JLabel employeeIdLabel = new JLabel("EMPLOYEE ID");
 		employeeIdLabel.setForeground(new Color(215, 215, 215));
@@ -138,7 +163,7 @@ public class AbstractEmployeeFrame extends AbstractFrame {
 		hourlyPayLabel.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
 		center_panel.add(hourlyPayLabel, "cell 0 16");
 		
-		closeButton = new JButton("Back");
+		closeButton = new CloseActionButton("Back");
 		closeButton.setFocusable(false);
 		closeButton.setBackground(new Color(131, 131, 131));
 		
@@ -146,18 +171,37 @@ public class AbstractEmployeeFrame extends AbstractFrame {
 	}
 	
 	public Employee getEmployee() {
-		return employee;
+		return this.currentEmployee;
 	}
 	
+	//sets value of fframe header
+	protected void setFrameHeader() {
+		this.employeeNameHeader.setText(currentEmployee.getFirstName().toUpperCase() 
+				+ " " + currentEmployee.getSurname().toUpperCase());
+	}
+	
+	//sets current employee information
 	protected void setEmployeeInformation(Employee emp) {
 		String jobTitle = null;
 		
 		if(emp != null) {
-			employee = emp;
-			currentDepartment = App.getDepartment(employee.getDepartmentName());
-			jobTitle = currentDepartment.getJobTitle(employee.getJobId());	
+			this.currentEmployee = emp;
+			this.currentDepartment = App.getDepartment(currentEmployee.getDepartmentName());
+			jobTitle = currentDepartment.getJobTitle(currentEmployee.getJobId());
+			this.currentJobPosition = this.currentDepartment.getJobPosition(jobTitle);
 		}
-		
-		jobPosition = currentDepartment.getJobPosition(jobTitle);
+	}
+	
+	//registers frames that will be notified when this frame is closed
+	public void addClosedListener(AbstractFrame frame) {
+		this.listeners.add(frame);
+	}
+	
+	//notifies listeners
+	public void notifyClosedListeners(CloseEvent.Event eventType) {
+		for(int i = 0; i < this.listeners.size(); i++) {
+			((FrameClosedListener) this.listeners.get(i))
+				.onEmployeeFrameClosed(new CloseEvent(this, eventType));
+		}
 	}
 }

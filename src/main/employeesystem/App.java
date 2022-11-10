@@ -3,7 +3,8 @@ package main.employeesystem;
 import main.models.Department;
 import main.models.Employee;
 import main.models.JobPosition;
-import main.views.LoginView;
+import main.views.LoginFrame;
+import main.views.home.AbstractHomeFrame;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -32,6 +33,10 @@ public class App{
 	public static Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	
 	public static HashMap<Integer, JobPosition> loginJobPositions = null;
+
+	private static AbstractHomeFrame homeView = null;
+	
+	private static LoginFrame loginFrame = null;
 	
 	/**
 	 * 
@@ -42,13 +47,12 @@ public class App{
 	public static void run() {
 		connectDatabase();
 		setDepartments();
-		addLoginInfo();
-		printInfo();
+		addManagerLoginInfo();
 		showLoginView();
 	}
 	
 	
-	private static void addLoginInfo() {
+	public static void addManagerLoginInfo() {
 		loginJobPositions = new HashMap<Integer, JobPosition>();
 		
 		Iterator<Department> deptItr = departmentsMap.values().iterator();
@@ -57,7 +61,11 @@ public class App{
 			Iterator<JobPosition> jobItr = dept.getAllJobPositions().values().iterator();
 			while(jobItr.hasNext()) {
 				JobPosition job = jobItr.next();
-				if(job.getPassword() != null) loginJobPositions.put(job.getJobId(), job);
+				if(job.getPassword() != null) {
+					loginJobPositions.put(job.getJobId(), job);
+					System.out.println(loginJobPositions.get(job.getJobId()).getJobTitle() + 
+							" - " + loginJobPositions.get(job.getJobId()).getPassword());
+				}
 			}
 		}
 		
@@ -68,7 +76,11 @@ public class App{
 		boolean isPresent = false;
 		Iterator<JobPosition> jobItr = loginJobPositions.values().iterator();
 		while(jobItr.hasNext()) {
-			isPresent = (jobItr.next().getJobId() == jobId)? true: false;
+			JobPosition job = jobItr.next();
+			
+			isPresent = (job.getJobId() == jobId)? true: false;
+			
+			if(isPresent) break;
 		}
 		
 		return isPresent;
@@ -84,37 +96,15 @@ public class App{
 		return loginJobPositions;
 	}
 
-	private static void printInfo() {
-		Iterator<Department> deptItr = departmentsMap.values().iterator();
-		
-		while(deptItr.hasNext()) {
-			Department dept = deptItr.next();
-			
-			System.out.println(dept.getDepartmentName() + "\n-----------------------------");
-			
-			Iterator<JobPosition> jobItr = dept.getAllJobPositions().values().iterator();
-			
-			while(jobItr.hasNext()) {
-				JobPosition job = jobItr.next();
-				
-				if(job.isFilled) {
-					System.out.println(job.getJobId() + " - " + job.getJobTitle() + 
-							" - " + job.getEmployee().getFirstName() + " - " + job.getPassword());
-				}
-				
-			}
-		}
-	}
-
 	/**
 	 * Connects App to postgres database 
 	 */
-	private static void connectDatabase() {
+	public static void connectDatabase() {
 		setDb(new PostgresDatabase());
 	}
 	
 	
-	private static void setDepartments() {
+	public static void setDepartments() {
 		departmentsMap = new HashMap<String, Department>();
 		departmentsMap.putAll(getDb().createDepartmentsMap());
 	}
@@ -122,8 +112,8 @@ public class App{
 	
 	public static void showLoginView() {
 		try {
-			LoginView window = new LoginView(departmentsMap);
-			window.setVisible(true);
+			loginFrame = new LoginFrame(departmentsMap);
+			loginFrame.setVisible(true);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -155,5 +145,13 @@ public class App{
 		App.db = db;
 	}
 
-}
 
+	public static AbstractHomeFrame getHomeView() {
+		return homeView;
+	}
+	
+	public static void setHomeView(AbstractHomeFrame homeView) {
+		App.homeView = homeView;
+	}
+
+}

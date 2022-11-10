@@ -6,9 +6,7 @@ import java.awt.event.ActionListener;
 import main.employeesystem.App;
 import main.models.Employee;
 import main.models.JobPosition;
-import main.views.employee.HumanResourceViewEmployeeFrame;
 import main.views.events.UpdateEvent;
-import main.views.factories.EmployeeFrameFactory;
 import main.views.listeners.EmployeeUpdateListener;
 
 public class SaveChangesDialog extends AbstractUpdateChangesDialog implements ActionListener {
@@ -34,24 +32,25 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(okButton)) {
 			
-			if(!oldEmployee.getFirstName().equals("")) {
+			//edit existing employee
+			if(!oldEmployee.isEmptyEmployee()) {
 				removeEmployee(oldEmployee);
 				setNewEmployee();
 				updateJobInfo();
 				App.getDb().updateEmployee(employee);
 			}else {
+				//add new employee
 				setNewEmployee();
 				updateJobInfo();
 				App.getDb().addNewEmployee(employee);
 			}
 			
 			App.getDb().updateJobPosition(jobPosition);
+			
+			App.getDb().commitChanges();
 						
 			notifyListeners();
-
-			HumanResourceViewEmployeeFrame frame = EmployeeFrameFactory.returnToViewEmployeeFrame(employee);
 			
-			frame.setVisible(true);
 			this.dispose();
 		}
 		
@@ -80,6 +79,8 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 	private void notifyListeners() {
 		//notify all update listeners
 		UpdateEvent event = new UpdateEvent(this);
+		event.setEmployee(employee);
+		event.setJob(jobPosition);
 		for(int i = 0; i < updateListeners.size(); i++) {
 			((EmployeeUpdateListener) updateListeners.get(i)).onEmployeeUpdate(event);
 		}
