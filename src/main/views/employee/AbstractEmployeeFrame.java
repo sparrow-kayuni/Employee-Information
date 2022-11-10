@@ -199,8 +199,8 @@ public abstract class AbstractEmployeeFrame extends AbstractFrame implements Act
 	
 	//notifies listeners
 	public void notifyClosedListeners(CloseEvent.Event eventType) {
-		for(int i = 0; i < this.listeners.size(); i++) {
-			((FrameClosedListener) this.listeners.get(i))
+		for(AbstractFrame listener: this.listeners) {
+			((FrameClosedListener) listener)
 				.onEmployeeFrameClosed(new CloseEvent(this, eventType));
 		}
 	}

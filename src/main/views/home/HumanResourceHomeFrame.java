@@ -154,10 +154,13 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 		}
 	}
 
-	
+	//called when save or delete dialogs have been accepted
 	@Override
 	public void onEmployeeUpdate(UpdateEvent e) {
 		refreshEmployeesDisplay();
+		
+		//if update event has an employee, means the event was from an add or edit operation
+		//if the employee is null, it means it was a delete operation
 		if(e.getEmployee() != null) {
 			if(this.viewEmployeeFrame != null) {
 				this.viewEmployeeFrame.setClosedEvent(CloseEvent.Event.SAVE);
@@ -166,15 +169,11 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 			emp = e.getEmployee();
 		} 
 		else{
-			try {
-				viewEmployeeFrame.setClosedEvent(CloseEvent.Event.DELETE);
-			}catch(Exception err) {
-				this.viewEmployeeFrame = null;
-			}
+			viewEmployeeFrame.setClosedEvent(CloseEvent.Event.DELETE);
 		}
 	}
 	
-	
+	//called when view employee frame is closed manually or after being disposed
 	@Override
 	public void onEmployeeFrameClosed(CloseEvent e) {
 		

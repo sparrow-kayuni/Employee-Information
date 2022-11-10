@@ -17,7 +17,7 @@ import main.models.JobPosition;
 /**
  * 
  * @author Mwiinga Kayuni
- * @implSpec Contains 
+ * @implSpec 
  *
  */
 public class PostgresDatabase {
@@ -26,7 +26,7 @@ public class PostgresDatabase {
 	private String userName = "test";
 	private String password = "123";
 	private static Connection conn = null;
-	private static Statement statement;
+	private static Statement statement = null;
 	private static LinkedHashMap<String, Department> departmentsMap = null;
 	
 	//Initialize and connect to the database

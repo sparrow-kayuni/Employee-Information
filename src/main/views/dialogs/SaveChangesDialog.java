@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import main.employeesystem.App;
 import main.models.Employee;
 import main.models.JobPosition;
+import main.views.AbstractFrame;
 import main.views.events.UpdateEvent;
 import main.views.listeners.EmployeeUpdateListener;
 
@@ -81,8 +82,8 @@ public class SaveChangesDialog extends AbstractUpdateChangesDialog implements Ac
 		UpdateEvent event = new UpdateEvent(this);
 		event.setEmployee(employee);
 		event.setJob(jobPosition);
-		for(int i = 0; i < updateListeners.size(); i++) {
-			((EmployeeUpdateListener) updateListeners.get(i)).onEmployeeUpdate(event);
+		for(AbstractFrame listener: updateListeners) {
+			((EmployeeUpdateListener) listener).onEmployeeUpdate(event);
 		}
 	}
 

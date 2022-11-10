@@ -81,7 +81,7 @@ public class HumanResourceViewEmployeeFrame extends AbstractViewEmployeeFrame im
 		}
 	}
 
-	//called when edit frame is closed
+	//called when edit frame is closed manually or after being disposed
 	@Override
 	public void onEmployeeFrameClosed(CloseEvent e) {
 		

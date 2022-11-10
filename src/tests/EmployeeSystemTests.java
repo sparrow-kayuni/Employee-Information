@@ -14,13 +14,14 @@ import main.employeesystem.App;
 import main.models.Department;
 import main.models.JobPosition;
 
-class ExampleTests {
+class EmployeeSystemTests {
 
 	@BeforeEach
 	void setUp() throws Exception {
 		App.connectDatabase();
 		App.setDepartments();
 		App.addManagerLoginInfo();
+		App.showLoginView();
 	}
 
 	@AfterEach
@@ -48,23 +49,7 @@ class ExampleTests {
 	
 	@Test
 	void testIfManagerLoginInfoIsCorrect() {
-		ArrayList<String> departmentNames = new ArrayList<>();
-		departmentNames.add("HUMAN RESOURCES");
-		departmentNames.add("FINANCE");
-		departmentNames.add("SALES");
-		departmentNames.add("ACCOUNTS");
-		departmentNames.add("EXECUTIVE");
 		
-		Iterator<JobPosition> jobItr = App.getAllLoginPositions().values().iterator();
-		HashMap<String, Department> depts = App.getAllDepartments();
-		
-		int i = 0;
-		while(jobItr.hasNext()) {
-			JobPosition job = jobItr.next();
-			System.out.println(job);
-			assertTrue(true);
-			i++;
-		}
 	}
 
 }
