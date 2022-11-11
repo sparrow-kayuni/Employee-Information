@@ -33,6 +33,8 @@ public class LoginFrame extends AbstractFrame implements ActionListener {
 	private JLabel flashMessage;
 	public boolean isLoggedIn = false;
 	
+	JButton loginButton = null;
+	
 	private final int width = 480;
 	private final int height = 400;
 	
@@ -113,7 +115,6 @@ public class LoginFrame extends AbstractFrame implements ActionListener {
 		
 		jobIdTextField = new JTextField();
 		jobIdTextField.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		jobIdTextField.setText("400001");
 		jobIdTextField.setBackground(new Color(234, 234, 234));
 		center_panel.add(jobIdTextField, "cell 2 3 4 1,grow");
 		jobIdTextField.setColumns(10);
@@ -126,11 +127,10 @@ public class LoginFrame extends AbstractFrame implements ActionListener {
 		
 		passwordField = new JPasswordField();
 		passwordField.setBackground(new Color(234, 234, 234));
-		passwordField.setText("1234");
 		center_panel.add(passwordField, "cell 2 6 4 1,grow");
 		passwordField.setColumns(10);
 		
-		JButton loginButton = new JButton("Login");
+		loginButton = new JButton("Login");
 		loginButton.setFocusable(false);
 		loginButton.addActionListener(this);
 		loginButton.setBackground(new Color(0, 120, 215));
@@ -141,42 +141,58 @@ public class LoginFrame extends AbstractFrame implements ActionListener {
 		return new String(jobIdTextField.getText());
 	}
 	
+	public void setJobIdText(String text) {
+		jobIdTextField.setText(text);
+	}
+	
 	public String getPasswordText() {
 		return new String(passwordField.getPassword());
 	}
-
+	
+	public void setPasswordText(String text) {
+		passwordField.setText(text);
+	}
+	
+	public JButton getLoginButton() {
+		return loginButton;
+	}
+	
+	public JobPosition getCurrentJobPosition() {
+		return currentJobPositionLogin;
+	}
+	
+	public String getFlashMessage() {
+		return flashMessage.getText();
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		int jobId;
-		
-		//Check if employee id text is a number
-		if(getJobIdText().matches("[0-9]+")) jobId = Integer.valueOf(getJobIdText());
-		else jobId = 0;
-		
-//		Iterator<JobPosition> loginItr = App.getAllLoginPositions().values().iterator();
-		
-		if(App.isLoginPositionPresent(jobId)) {
+		try {
+			//Check if employee id text is a number
+			if(!getJobIdText().matches("[0-9]+")) throw new Exception("Enter numbers only");
+			
+			jobId = Integer.valueOf(getJobIdText());
+
+			if(!App.isLoginPositionPresent(jobId)) throw new Exception("User Doesn't Exist");
+			
 			currentJobPositionLogin = App.getLoginPosition(jobId);
 			
-			if(getPasswordText().equals(currentJobPositionLogin.getPassword())){
-				
-				flashMessage.setText("Logging In");
-				flashMessage.setForeground(new Color(55, 146, 255));
-				flashMessage.setVisible(true);
-				
-				//log in employee
-				App.logInEmployee(currentJobPositionLogin.getEmployee());
-				
-				if(App.getDepartment(currentJobPositionLogin.getEmployee().getDepartmentName()).isLoggedIn) {
-					proceedToHomeView();
-				};	
-			}else {
-				flashMessage.setText("Wrong Password");
-				flashMessage.setForeground(new Color(55, 146, 255));
-				flashMessage.setVisible(true);
+			if(!getPasswordText().equals(currentJobPositionLogin.getPassword())) throw new Exception("Wrong Password");
+			
+
+			flashMessage.setText("Logging In");
+			flashMessage.setForeground(new Color(55, 146, 255));
+			flashMessage.setVisible(true);
+			
+			//log in employee
+			App.logInEmployee(currentJobPositionLogin.getEmployee());
+			
+			if(App.getDepartment(currentJobPositionLogin.getEmployee()
+					.getDepartmentName()).isLoggedIn) {
+				proceedToHomeView();
 			}
-		}else {
-			flashMessage.setText("Invalid User");
+		}catch(Exception err) {
+			flashMessage.setText(err.getMessage());
 			flashMessage.setForeground(new Color(55, 146, 255));
 			flashMessage.setVisible(true);
 		}
@@ -185,11 +201,11 @@ public class LoginFrame extends AbstractFrame implements ActionListener {
 	
 	private void proceedToHomeView() {
 		
-		App.setHomeView(HomeFrameFactory.createHomeView());
+		App.setHomeFrame(HomeFrameFactory.createHomeView());
 		
-		if(App.getHomeView() != null) {
+		if(App.getHomeFrame() != null) {
 			this.dispose();
-			App.getHomeView().setVisible(true);
+			App.getHomeFrame().setVisible(true);
 		}		
 	}
 

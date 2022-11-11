@@ -123,7 +123,7 @@ public class AddEmployeeFrame extends AbstractEditEmployeeFrame implements Emplo
 					saveChangesDialog.setVisible(true);
 					
 					saveChangesDialog.addUpdateListener(this);
-					saveChangesDialog.addUpdateListener(App.getHomeView());
+					saveChangesDialog.addUpdateListener(App.getHomeFrame());
 				}else {
 					//highlight unchanged fields and show flash message
 					firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));

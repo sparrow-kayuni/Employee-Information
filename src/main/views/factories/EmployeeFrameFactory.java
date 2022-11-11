@@ -7,13 +7,15 @@ import main.views.employee.EditEmployeeFrame;
 import main.views.employee.GeneralViewEmployeeFrame;
 import main.views.employee.HumanResourceViewEmployeeFrame;
 import main.views.home.AbstractHomeFrame;
+import main.views.home.GeneralHomeFrame;
+import main.views.home.HumanResourceHomeFrame;
 
 public class EmployeeFrameFactory {
 	
 	public static AbstractEmployeeFrame createViewEmployeeFrame(AbstractHomeFrame view, Employee emp) {
-		if(view.getClass().toString().equals("class main.views.home.GeneralHomeFrame") && emp != null) {
+		if(view instanceof GeneralHomeFrame && emp != null) {
 			return new GeneralViewEmployeeFrame(emp);
-		}else if(view.getClass().toString().equals("class main.views.home.HumanResourceHomeFrame")) {
+		}else if(view instanceof HumanResourceHomeFrame) {
 			return new HumanResourceViewEmployeeFrame(emp);
 		}
 		return null;

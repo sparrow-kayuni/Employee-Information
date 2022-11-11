@@ -34,7 +34,7 @@ public class App{
 	
 	public static HashMap<Integer, JobPosition> loginJobPositions = null;
 
-	private static AbstractHomeFrame homeView = null;
+	private static AbstractHomeFrame homeFrame = null;
 	
 	private static LoginFrame loginFrame = null;
 	
@@ -63,8 +63,6 @@ public class App{
 				JobPosition job = jobItr.next();
 				if(job.getPassword() != null) {
 					loginJobPositions.put(job.getJobId(), job);
-					System.out.println(loginJobPositions.get(job.getJobId()).getJobTitle() + 
-							" - " + loginJobPositions.get(job.getJobId()).getPassword());
 				}
 			}
 		}
@@ -112,12 +110,20 @@ public class App{
 	
 	public static void showLoginView() {
 		try {
-			loginFrame = new LoginFrame(departmentsMap);
-			loginFrame.setVisible(true);
+			setLoginFrame();
+			getLoginFrame().setVisible(true);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static LoginFrame getLoginFrame() {
+		return App.loginFrame;
+	}
+	
+	public static void setLoginFrame() {
+		App.loginFrame = new LoginFrame(departmentsMap);
 	}
 	
 	public static void logInEmployee(Employee employee) {
@@ -146,12 +152,20 @@ public class App{
 	}
 
 
-	public static AbstractHomeFrame getHomeView() {
-		return homeView;
+	public static AbstractHomeFrame getHomeFrame() {
+		return App.homeFrame;
 	}
 	
-	public static void setHomeView(AbstractHomeFrame homeView) {
-		App.homeView = homeView;
+	public static void setHomeFrame(AbstractHomeFrame homeFrame) {
+		App.homeFrame = homeFrame;
+	}
+	
+	public static void logout() {
+		if(App.homeFrame != null) App.homeFrame.dispose();
+		App.homeFrame = null;
+		
+		
+		
 	}
 
 }

@@ -114,7 +114,7 @@ public class EditEmployeeFrame extends AbstractEditEmployeeFrame implements Empl
 					saveChangesDialog.setVisible(true);
 					
 					saveChangesDialog.addUpdateListener(this);
-					saveChangesDialog.addUpdateListener(App.getHomeView());
+					saveChangesDialog.addUpdateListener(App.getHomeFrame());
 				}else {
 					//highlight unchanged fields and show flash message
 					firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(215, 40, 40)));
@@ -136,7 +136,7 @@ public class EditEmployeeFrame extends AbstractEditEmployeeFrame implements Empl
 			deleteEmployeeDialog = new DeleteEmployeeDialog(currentEmployee);
 			deleteEmployeeDialog.setVisible(true);
 			deleteEmployeeDialog.addUpdateListener(this);
-			deleteEmployeeDialog.addUpdateListener(App.getHomeView());
+			deleteEmployeeDialog.addUpdateListener(App.getHomeFrame());
 		}	
 	}
 	
