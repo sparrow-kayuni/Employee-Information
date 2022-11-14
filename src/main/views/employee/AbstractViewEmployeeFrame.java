@@ -84,4 +84,8 @@ public abstract class AbstractViewEmployeeFrame extends AbstractEmployeeFrame {
 		phoneTextPane.setText(currentEmployee.getPhoneNumber());
 		hourlyPayTextPane.setText(Float.toString(currentJobPosition.getHourlyPay()));
 	}
+	
+	public JTextPane getFirstNameTextPane() {
+		return firstNameTextPane;
+	}
 }

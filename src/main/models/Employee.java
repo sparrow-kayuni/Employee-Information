@@ -10,7 +10,7 @@ import main.employeesystem.App;
  * @version 1.1 
  *
  */
-public class Employee implements Comparable<Employee>, Comparator<Employee>{
+public class Employee{
 	private String firstName;
 	private String surname;
 	private int employeeId;
@@ -96,10 +96,6 @@ public class Employee implements Comparable<Employee>, Comparator<Employee>{
 		return id + fullName + jobTitle;
 	}
 
-	@Override
-	public int compareTo(Employee o) {
-		return o.getEmployeeId();
-	}
 
 	public String getDepartmentName() {
 		return departmentName;
@@ -128,8 +124,11 @@ public class Employee implements Comparable<Employee>, Comparator<Employee>{
 				getEmail().equals("") && getPhoneNumber().equals("");
 	}
 
-	@Override
-	public int compare(Employee o1, Employee o2) {
+	public static int compareById(Employee o1, Employee o2) {
 		return o1.employeeId - o2.employeeId;
+	}
+	
+	public static int compareByFirstName(Employee o1, Employee o2) {
+		return o1.getFirstName().compareTo(o2.getFirstName());
 	}
 }

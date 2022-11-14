@@ -7,6 +7,7 @@ import javax.swing.event.ListSelectionEvent;
 
 import main.models.Employee;
 import main.views.components.EmployeeActionButton;
+import main.views.employee.AbstractViewEmployeeFrame;
 import main.views.employee.AddEmployeeFrame;
 import main.views.employee.HumanResourceViewEmployeeFrame;
 import main.views.events.CloseEvent;
@@ -27,10 +28,10 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 
 	private EmployeeActionButton addEmployeeButton = null;
 	
-	private HumanResourceViewEmployeeFrame viewEmployeeFrame = null;
-	private AddEmployeeFrame addEmployeeFrame = null;
+	private static HumanResourceViewEmployeeFrame viewEmployeeFrame = null;
+	private static AddEmployeeFrame addEmployeeFrame = null;
 
-	private Employee emp;
+	private Employee employee;
 
 	public HumanResourceHomeFrame() {
 		setResizable(false);
@@ -46,30 +47,42 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 		addEmployeeButton.enableButton();
 		center_panel.add(addEmployeeButton, "cell 4 13,growx");
 	}
-
 	
+	@Override
+	public AbstractViewEmployeeFrame getViewEmployeeFrame() {
+		return viewEmployeeFrame;
+	}
+	
+	public AddEmployeeFrame getAddEmployeeFrame() {
+		return addEmployeeFrame;
+	}
+	
+	public EmployeeActionButton getAddEmployeeButton() {
+		return addEmployeeButton;
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		//View Selected Employee
 		if(e.getSource().equals(viewEmployeeButton)) {
 			try {
 				//if employee view frame exists, bring current employee view frame to front
-				if(this.viewEmployeeFrame != null) {
-					if(this.viewEmployeeFrame.isEditEmployeeFrameActive()) {
-						this.viewEmployeeFrame.getEditEmployeeFrame().setVisible(true);;
+				if(viewEmployeeFrame != null) {
+					if(viewEmployeeFrame.isEditEmployeeFrameActive()) {
+						viewEmployeeFrame.getEditEmployeeFrame().setVisible(true);;
 					}else {
-						this.viewEmployeeFrame.setVisible(true);
+						viewEmployeeFrame.setVisible(true);
 					}
 				}else {
-					if(this.addEmployeeFrame != null) {
-						this.addEmployeeFrame.setVisible(true);
+					if(addEmployeeFrame != null) {
+						addEmployeeFrame.setVisible(true);
 					}else {
 						//create new employee view frame with the current selected employee
 						selectedEmployeeIndex = employeesDisplay.getSelectedIndex();
 						selectedEmployee = empVals.get(selectedEmployeeIndex);
 						
-						this.viewEmployeeFrame = createViewEmployeeFrame(selectedEmployee);
-						this.viewEmployeeFrame.setVisible(true);
+						viewEmployeeFrame = createViewEmployeeFrame(selectedEmployee);
+						viewEmployeeFrame.setVisible(true);
 						
 						employeesDisplay.setSelectedIndex(selectedEmployeeIndex);
 						employeesDisplay.setSelectionBackground(new Color(163, 163, 163));
@@ -89,20 +102,20 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 					departmentsTab.getSelectedValue().equals("SEARCH RESULTS")) deptName = "EXECUTIVE"; 
 			else deptName = departmentsTab.getSelectedValue();
 			
-			if(this.addEmployeeFrame != null) {
-				this.addEmployeeFrame.setVisible(true);
+			if(addEmployeeFrame != null) {
+				addEmployeeFrame.setVisible(true);
 			}else {
-				if(this.viewEmployeeFrame != null) {
+				if(viewEmployeeFrame != null) {
 					
-					if(this.viewEmployeeFrame.isEditEmployeeFrameActive()) {
-						this.viewEmployeeFrame.getEditEmployeeFrame().setVisible(true);;
+					if(viewEmployeeFrame.isEditEmployeeFrameActive()) {
+						viewEmployeeFrame.getEditEmployeeFrame().setVisible(true);;
 					}else {
-						this.viewEmployeeFrame.setVisible(true);
+						viewEmployeeFrame.setVisible(true);
 					}
 				}else {
-					this.addEmployeeFrame = EmployeeFrameFactory.createAddEmployeeFrame(deptName);
-					this.addEmployeeFrame.addClosedListener(this);
-					this.addEmployeeFrame.setVisible(true);
+					addEmployeeFrame = EmployeeFrameFactory.createAddEmployeeFrame(deptName);
+					addEmployeeFrame.addClosedListener(this);
+					addEmployeeFrame.setVisible(true);
 				}
 			}
 		}
@@ -116,12 +129,12 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 	
 	//
 	private HumanResourceViewEmployeeFrame createViewEmployeeFrame(Employee emp) {
-		this.viewEmployeeFrame = (HumanResourceViewEmployeeFrame) 
+		viewEmployeeFrame = (HumanResourceViewEmployeeFrame) 
 				EmployeeFrameFactory.createViewEmployeeFrame(this, emp);
-		this.viewEmployeeFrame.addClosedListener(this);
+		viewEmployeeFrame.addClosedListener(this);
 		viewEmployeeButton.enableButton();
 		
-		return this.viewEmployeeFrame;
+		return viewEmployeeFrame;
 	} 
 	
 	
@@ -138,7 +151,7 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 			try {
 				
 				//if employee view doesn't exist, enable all buttons
-				if(this.viewEmployeeFrame == null) {
+				if(viewEmployeeFrame == null) {
 					employeesDisplay.setSelectionBackground(new Color(1, 120, 255));
 					
 					selectedEmployeeIndex = employeesDisplay.getSelectedIndex();
@@ -162,11 +175,11 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 		//if update event has an employee, means the event was from an add or edit operation
 		//if the employee is null, it means it was a delete operation
 		if(e.getEmployee() != null) {
-			if(this.viewEmployeeFrame != null) {
-				this.viewEmployeeFrame.setClosedEvent(CloseEvent.Event.SAVE);
-				this.viewEmployeeFrame.dispose();
+			if(viewEmployeeFrame != null) {
+				viewEmployeeFrame.setClosedEvent(CloseEvent.Event.SAVE);
+				viewEmployeeFrame.dispose();
 			}
-			emp = e.getEmployee();
+			employee = e.getEmployee();
 		} 
 		else{
 			viewEmployeeFrame.setClosedEvent(CloseEvent.Event.DELETE);
@@ -180,19 +193,19 @@ public class HumanResourceHomeFrame extends AbstractHomeFrame {
 		//check for the type off close event
 		switch(e.getEventType()) {
 			case CANCEL:
-				this.viewEmployeeFrame = null;
+				viewEmployeeFrame = null;
 				break;
 			case SAVE:
-				this.viewEmployeeFrame = createViewEmployeeFrame(emp);
-				this.viewEmployeeFrame.setVisible(true);
+				viewEmployeeFrame = createViewEmployeeFrame(employee);
+				viewEmployeeFrame.setVisible(true);
 				break;
 			case DELETE: 
-				this.viewEmployeeFrame = null;
+				viewEmployeeFrame = null;
 				break;
 			default: break;
 		}		
 		
-		if(this.addEmployeeFrame != null) this.addEmployeeFrame.dispose();
-		this.addEmployeeFrame = null;		
+		if(addEmployeeFrame != null) addEmployeeFrame.dispose();
+		addEmployeeFrame = null;		
 	}
 }

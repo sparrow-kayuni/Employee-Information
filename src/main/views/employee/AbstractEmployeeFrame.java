@@ -192,6 +192,10 @@ public abstract class AbstractEmployeeFrame extends AbstractFrame implements Act
 		}
 	}
 	
+	public CloseActionButton getCloseButton() {
+		return closeButton;
+	}
+	
 	//registers frames that will be notified when this frame is closed
 	public void addClosedListener(AbstractFrame frame) {
 		this.listeners.add(frame);

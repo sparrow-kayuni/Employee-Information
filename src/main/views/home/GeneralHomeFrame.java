@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.event.ListSelectionEvent;
 
 import main.models.Employee;
+import main.views.employee.AbstractViewEmployeeFrame;
 import main.views.employee.GeneralViewEmployeeFrame;
 import main.views.events.CloseEvent;
 import main.views.events.UpdateEvent;
@@ -28,6 +29,11 @@ public class GeneralHomeFrame extends AbstractHomeFrame {
 	public GeneralHomeFrame() {
 		setTitle("Employee Information");
 		initialize();
+	}
+	
+	@Override
+	public AbstractViewEmployeeFrame getViewEmployeeFrame() {
+		return viewEmployeeFrame;
 	}
 	
 	//

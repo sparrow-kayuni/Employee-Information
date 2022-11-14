@@ -6,8 +6,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
@@ -60,14 +63,13 @@ implements ActionListener, ListSelectionListener, EmployeeUpdateListener, FrameC
 	protected JList<String> departmentsTab = null;
 	
 	protected static Employee selectedEmployee = null;
-	protected static ArrayList<Employee> empVals = null;
-	protected static ArrayList<String> deptListVals = null;
+	protected static List<Employee> empVals = null;
+	protected static List<String> deptListVals = null;
 	
 	protected int selectedEmployeeIndex = 0;
 	
 	private final int width = 780;
 	private final int height = 660;
-
 	
 	protected void initialize() {
 		setResizable(false);
@@ -129,10 +131,8 @@ implements ActionListener, ListSelectionListener, EmployeeUpdateListener, FrameC
 		deptListVals = new ArrayList<String>();
 		deptListVals.add("ALL DEPARTMENTS");
 		
-		Iterator<Department> deptItr = App.getAllDepartments().values().iterator();
-		while(deptItr.hasNext()) {
-			deptListVals.add(deptItr.next().getDepartmentName());
-		}
+		App.getAllDepartments().values()
+		.forEach(d -> deptListVals.add(d.getDepartmentName()));
 		
 		setDepartmentTab(0);
 		
@@ -177,7 +177,37 @@ implements ActionListener, ListSelectionListener, EmployeeUpdateListener, FrameC
 		
 		center_panel.add(viewEmployeeButton, "cell 6 13,grow");
 	}
+	
+	public EmployeeActionButton getViewEmployeeButton() {
+		return viewEmployeeButton;
+	}
 
+	public JList<String> getDepartmentsTab(){
+		return departmentsTab;
+	}
+	
+	public JList<String> getEmployeesDisplay(){
+		return employeesDisplay;
+	}
+	
+	public JButton getSearchButton() {
+		return searchButton;
+	}
+	
+	public List<Employee> getEmployeeValues(){
+		return empVals;
+	}
+	
+	public void setSelectedEmployee(Employee e) {
+		selectedEmployee = e;
+	}
+	
+	public void setSelectedEmployeeIndex(int index) {
+		selectedEmployeeIndex = index;
+	}
+	
+	public abstract AbstractViewEmployeeFrame getViewEmployeeFrame();
+	
 	//
 	protected void setDepartmentTab(int i) {
 		
@@ -185,7 +215,7 @@ implements ActionListener, ListSelectionListener, EmployeeUpdateListener, FrameC
 			departmentsTab.setModel(new AbstractListModel<String>() {
 				private static final long serialVersionUID = 1L;
 				
-				ArrayList<String> values = deptListVals;
+				List<String> values = deptListVals;
 				public int getSize() {
 					return values.size();
 				}
@@ -205,52 +235,41 @@ implements ActionListener, ListSelectionListener, EmployeeUpdateListener, FrameC
 	//
 	protected void refreshEmployeesDisplay() {
 		empVals = new ArrayList<Employee>();
-		Department dept = null;
 		
 		try {
 			
 			//when selected department is "ALL DEPARTMENTS", iterate through all departments and their job positions			
 			if(departmentsTab.getSelectedValue().equals("ALL DEPARTMENTS")) {
-				Iterator<Department> deptItr = App.getAllDepartments().values().iterator();
 				
-				while(deptItr.hasNext()) {
-					dept = deptItr.next();
-					
-					//get employees from filled job positions from all departments
-					Iterator<JobPosition> jobItr  = dept.getAllJobPositions().values().iterator();
-					while(jobItr.hasNext()) {
-						JobPosition job = jobItr.next();
-						if(job.isFilled) empVals.add(job.getEmployee());
-					}
-				}
+				//get employees from all filled job positions
+				App.getAllDepartments().values().forEach(
+						d -> d.getAllJobPositions().values().stream()
+						.filter(j -> j.isFilled)
+						.forEach(j -> empVals.add(j.getEmployee())));
+				
 			}else if(departmentsTab.getSelectedValue().equals("SEARCH RESULTS")){
-				Iterator<Department> deptItr = App.getAllDepartments().values().iterator();
-				String search = searchTextField.getText();
+				String search = searchTextField.getText();				
 				
-				//brute force search algorithm, lol
-				while(deptItr.hasNext()) {
-					dept = deptItr.next();
-					JobPosition[] jobs = dept.getAllJobPositions().values()
-							.toArray(new JobPosition[dept.getAllJobPositions().size()]);
-					for(int i = 0; i < jobs.length; i++) {
-						if(jobs[i].isFilled) {
-							if(jobs[i].getEmployee().getFirstName().matches(String.format("\\w{0,}%s\\w{0,}", search)) || 
-									jobs[i].getEmployee().getSurname().matches(String.format("\\w{0,}%s\\w{0,}", search))) {
-								empVals.add(jobs[i].getEmployee());
-							}
-						}
-					}
-				}
+				App.getAllDepartments().values()
+				.forEach(
+						d -> d.getAllJobPositions().values().stream()
+						.filter(j -> j.isFilled)
+						.filter(j -> j.getEmployee().getFirstName()
+								.matches(String.format("\\w*%s\\w*", search)) ||
+								j.getEmployee().getSurname()
+								.matches(String.format("\\w*%s\\w*", search)) ||
+								Integer.toString(j.getEmployee().getEmployeeId())
+								.matches(String.format("\\w*%s\\w*", search)))
+						.forEach(j -> empVals.add(j.getEmployee()))
+						);
+
 			}else {
 				//get selected department object
-				dept = App.getDepartment((String) departmentsTab.getSelectedValue());
 				
-				//get employees from filled job positions from selected department object
-				Iterator<JobPosition> jobItr  = dept.getAllJobPositions().values().iterator();
-				while(jobItr.hasNext()) {
-					JobPosition job = jobItr.next();
-					if(job.isFilled) empVals.add(job.getEmployee());
-				}
+				App.getDepartment((String) departmentsTab.getSelectedValue())
+				.getAllJobPositions().values().stream()
+				.filter(j -> j.isFilled)
+				.forEach(j -> empVals.add(j.getEmployee()));
 			}
 		}catch(NullPointerException err) {
 			System.out.println("Something broke... Nevermind it tho");
@@ -266,14 +285,14 @@ implements ActionListener, ListSelectionListener, EmployeeUpdateListener, FrameC
 			}
 		}
 		
-		//sort employees by employee id
-		empVals.sort((Comparator<? super Employee>) new Employee());
+		//sort by firstname
+		Collections.sort(empVals, (a, b) -> Employee.compareById(a, b));
 		
 		//show job positions of selected department
 		employeesDisplay.setModel(new AbstractListModel<String>() {
 			private static final long serialVersionUID = 1L;
 			
-			ArrayList<Employee> values = empVals;
+			public List<Employee> values = empVals;
 			public int getSize() {
 				return values.size();
 			}
