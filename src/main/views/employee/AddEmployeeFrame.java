@@ -47,7 +47,8 @@ public class AddEmployeeFrame extends AbstractEditEmployeeFrame implements Emplo
 		currentEmployee.setDepartmentName(deptName);
 		currentDepartment = App.getDepartment(deptName);
 		
-		this.currentJobPosition = currentDepartment.getAllJobPositions().values().iterator().next();
+		this.currentJobPosition = currentDepartment
+				.getAllJobPositions().values().iterator().next();
 		
 	}
 

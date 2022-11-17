@@ -1,6 +1,6 @@
 package tests;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -31,7 +31,8 @@ class HumanResourceHomeFrameTest {
 		App.addManagerLoginInfo();
 		App.showLoginView();
 		
-		ActionEvent loginButtonPressed = new ActionEvent(App.getLoginFrame().getLoginButton(), 
+		ActionEvent loginButtonPressed = new ActionEvent(
+				App.getLoginFrame().getLoginButton(), 
 				ActionEvent.ACTION_PERFORMED, "Login",
                 EventQueue.getMostRecentEventTime(),
                 16);
@@ -56,45 +57,40 @@ class HumanResourceHomeFrameTest {
 	@AfterEach
 	void tearDown() throws Exception {
 	}
-
-	@Test
-	@Order(1)
-	void testIfHumanResourceHomeFrameHasLoaded() {
-		assertTrue(App.getHomeFrame() instanceof HumanResourceHomeFrame);
-		System.out.println("Human Resource HomeFrame has loaded");
-	}
 	
 	@Test
-	@Order(2)
-	void testIfViewEmployeeFrameLoads() {		
+	@Order(1)
+	void testIfViewEmployeeFrameLoads() {
+		//given
 		List<Employee> emps = homeFrame.getEmployeeValues();
 		
 		int selectedIndex = emps.indexOf(emps.stream()
 				.filter(e -> e.getFirstName().equals("Margret"))
 				.findFirst().orElse(null));
-		
 		homeFrame.getDepartmentsTab().setSelectedValue("ALL DEPARTMENTS", false);
 		homeFrame.getEmployeesDisplay().setSelectedIndex(selectedIndex);
 		
+		//when
 		ActionEvent viewButtonPressed = new ActionEvent(
 				homeFrame.getViewEmployeeButton(), 
 				ActionEvent.ACTION_PERFORMED, "View Employee",
                 EventQueue.getMostRecentEventTime(),
                 16);
-		
 		homeFrame.actionPerformed(viewButtonPressed);
 		
-		assertNotNull(homeFrame.getViewEmployeeFrame());
-		
-		assertTrue(homeFrame.getViewEmployeeFrame()
-				.getFirstNameTextPane().getText().equals("Margret"));
+		//then
+		assertThat(homeFrame.getViewEmployeeFrame()).isNotNull();
+		assertThat(homeFrame.getViewEmployeeFrame()
+				.getFirstNameTextPane().getText())
+		.isEqualTo("Margret");
 
 		System.out.println("View Employee Frame has loaded");
 	}
 	
 	@Test
-	@Order(3)
-	void viewButtonPressedWhileViewingEmployee() {		
+	@Order(2)
+	void viewButtonPressedWhileViewingEmployee() {	
+		//given
 		List<Employee> emps = homeFrame.getEmployeeValues();
 		
 		int selectedIndex = emps.indexOf(emps.stream()
@@ -104,56 +100,55 @@ class HumanResourceHomeFrameTest {
 		homeFrame.getDepartmentsTab().setSelectedValue("FINANCE", false);
 		homeFrame.getEmployeesDisplay().setSelectedIndex(selectedIndex);
 		
+		//when
 		ActionEvent viewButtonPressed = new ActionEvent(
 				homeFrame.getViewEmployeeButton(), 
 				ActionEvent.ACTION_PERFORMED, "View Employee",
                 EventQueue.getMostRecentEventTime(),
                 16);
-		
 		homeFrame.actionPerformed(viewButtonPressed);
 		
-		assertFalse(homeFrame.getViewEmployeeFrame()
-				.getFirstNameTextPane().getText().equals("Harry"));
-		
-		assertTrue(homeFrame.getViewEmployeeFrame()
-				.getFirstNameTextPane().getText().equals("Margret"));
+		//then
+		assertThat(homeFrame.getViewEmployeeFrame()
+				.getFirstNameTextPane().getText())
+		.isNotEqualTo("Harry").isEqualTo("Margret");
 
 		System.out.println("No New View Employee Frame has loaded");
 	}
 	
 	@Test
-	@Order(4)
-	void addButtonPressedWhileViewingEmployee() {		
+	@Order(3)
+	void addButtonPressedWhileViewingEmployee() {
+		//given
 		List<Employee> emps = homeFrame.getEmployeeValues();
 		
 		int selectedIndex = emps.indexOf(emps.stream()
 				.filter(e -> e.getFirstName().equals("Harry"))
 				.findFirst().orElse(null));
-		
 		homeFrame.getDepartmentsTab().setSelectedValue("FINANCE", false);
 		homeFrame.getEmployeesDisplay().setSelectedIndex(selectedIndex);
 		
+		//when
 		ActionEvent viewButtonPressed = new ActionEvent(
 				homeFrame.getAddEmployeeButton(), 
 				ActionEvent.ACTION_PERFORMED, "View Employee",
                 EventQueue.getMostRecentEventTime(),
                 16);
-		
 		homeFrame.actionPerformed(viewButtonPressed);
 		
-		assertFalse(homeFrame.getViewEmployeeFrame()
-				.getFirstNameTextPane().getText().equals("Harry"));
+		//then
+		assertThat(homeFrame.getViewEmployeeFrame()
+				.getFirstNameTextPane().getText())
+		.isNotEqualTo("Harry").isEqualTo("Margret");
 		
-		assertTrue(homeFrame.getViewEmployeeFrame()
-				.getFirstNameTextPane().getText().equals("Margret"));
-
 		System.out.println("No New View Employee Frame has loaded");
 	}
 	
 	@Test
-	@Order(5)
+	@Order(4)
 	void testIfViewEmployeeFrameCloses() {	
 
+		//when
 		ActionEvent closeButtonPressed = new ActionEvent(
 				homeFrame.getViewEmployeeFrame().getCloseButton(),
 				ActionEvent.ACTION_PERFORMED, "Back",
@@ -162,14 +157,16 @@ class HumanResourceHomeFrameTest {
 		
 		homeFrame.getViewEmployeeFrame().actionPerformed(closeButtonPressed);
 		
-		assertNull(homeFrame.getViewEmployeeFrame());
+		//then
+		assertThat(homeFrame.getViewEmployeeFrame()).isNull();
 		
 		System.out.println("View Employee Frame has closed");
 	}
 	
 	@Test
-	@Order(6)
-	void viewButtonPressedAfterViewingEmployee() {		
+	@Order(5)
+	void addButtonPressedAfterViewingEmployee() {
+		//given
 		List<Employee> emps = homeFrame.getEmployeeValues();
 		
 		int selectedIndex = emps.indexOf(emps.stream()
@@ -179,20 +176,18 @@ class HumanResourceHomeFrameTest {
 		homeFrame.getDepartmentsTab().setSelectedValue("FINANCE", false);
 		homeFrame.getEmployeesDisplay().setSelectedIndex(selectedIndex);
 		
-		ActionEvent viewButtonPressed = new ActionEvent(
-				homeFrame.getViewEmployeeButton(), 
+		//when
+		ActionEvent addButtonPressed = new ActionEvent(
+				homeFrame.getAddEmployeeButton(), 
 				ActionEvent.ACTION_PERFORMED, "View Employee",
                 EventQueue.getMostRecentEventTime(),
                 16);
+		homeFrame.actionPerformed(addButtonPressed);
 		
-		homeFrame.actionPerformed(viewButtonPressed);
+		//then
+		assertThat(homeFrame.getAddEmployeeFrame())
+		.isNotNull();
 		
-		assertTrue(homeFrame.getViewEmployeeFrame()
-				.getFirstNameTextPane().getText().equals("Harry"));
-		
-		assertFalse(homeFrame.getViewEmployeeFrame()
-				.getFirstNameTextPane().getText().equals("Margret"));
-
 		System.out.println("No New View Employee Frame has loaded");
 	}
 }

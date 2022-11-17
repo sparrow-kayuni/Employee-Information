@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Order;
 import main.employeesystem.App;
 import main.models.Employee;
 import main.views.home.GeneralHomeFrame;
-import main.views.home.HumanResourceHomeFrame;
 
 @TestMethodOrder(OrderAnnotation.class)
 class GeneralHomeFrameTests {

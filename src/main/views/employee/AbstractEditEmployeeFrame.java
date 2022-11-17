@@ -143,7 +143,8 @@ public abstract class AbstractEditEmployeeFrame extends AbstractEmployeeFrame im
 		
 		//initialize job positions drop-down menu and select employee's current employee's job position,
 		String[] jobsList = new String[currentDepartment.getAllJobPositions().size()];
-		Iterator<JobPosition> jobsItr = currentDepartment.getAllJobPositions().values().iterator();
+		Iterator<JobPosition> jobsItr = currentDepartment
+				.getAllJobPositions().values().iterator();
 		i = 0;
 		while(jobsItr.hasNext()) {
 			JobPosition job = jobsItr.next();
@@ -330,15 +331,17 @@ public abstract class AbstractEditEmployeeFrame extends AbstractEmployeeFrame im
 		}
 	}
 	
-	
+	//
 	protected void setSelectedJobPosition(Department dept) throws NullPointerException {
 		try {
-			selectedJobPosition = dept.getJobPosition((String) jobTitleComboBox.getSelectedItem());
+			selectedJobPosition = dept
+					.getJobPosition((String) jobTitleComboBox.getSelectedItem());
 			if(selectedJobPosition != null) {
 				hourlyPaySpinner.setValue(selectedJobPosition.getHourlyPay());
 				
 				//if selected job is filled && isn't the same current job, show flash message
-				if(selectedJobPosition.isFilled && currentEmployee.getJobId() != selectedJobPosition.getJobId()) {
+				if(selectedJobPosition.isFilled && currentEmployee.getJobId() != 
+						selectedJobPosition.getJobId()) {
 					
 					//reset text fields and to default color
 					firstNameTextField.setBorder(BorderFactory.createLineBorder(new Color(167, 167, 167)));

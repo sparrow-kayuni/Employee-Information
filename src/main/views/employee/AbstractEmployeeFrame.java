@@ -65,6 +65,8 @@ public abstract class AbstractEmployeeFrame extends AbstractFrame implements Act
 	public CloseEvent.Event getClosedEvent() {
 		return this.closedEvent;
 	}
+	
+//	public Employee getCur
 
 	/**
 	 * Initialize the contents of the frame.

@@ -7,10 +7,7 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
@@ -24,9 +21,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionListener;
 
 import main.employeesystem.App;
-import main.models.Department;
 import main.models.Employee;
-import main.models.JobPosition;
 import main.views.AbstractFrame;
 import main.views.components.EmployeeActionButton;
 import main.views.employee.AbstractViewEmployeeFrame;
