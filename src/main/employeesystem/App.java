@@ -32,17 +32,12 @@ public class App{
 	
 	public static Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	
-	public static HashMap<Integer, JobPosition> loginJobPositions = null;
+	public static HashMap<Integer, JobPosition> authorizedJobPositions = null;
 
 	private static AbstractHomeFrame homeFrame = null;
 	
 	private static LoginFrame loginFrame = null;
 	
-	/**
-	 * 
-	 * run() initializes the employee and department objects then displays 
-	 * the login page
-	 */
 	
 	public static void run() {
 		connectDatabase();
@@ -53,7 +48,7 @@ public class App{
 	
 	
 	public static void addManagerLoginInfo() {
-		loginJobPositions = new HashMap<Integer, JobPosition>();
+		authorizedJobPositions = new HashMap<Integer, JobPosition>();
 		
 		Iterator<Department> deptItr = departmentsMap.values().iterator();
 		while(deptItr.hasNext()) {
@@ -62,7 +57,7 @@ public class App{
 			while(jobItr.hasNext()) {
 				JobPosition job = jobItr.next();
 				if(job.getPassword() != null) {
-					loginJobPositions.put(job.getJobId(), job);
+					authorizedJobPositions.put(job.getJobId(), job);
 				}
 			}
 		}
@@ -71,7 +66,7 @@ public class App{
 	//checks if job position of given job id is present
 	public static boolean isLoginPositionPresent(int jobId) {
 		boolean isPresent = false;
-		Iterator<JobPosition> jobItr = loginJobPositions.values().iterator();
+		Iterator<JobPosition> jobItr = authorizedJobPositions.values().iterator();
 		while(jobItr.hasNext()) {
 			JobPosition job = jobItr.next();
 			
@@ -85,12 +80,12 @@ public class App{
 	
 	
 	public static JobPosition getLoginPosition(int jobId){
-		return loginJobPositions.get(jobId);
+		return authorizedJobPositions.get(jobId);
 	}
 	
 	
 	public static HashMap<Integer, JobPosition> getAllLoginPositions(){
-		return loginJobPositions;
+		return authorizedJobPositions;
 	}
 
 	/**

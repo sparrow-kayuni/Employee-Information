@@ -1,7 +1,5 @@
 package main.models;
 
-import java.util.Comparator;
-
 import main.employeesystem.App;
 
 /**

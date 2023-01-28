@@ -22,7 +22,7 @@ import main.models.JobPosition;
  */
 public class DatabaseAccessObject {
 	
-	private String sqliteURL = "jdbc:sqlite:human_resources.db";
+	private String sqliteURL = "jdbc:sqlite:src/main/employeesystem/human_resources.db";
 	private static Connection conn = null;
 	private static Statement statement = null;
 	private static LinkedHashMap<String, Department> departmentsMap = null;

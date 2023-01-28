@@ -75,7 +75,7 @@ implements ActionListener, ListSelectionListener, EmployeeUpdateListener, FrameC
 		this.setBounds(xPos, yPos, width, height);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		var panel = new JPanel();
+		JPanel panel = new JPanel();
 		this.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
 		
