@@ -1,6 +1,6 @@
 # Employee Information
 
-## Introdution
+## Introduction
 This is a simple CRUD program that manages employee information.
 ![Home](/docs/assets/home)
 
