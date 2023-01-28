@@ -17,23 +17,13 @@ This is a simple CRUD program that manages employee information.
 To use the program, you have to log in as a department manager.
 ![Home](/docs/assets/login)
 
-###Login Details
+### Login Details
 Here are the login details of each department
- - Human Resources
-		JOB ID: 400001
-		PASSWORD: 1234
- - Accounts
- 		JOB ID: 100001
-		PASSWORD: 1234567
- - Sales
- 		JOB ID: 300001
-		PASSWORD: 675645
- - Finance and
- 		JOB ID: 500001
-		PASSWORD: 10101
- - Executive 
- 		JOB ID: 100001
-		PASSWORD: 54321
+ - Human Resources -> JOB ID: 400001, PASSWORD: 1234
+ - Accounts -> JOB ID: 100001, PASSWORD: 1234567
+ - Sales -> JOB ID: 300001, PASSWORD: 675645
+ - Finance -> JOB ID: 500001, PASSWORD: 10101
+ - Executive -> JOB ID: 100001, PASSWORD: 54321
 
 ### USE
 To add, edit or delete employees, login as human resources manager
