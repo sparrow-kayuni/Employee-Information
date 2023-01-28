@@ -10,5 +10,7 @@
 	<classpathentry kind="lib" path="C:/Users/TK/Documents/eclipse-workspace/Jar Files/postgresql-42.5.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="C:/Users/TK/Documents/eclipse-workspace/Jar Files/assertj-core-3.23.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/TK/Documents/eclipse-workspace/Jar Files/sqlite-jdbc-3.36.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/TK/Documents/eclipse-workspace/Jar Files/opencsv-5.7.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

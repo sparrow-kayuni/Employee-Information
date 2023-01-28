@@ -20,20 +20,18 @@ import main.models.JobPosition;
  * @implSpec 
  *
  */
-public class PostgresDatabase {
+public class DatabaseAccessObject {
 	
-	private String pgURL = "jdbc:postgresql://localhost:5432/human_resources";
-	private String userName = "test";
-	private String password = "123";
+	private String sqliteURL = "jdbc:sqlite:human_resources.db";
 	private static Connection conn = null;
 	private static Statement statement = null;
 	private static LinkedHashMap<String, Department> departmentsMap = null;
 	
 	//Initialize and connect to the database
-	public PostgresDatabase() {
+	public DatabaseAccessObject() {
 		try {
-			Class.forName("org.postgresql.Driver");
-			conn = DriverManager.getConnection(pgURL, userName, password);
+			Class.forName("org.sqlite.JDBC");
+			conn = DriverManager.getConnection(sqliteURL);
 			conn.setAutoCommit(false);
 			statement = conn.createStatement();
 			
@@ -78,7 +76,7 @@ public class PostgresDatabase {
 	
 	//Add job positions to each department in the departments map
 	public void addJobPositionsToDepartments() {
-		String query = "SELECT * FROM public.job_positions ORDER BY job_title ASC";
+		String query = "SELECT * FROM job_positions ORDER BY job_title ASC";
 		
 		try {
 			ResultSet results = statement.executeQuery(query);
@@ -112,7 +110,7 @@ public class PostgresDatabase {
 	private void fillJobPositions() {
 		try {
 			if (conn != null) {
-				String query = "SELECT * FROM public.employees ORDER BY job_id ASC";
+				String query = "SELECT * FROM employees ORDER BY job_id ASC";
 				ResultSet resultSet = statement.executeQuery(query);
 				
 				while(resultSet.next()) {
@@ -162,7 +160,7 @@ public class PostgresDatabase {
 	public void updateEmployee(Employee employee) {
 		try {
 			if(conn != null) {
-				String query = String.format("UPDATE public.employees "
+				String query = String.format("UPDATE employees "
 						+ "SET first_name='%s', surname='%s', email='%s', phone='%s', job_id=%d"
 						+ "	WHERE employee_id=%d;", employee.getFirstName(), employee.getSurname(),
 						employee.getEmail(), employee.getPhoneNumber(), employee.getJobId(), employee.getEmployeeId());
@@ -179,7 +177,7 @@ public class PostgresDatabase {
 	public void addNewEmployee(Employee employee) {
 		try {
 			if(conn != null) {
-				String query = String.format("INSERT INTO public.employees "
+				String query = String.format("INSERT INTO employees "
 						+ "(employee_id, first_name, surname, email, phone, job_id) "
 						+ "	VALUES (%d, '%s', '%s', '%s', '%s', %d);", employee.getEmployeeId(), 
 						employee.getFirstName(), employee.getSurname(),
@@ -197,7 +195,7 @@ public class PostgresDatabase {
 	public void deleteEmployee(Employee employee) {
 		try {
 			if(conn != null) {
-				String query = String.format("DELETE FROM public.employees WHERE employee_id=%d", 
+				String query = String.format("DELETE FROM employees WHERE employee_id=%d", 
 						employee.getEmployeeId());
 				
 				if(!statement.execute(query)) {
@@ -213,7 +211,7 @@ public class PostgresDatabase {
 	public void updateJobPosition(JobPosition jobPosition) {
 		try {
 			if(conn != null){
-				String query = String.format("UPDATE public.job_positions "
+				String query = String.format("UPDATE job_positions "
 						+ "SET hourly_pay = %f WHERE job_id=%d", 
 						jobPosition.getHourlyPay(), jobPosition.getJobId());
 				

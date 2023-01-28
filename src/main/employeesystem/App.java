@@ -20,7 +20,7 @@ import java.util.Iterator;
  */
 public class App{
 	
-	private static PostgresDatabase db;
+	private static DatabaseAccessObject db;
 
 	/**
 	 * 
@@ -66,7 +66,6 @@ public class App{
 				}
 			}
 		}
-		
 	}
 	
 	//checks if job position of given job id is present
@@ -98,7 +97,7 @@ public class App{
 	 * Connects App to postgres database 
 	 */
 	public static void connectDatabase() {
-		setDb(new PostgresDatabase());
+		setDb(new DatabaseAccessObject());
 	}
 	
 	
@@ -143,11 +142,11 @@ public class App{
 		return departmentsMap;
 	}
 
-	public static PostgresDatabase getDb() {
+	public static DatabaseAccessObject getDb() {
 		return db;
 	}
 
-	public static void setDb(PostgresDatabase db) {
+	public static void setDb(DatabaseAccessObject db) {
 		App.db = db;
 	}
 
